@@ -1148,6 +1148,85 @@ rd('xm','all');
 applyTrends(K.xm.tr);
 applyLatestNotif(K.xm.ln);
 
+// ── GARMIN LIVE DATA ────────────────────────────────────────────────────────
+var GARMIN_API = 'https://nana-garmin.onrender.com';
+
+async function fetchGarminData() {
+  try {
+    var resp = await fetch(GARMIN_API + '/api/health');
+    if (!resp.ok) return;
+    var d = await resp.json();
+    if (d.error) return;
+
+    // Update home page cards
+    var hrv = d.hrv || 0;
+    var rhr = d.resting_hr || 0;
+    var steps = d.steps || 0;
+    var deep = d.sleep ? d.sleep.deep : '—';
+    var sleepTotal = d.sleep ? d.sleep.total : '—';
+    var sleepScore = d.sleep ? d.sleep.score : 0;
+    var bb = d.body_battery || 0;
+    var stress = d.stress_avg || 0;
+    var calories = d.calories || 0;
+
+    // Home insight cards
+    var elSl = document.getElementById('h-sl');
+    var elVi = document.getElementById('h-vi');
+    var elSt2 = document.getElementById('h-st2');
+    var elHr = document.getElementById('h-hr');
+    var elSu = document.getElementById('h-su');
+    var elSt = document.getElementById('h-st');
+    var elTi = document.getElementById('h-ti');
+    var elRc = document.getElementById('h-rc');
+
+    if (elSl) elSl.textContent = deep;
+    if (elVi) elVi.textContent = hrv + ' ms';
+    if (elSt2) elSt2.textContent = steps.toLocaleString();
+    if (elHr) elHr.textContent = rhr + ' bpm';
+
+    // Status bar
+    var statusMsg = '';
+    if (hrv > 70) statusMsg = 'HRV 优秀，今天状态很好，适合运动。';
+    else if (hrv > 50) statusMsg = 'HRV 正常，保持稳定的日常节奏。';
+    else statusMsg = 'HRV 偏低，今天注意休息，避免高强度训练。';
+    if (elSt) elSt.textContent = statusMsg;
+
+    // Today insight title & subtitle
+    if (elTi) elTi.innerHTML = '你好，<br>今日实时数据已更新';
+    if (elSu) elSu.textContent = '睡眠 ' + sleepTotal + '，评分 ' + sleepScore + '，HRV ' + hrv + 'ms，压力指数 ' + stress + '。';
+
+    // Recommendation
+    var rec = '';
+    if (hrv >= 70 && stress < 30) rec = 'HRV 高且压力低，今天是高强度训练的好时机。';
+    else if (hrv >= 50) rec = '身体状态稳定，适合中等强度活动。';
+    else rec = 'HRV 偏低，建议今天以恢复为主，轻松散步即可。';
+    if (elRc) elRc.textContent = rec;
+
+    // Update K data for charts too
+    if (K && K.xm) {
+      K.xm.sl = deep;
+      K.xm.vi = hrv + ' ms';
+      K.xm.st2 = steps.toLocaleString();
+      K.xm.hr = rhr + ' bpm';
+      K.xm.d.heart.rhr = rhr;
+      K.xm.d.heart.htoday = hrv;
+      K.xm.d.act.steps[6] = steps;
+      K.xm.d.sleep.total = sleepTotal;
+      K.xm.d.sleep.deep = deep;
+      K.xm.d.sleep.score = sleepScore;
+    }
+
+    console.log('Garmin data loaded:', d);
+  } catch(e) {
+    console.log('Garmin fetch failed:', e);
+  }
+}
+
+// Fetch on load
+fetchGarminData();
+// ── END GARMIN LIVE DATA ────────────────────────────────────────────────────
+
+
 // ── NANA AI ENGINE ─────────────────────────────────────────────────────────
 // CONFIGURE: set your Vercel proxy URL here after deployment
 var PROXY_URL = 'https://nana-proxy-ruddy.vercel.app/api/chat';
