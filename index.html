@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Nana — Parenting &amp; Health</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --brand:#1882FF;--brand-soft:#E8F2FF;--brand-mid:#B8D9FF;
+  --ink:#1c1c1e;--muted:#8e8e93;--line:rgba(60,60,67,.12);--light:rgba(60,60,67,.12);--bg:#fff;--bg2:#f2f2f7;--red:#ff3b30;--green:#34c759;
+  --card-shadow:0 8px 32px rgba(24,130,255,.08),0 2px 12px rgba(0,0,0,.04);
+  --nav-shadow:0 -4px 24px rgba(0,0,0,.06);
+}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#f7f9fc 0%,#e8f2ff 55%,#dfefff 100%);}
+.phone{max-width:360px;margin:0 auto;background:linear-gradient(180deg,#fff 0%,#f5f9ff 45%,#eef4ff 100%);height:680px;position:relative;overflow:hidden;font-family:var(--font-sans);color:var(--ink);box-shadow:0 12px 48px rgba(24,130,255,.12);}
+.page{position:absolute;top:0;left:0;width:100%;height:100%;background:transparent;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:10;display:flex;flex-direction:column;}
+.page.root{transform:translateX(0);z-index:1;}
+.page.open{transform:translateX(0);}
+.page.z20{z-index:20;}.page.z30{z-index:30;}.page.z40{z-index:40;}.page.z35{z-index:35;}.page.z45{z-index:45;}.page.z55{z-index:55;}
+.page.open:not(.root){background:linear-gradient(180deg,#fff 0%,#f5f9ff 48%,#eef4ff 100%);}
+/* nav */
+.nav{background:rgba(255,255,255,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);padding:10px 18px 14px;display:flex;align-items:center;border-top:0.5px solid var(--line);flex-shrink:0;box-shadow:var(--nav-shadow);}
+.nav-pill{display:flex;background:var(--bg2);border-radius:22px;padding:4px;gap:4px;}
+.nb{width:42px;height:42px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:transparent;border:none;border-radius:16px;}
+.nb svg{width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:1.8;}
+.nb.active{background:var(--brand);box-shadow:0 4px 14px rgba(24,130,255,.35);}
+.nb.active svg{stroke:#fff;}
+.nav-spacer{flex:1;}
+.fab{width:46px;height:46px;border-radius:50%;border:none;background:linear-gradient(145deg,#fff,#f0f6ff);box-shadow:0 4px 16px rgba(24,130,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.fab svg{width:17px;height:17px;fill:var(--brand);stroke:var(--brand);}
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:0.5px solid var(--line);flex-shrink:0;background:rgba(255,255,255,.5);}
+.tb-title{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.02em;}
+.tb-muted{font-size:15px;font-weight:600;color:var(--ink);}
+.ic{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.ic svg{width:14px;height:14px;fill:none;stroke:var(--ink);stroke-width:2;}
+/* top row */
+.top-row{display:flex;align-items:center;padding:14px 18px 12px;}
+.ctabs{display:flex;gap:14px;flex:1;}
+.ctab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.cav{width:42px;height:42px;border-radius:50%;border:2px solid transparent;background:var(--bg2);}
+.cav.active{border-color:var(--brand);box-shadow:0 0 0 1px rgba(24,130,255,.15);}
+.cnm{font-size:11px;color:var(--muted);}
+.cnm.active{color:var(--brand);font-weight:600;}
+.me-chip{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;margin-left:auto;}
+.me-av{width:42px;height:42px;border-radius:50%;border:2px solid var(--line);background:linear-gradient(180deg,#fff,var(--brand-soft));display:flex;align-items:center;justify-content:center;font-size:18px;}
+/* home */
+.status-bar{margin:0 16px 12px;border:none;border-radius:16px;padding:12px 16px;font-size:12px;color:var(--ink);background:linear-gradient(135deg,var(--brand-soft),#fff);box-shadow:var(--card-shadow);}
+.insight-box{margin:0 16px;border:none;border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:11px;background:var(--bg);box-shadow:var(--card-shadow);}
+.ins-title{font-size:21px;font-weight:500;line-height:1.3;}
+.ins-sub{font-size:12px;color:#444;line-height:1.65;}
+.divd{height:1px;background:var(--line);}
+.ins-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ins-lbl{font-size:10px;color:var(--muted);letter-spacing:.4px;margin-bottom:2px;}
+.ins-val{font-size:17px;font-weight:500;}
+.ins-rec{font-size:12px;color:#333;line-height:1.65;}
+/* location card */
+.loc-card{margin:10px 16px 0;border:none;border-radius:22px;overflow:hidden;cursor:pointer;background:var(--bg);box-shadow:var(--card-shadow);}
+.loc-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;}
+.loc-title-row{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;}
+.loc-title-row svg{width:13px;height:13px;fill:none;stroke:var(--ink);stroke-width:1.8;}
+.loc-status-badge{font-size:10px;padding:3px 9px;border-radius:8px;background:var(--brand);color:#fff;font-weight:600;}
+.loc-status-badge.warn{background:#ff9500;}
+.loc-mini-map{width:100%;height:80px;background:#eef2f0;position:relative;overflow:hidden;}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(#e2e8e5 1px,transparent 1px),linear-gradient(90deg,#e2e8e5 1px,transparent 1px);background-size:20px 20px;}
+.map-zone{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:var(--ink);opacity:.15;}
+.map-zone-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;border:2px solid var(--ink);opacity:.4;}
+.map-dot{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--ink);border:3px solid var(--bg);z-index:2;}
+.loc-stats-row{display:grid;grid-template-columns:1fr 1fr;padding:10px 14px 12px;gap:8px;}
+.loc-stat-item{display:flex;flex-direction:column;gap:2px;}
+.loc-stat-lbl{font-size:9px;color:var(--muted);letter-spacing:.4px;}
+.loc-stat-val{font-size:12px;font-weight:500;color:var(--ink);}
+.loc-more{padding:0 14px 11px;font-size:11px;color:var(--ink);display:flex;align-items:center;gap:4px;border-top:0.5px solid var(--line);padding-top:9px;}
+.loc-more svg{width:10px;height:10px;fill:none;stroke:var(--ink);stroke-width:2;}
+/* data page */
+.cat-tabs{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;flex-shrink:0;border-bottom:0.5px solid var(--line);background:rgba(255,255,255,.4);}
+.cat-tabs,.notif-cat,.ctx-row,.map-actions{scrollbar-width:none;-ms-overflow-style:none;}
+.cat-tabs::-webkit-scrollbar,.notif-cat::-webkit-scrollbar,.ctx-row::-webkit-scrollbar,.map-actions::-webkit-scrollbar{display:none;width:0;height:0;}
+.cat-tab{font-size:11px;padding:7px 14px;border-radius:20px;border:1px solid transparent;background:var(--bg2);color:var(--muted);white-space:nowrap;cursor:pointer;flex-shrink:0;font-weight:500;}
+.cat-tab.active{background:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(24,130,255,.3);}
+.date-panel{padding:8px 16px;border-bottom:0.5px solid var(--line);background:rgba(255,255,255,.42);flex-shrink:0;}
+.date-compact{display:grid;grid-template-columns:32px 1fr auto 32px;gap:8px;align-items:center;}
+.date-nav,.date-action{border:none;background:var(--bg);color:var(--brand);box-shadow:0 2px 8px rgba(24,130,255,.08);cursor:pointer;}
+.date-nav{width:32px;height:32px;border-radius:50%;font-size:18px;line-height:1;}
+.date-action{border-radius:16px;font-size:10px;font-weight:600;padding:8px 10px;}
+.date-main{border:none;background:transparent;text-align:left;cursor:pointer;min-width:0;padding:2px 0;}
+.date-title{font-size:14px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.date-sub{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.date-expanded{display:none;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--line);}
+.date-panel.open .date-expanded{display:block;}
+.month-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.month-title{font-size:13px;font-weight:700;color:var(--ink);}
+.month-dows,.date-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.month-dows{margin-bottom:5px;}
+.month-dows span{text-align:center;font-size:9px;color:var(--muted);font-weight:600;}
+.date-cell{border:none;border-radius:12px;background:var(--bg);padding:6px 0;min-height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.03);}
+.date-cell.on{background:var(--brand);color:#fff;box-shadow:0 6px 16px rgba(24,130,255,.28);}
+.date-cell.muted{opacity:.36;}
+.date-cell.future{opacity:.28;cursor:default;}
+.date-dow{display:none;}
+.date-num{font-size:14px;font-weight:600;line-height:1;}
+.date-dot{width:4px;height:4px;border-radius:50%;background:var(--brand);}
+.date-cell.on .date-dot{background:#fff;}
+.date-summary{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:11px;color:#444;line-height:1.45;}
+.date-summary strong{font-size:12px;color:var(--ink);font-weight:600;}
+.date-chip{flex-shrink:0;border-radius:10px;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:600;padding:5px 8px;}
+.page-body{flex:1;overflow-y:auto;}
+.card-d{border:none;border-radius:22px;padding:14px 16px;margin:10px 16px 0;background:var(--bg);box-shadow:var(--card-shadow);}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.card-title{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--ink);}
+.card-ico{width:28px;height:28px;border-radius:10px;border:none;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;}
+.card-ico svg{width:13px;height:13px;fill:none;stroke:var(--brand);stroke-width:2;}
+.card-period{font-size:10px;color:var(--brand);background:var(--brand-soft);border:none;border-radius:10px;padding:4px 10px;font-weight:600;}
+.stats-row{display:flex;border-top:1px solid #eee;padding-top:9px;margin-top:8px;}
+.stat{flex:1;text-align:center;border-right:1px solid #eee;}
+.stat:last-child{border-right:none;}
+.stat-lbl{font-size:9px;color:var(--muted);margin-bottom:2px;}
+.stat-val{font-size:13px;font-weight:500;}
+.stat-ch{font-size:9px;margin-top:2px;color:var(--muted);}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:6px;}
+.bw{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.bar{width:100%;border-radius:2px 2px 0 0;background:#ccc;}
+.bar.today{background:var(--brand);}
+.bl{font-size:9px;color:var(--muted);}
+.ins-chip{border-radius:8px;padding:7px 10px;margin-top:8px;font-size:11px;line-height:1.5;}
+.ins-chip.ok{background:linear-gradient(135deg,#f2f7ff,#fff);color:#1c3d6e;border:1px solid rgba(24,130,255,.12);}
+.ins-chip.warn{background:#fff5eb;color:#8a4b12;border:1px solid rgba(255,149,0,.2);}
+.hrv-bars{display:flex;gap:3px;align-items:flex-end;height:36px;margin:6px 0 3px;}
+.hrv-bar{flex:1;border-radius:1px 1px 0 0;}
+.stage-bar{display:flex;height:12px;border-radius:3px;overflow:hidden;margin:6px 0 4px;}
+.h-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.h-item{background:var(--bg2);border-radius:10px;padding:10px 11px;}
+.h-lbl{font-size:9px;color:var(--muted);margin-bottom:4px;}
+.h-val{font-size:20px;font-weight:500;line-height:1;}
+.h-unit{font-size:10px;color:var(--muted);font-weight:400;}
+.tl-row{display:flex;justify-content:space-between;margin-bottom:4px;}
+.tl{font-size:9px;color:var(--muted);}
+.int-bars{display:flex;gap:6px;align-items:flex-end;height:52px;margin-bottom:6px;}
+.int-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.int-bar{width:100%;border-radius:2px 2px 0 0;}
+/* location full page */
+.loc-full-map{position:relative;overflow:hidden;background:#eef2f0;flex-shrink:0;}
+.map-grid-full{position:absolute;inset:0;background-image:linear-gradient(#dde8e4 1px,transparent 1px),linear-gradient(90deg,#dde8e4 1px,transparent 1px);background-size:24px 24px;}
+.map-zone-lg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;border-radius:50%;background:var(--brand);opacity:.12;}
+.map-zone-ring-lg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;border-radius:50%;border:2px solid var(--brand);opacity:.35;}
+.map-dot-lg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;background:var(--brand);border:3px solid var(--bg);z-index:2;box-shadow:0 2px 12px rgba(24,130,255,.4);}
+.map-label-lg{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:8px 16px;font-size:12px;font-weight:600;white-space:nowrap;box-shadow:var(--card-shadow);}
+.map-actions{display:flex;gap:8px;padding:10px 16px;border-bottom:0.5px solid var(--line);flex-shrink:0;}
+.map-btn{background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:8px 14px;font-size:11px;font-weight:500;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.map-btn svg{width:11px;height:11px;fill:none;stroke:var(--brand);stroke-width:1.8;}
+/* zone items */
+.scroll{flex:1;overflow-y:auto;padding-bottom:12px;}
+.sec{margin:14px 16px 0;}
+.sec-lbl{font-size:10px;color:var(--muted);letter-spacing:.6px;margin-bottom:7px;padding-left:2px;}
+.lcard{border:none;border-radius:20px;overflow:hidden;background:var(--bg);box-shadow:var(--card-shadow);}
+.li{display:flex;align-items:center;gap:11px;padding:12px 13px;border-bottom:0.5px solid #f0f0f0;cursor:pointer;background:var(--bg);}
+.li:last-child{border-bottom:none;}
+.li-ico{width:28px;height:28px;border-radius:8px;border:1px solid var(--light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;}
+.li-body{flex:1;}
+.li-lbl{font-size:13px;color:var(--ink);}
+.li-sub{font-size:11px;color:var(--muted);margin-top:1px;}
+.li-right{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.li-val{font-size:12px;color:var(--muted);}
+.badge-in{font-size:10px;background:var(--brand);color:#fff;padding:3px 8px;border-radius:8px;font-weight:600;}
+.badge-out{font-size:10px;border:1px solid var(--line);color:var(--muted);padding:3px 8px;border-radius:8px;background:var(--bg2);}
+.chv{width:12px;height:12px;fill:none;stroke:var(--muted);stroke-width:2;}
+/* timeline */
+.timeline-item{display:flex;gap:12px;padding:10px 16px;}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.tl-dot.blue{background:var(--brand);}
+.tl-dot.green{background:#1a1a1a;border:2px solid var(--ink);}
+.tl-line{width:1px;background:var(--line);margin:0 auto;}
+/* event rules */
+.rule-row{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-bottom:0.5px solid #f0f0f0;}
+.rule-row:last-child{border-bottom:none;}
+.rule-lbl{font-size:13px;color:var(--ink);}
+.tog{width:38px;height:22px;border-radius:11px;background:var(--brand);position:relative;cursor:pointer;flex-shrink:0;}
+.tog.off{background:#e5e5ea;}
+.tog-dot{width:14px;height:14px;background:var(--bg);border-radius:50%;position:absolute;top:3px;right:3px;transition:right .15s;}
+.tog.off .tog-dot{right:19px;}
+/* settings */
+.lcard2{border:none;border-radius:20px;overflow:hidden;background:var(--bg);box-shadow:var(--card-shadow);}
+.li2{display:flex;align-items:center;gap:11px;padding:12px 13px;border-bottom:0.5px solid #f0f0f0;cursor:pointer;background:var(--bg);}
+.li2:last-child{border-bottom:none;}
+.li2-ico{width:28px;height:28px;border-radius:8px;border:1px solid var(--light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.li2-ico svg{width:13px;height:13px;fill:none;stroke:var(--ink);stroke-width:1.6;}
+.li2.red .li-lbl{color:var(--red);}
+.li2.red .li2-ico{border-color:#fcc;}
+.li2.red .li2-ico svg{stroke:var(--red);}
+.seg{display:flex;background:var(--bg2);border-radius:14px;overflow:hidden;margin:0 16px;padding:4px;gap:4px;border:none;}
+.seg-opt{flex:1;padding:10px 0;text-align:center;font-size:12px;cursor:pointer;color:var(--muted);border-radius:10px;font-weight:500;}
+.seg-opt.on{background:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(24,130,255,.25);}
+.field{padding:12px 16px;border-bottom:0.5px solid #f0f0f0;}
+.field:last-child{border-bottom:none;}
+.field-lbl{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.field-val{font-size:15px;color:var(--ink);}
+.info-box{margin:0 16px;padding:10px 14px;background:var(--bg2);border-radius:10px;font-size:12px;color:#444;line-height:1.6;}
+.danger-btn{display:block;width:calc(100% - 32px);margin:14px 16px 0;padding:13px;border-radius:12px;background:var(--bg);border:1.5px solid var(--red);color:var(--red);font-size:13px;cursor:pointer;text-align:center;}
+.btn-primary{display:block;margin:0 16px;padding:15px;border-radius:999px;background:linear-gradient(180deg,#3d9dff,var(--brand));color:#fff;font-size:15px;font-weight:600;cursor:pointer;text-align:center;border:none;box-shadow:0 8px 24px rgba(24,130,255,.35);}
+.btn-outline{display:block;margin:10px 16px 0;padding:13px;border-radius:999px;background:var(--bg);color:var(--brand);font-size:13px;font-weight:600;cursor:pointer;text-align:center;border:1px solid var(--brand);}
+.plan-box{margin:14px 16px 0;border:1.5px solid var(--ink);border-radius:14px;padding:15px;}
+.me-hero{display:flex;flex-direction:column;align-items:center;padding:22px 0 14px;}
+.me-av-lg{width:68px;height:68px;border-radius:50%;border:1.5px solid var(--ink);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;cursor:pointer;}
+.me-av-edit{position:absolute;bottom:0;right:0;width:20px;height:20px;border-radius:50%;background:var(--ink);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;}
+.me-av-edit svg{width:10px;height:10px;fill:var(--bg);}
+.footer-s{text-align:center;font-size:11px;color:var(--muted);padding:18px 0 4px;}
+.footer-links{display:flex;justify-content:center;gap:16px;}
+.footer-links span{font-size:11px;color:var(--muted);text-decoration:underline;cursor:pointer;}
+/* nana chat */
+.nana-header{display:flex;align-items:center;gap:12px;padding:16px 18px 12px;border-bottom:0.5px solid var(--line);flex-shrink:0;background:rgba(255,255,255,.6);}
+.nana-hav{width:36px;height:36px;border-radius:50%;background:linear-gradient(145deg,#3d9dff,var(--brand));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(24,130,255,.35);}
+.nana-hav svg{width:15px;height:15px;fill:#fff;}
+.nana-close{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--light);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.nana-close svg{width:11px;height:11px;fill:none;stroke:var(--muted);stroke-width:2;}
+.ctx-row{display:flex;gap:6px;padding:8px 16px;border-bottom:1px solid var(--light);flex-shrink:0;overflow-x:auto;}
+.ctx-pill{display:flex;align-items:center;gap:4px;font-size:11px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);white-space:nowrap;cursor:pointer;color:var(--muted);flex-shrink:0;background:var(--bg);font-weight:500;}
+.ctx-pill.active{background:var(--brand);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(24,130,255,.25);}
+.ctx-pill svg{width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.8;}
+.msgs{flex:1;overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:14px;}
+.msg-n{display:flex;gap:9px;align-items:flex-start;}
+.n-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(145deg,#3d9dff,var(--brand));display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;box-shadow:0 3px 10px rgba(24,130,255,.3);}
+.n-av svg{width:13px;height:13px;fill:#fff;}
+.n-col{display:flex;flex-direction:column;gap:3px;max-width:84%;}
+.n-bub{background:linear-gradient(145deg,#3d9dff,var(--brand));border-radius:4px 18px 18px 18px;padding:12px 14px;font-size:13px;color:#fff;line-height:1.65;box-shadow:0 6px 20px rgba(24,130,255,.25);}
+.n-time{font-size:10px;color:var(--muted);padding-left:2px;}
+.msg-u{display:flex;gap:9px;align-items:flex-end;flex-direction:row-reverse;}
+.u-av{width:30px;height:30px;border-radius:50%;border:2px solid var(--brand-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:600;color:var(--brand);background:#fff;}
+.u-col{display:flex;flex-direction:column;align-items:flex-end;gap:3px;max-width:78%;}
+.u-bub{background:var(--bg2);color:var(--ink);border-radius:18px 4px 18px 18px;padding:10px 13px;font-size:12px;line-height:1.55;border:1px solid var(--line);}
+.u-time{font-size:10px;color:var(--muted);padding-right:2px;}
+.typing-bub{background:var(--brand-soft);border-radius:4px 18px 18px 18px;padding:11px 15px;display:flex;gap:5px;align-items:center;border:1px solid rgba(24,130,255,.15);}
+.t-dot{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:bl 1.2s infinite;}
+.t-dot:nth-child(2){animation-delay:.2s;}
+.t-dot:nth-child(3){animation-delay:.4s;}
+@keyframes bl{0%,60%,100%{opacity:.2}30%{opacity:1}}
+.chips-wrap{padding:8px 16px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--light);flex-shrink:0;}
+.q-chip{font-size:11px;padding:7px 12px;border-radius:14px;border:1px solid var(--line);cursor:pointer;color:var(--muted);white-space:nowrap;background:var(--bg);font-weight:500;}
+.inp-row{display:flex;align-items:center;gap:8px;padding:10px 14px 16px;flex-shrink:0;background:rgba(255,255,255,.85);backdrop-filter:blur(12px);border-top:1px solid var(--line);}
+.mic{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.mic svg{width:14px;height:14px;fill:none;stroke:var(--brand);stroke-width:1.8;}
+.n-inp{flex:1;border:1px solid var(--line);border-radius:22px;padding:11px 15px;font-size:13px;outline:none;background:var(--bg2);}
+.n-inp::placeholder{color:var(--muted);}
+.n-send{width:38px;height:38px;border-radius:50%;background:linear-gradient(180deg,#3d9dff,var(--brand));border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 4px 14px rgba(24,130,255,.35);}
+.n-send:disabled{background:#e5e5ea;box-shadow:none;}
+.n-send svg{width:14px;height:14px;fill:#fff;}
+.form-input::placeholder{color:var(--muted);}
+.band-visual{width:100px;height:100px;border-radius:50%;border:none;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:46px;background:linear-gradient(180deg,#fff,var(--brand-soft));animation:pulse 1.5s infinite;box-shadow:var(--card-shadow);}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(24,130,255,.2)}50%{box-shadow:0 0 0 16px rgba(24,130,255,0)}}
+.scan-dots{display:flex;justify-content:center;gap:8px;margin-bottom:16px;}
+.scan-dot{width:7px;height:7px;border-radius:50%;background:#e5e5ea;}
+.scan-dot.on{background:var(--brand);}
+.form-field{margin:0 0 14px;}
+.form-label{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+/* trend Trend read */
+.trend-box{margin:12px 16px 0;border:none;border-radius:22px;padding:16px 16px 14px;background:var(--bg);box-shadow:var(--card-shadow);}
+.trend-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;}
+.trend-title{font-size:13px;font-weight:500;}
+.trend-sub{font-size:11px;color:var(--muted);}
+.trend-item{padding:10px 0;border-top:0.5px solid var(--light);}
+.trend-item:first-of-type{border-top:none;padding-top:0;}
+.trend-item-t{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:4px;}
+.trend-item-d{font-size:11px;color:#444;line-height:1.55;}
+.trend-spark{display:flex;align-items:flex-end;gap:2px;height:28px;margin-top:6px;}
+.trend-spark span{flex:1;background:var(--light);border-radius:1px;min-width:3px;}
+.trend-spark span:last-child{background:var(--ink);opacity:.85;}
+/* notifications */
+.notif-cat{display:flex;gap:8px;padding:10px 16px;overflow-x:auto;flex-shrink:0;border-bottom:0.5px solid var(--line);background:rgba(255,255,255,.4);}
+.notif-cat .cat-tab{font-size:10px;}
+.notif-group{padding:10px 16px 4px;}
+.notif-group-lbl{font-size:10px;color:var(--muted);letter-spacing:.5px;margin-bottom:6px;}
+.notif-li{display:flex;gap:10px;padding:12px 14px;border:none;border-radius:18px;margin-bottom:8px;cursor:pointer;background:var(--bg);box-shadow:var(--card-shadow);}
+.notif-li.em{border:1px solid rgba(255,59,48,.35);box-shadow:0 8px 24px rgba(255,59,48,.12);}
+.notif-li-ico{width:32px;height:32px;border-radius:12px;border:none;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;}
+.notif-li-body{flex:1;min-width:0;}
+.notif-li-t{font-size:12px;font-weight:500;line-height:1.35;}
+.notif-li-s{font-size:11px;color:var(--muted);margin-top:2px;}
+.notif-li-meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.ntag{font-size:9px;padding:2px 6px;border-radius:6px;background:var(--bg2);color:#444;}
+.ntag.red{background:#fde8e8;color:var(--red);}
+.notif-li-time{font-size:10px;color:var(--muted);white-space:nowrap;}
+.bell-wrap{position:relative;}
+.bell-dot{position:absolute;top:-1px;right:-1px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--bg);}
+/* detail actions */
+.detail-actions{display:flex;gap:8px;padding:12px 16px;border-top:0.5px solid var(--light);flex-wrap:wrap;}
+.detail-actions .map-btn{flex:1;justify-content:center;min-width:0;}
+.map-dot-warn{background:var(--red)!important;border-color:var(--bg)!important;}
+.map-dot-ok{background:#1a7f37!important;border-color:var(--bg)!important;}
+.range-row{padding:12px 16px;}
+.range-row input[type=range]{width:100%;accent-color:var(--ink);}
+.range-val{font-size:11px;color:var(--muted);margin-top:4px;text-align:center;}
+.notif-li.hidden{display:none;}
+.tb-save{font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;padding:4px 8px;}
+/* kid profile */
+.kid-hero{display:flex;align-items:center;gap:14px;padding:18px 16px 14px;}
+.kid-hero-av{width:72px;height:72px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;background:var(--bg2);}
+.kid-dev-card{margin:0 16px;border:1.5px solid var(--ink);border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px;}
+.kid-dev-mid{flex:1;min-width:0;}
+.kid-dev-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.badge-ota{font-size:9px;font-weight:500;background:#fff3e0;color:#c25700;padding:3px 8px;border-radius:8px;white-space:nowrap;}
+.unlink{font-size:11px;color:var(--red);cursor:pointer;white-space:nowrap;padding-top:1px;}
+.invite-code-wrap{border:none;border-radius:18px;padding:14px;background:var(--bg);box-shadow:var(--card-shadow) 16px;margin:0 16px;text-align:center;background:var(--bg);}
+.invite-code-lbl{font-size:11px;color:var(--muted);margin-bottom:8px;}
+.invite-code-ch{font-size:22px;font-weight:600;letter-spacing:.35em;text-indent:.35em;font-family:ui-monospace,monospace;}
+.invite-code-timer{font-size:11px;color:var(--muted);margin-top:8px;}
+.steps-card{margin:14px 16px 0;padding:14px;background:var(--bg2);border-radius:12px;font-size:12px;color:#444;line-height:1.65;}
+.steps-card strong{display:block;font-size:11px;color:var(--ink);margin-bottom:8px;}
+.steps-card ol{margin:0;padding-left:18px;}
+.steps-card li{margin-bottom:6px;}
+.perm-sec{margin:14px 16px 0;}
+.perm-lbl{font-size:11px;color:var(--muted);letter-spacing:.4px;margin-bottom:8px;padding-left:2px;}
+/* home latest notification card */
+.home-notif-card{margin:0 16px 10px;border:none;border-radius:18px;padding:14px 16px;background:var(--bg);box-shadow:var(--card-shadow);cursor:pointer;}
+.home-notif-card:active{opacity:.85;}
+.home-notif-preview{display:flex;align-items:center;gap:10px;}
+.home-notif-ico{font-size:18px;line-height:1;flex-shrink:0;}
+.home-notif-mid{flex:1;min-width:0;}
+.home-notif-t{font-size:13px;font-weight:500;line-height:1.35;color:var(--ink);}
+.home-notif-s{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.35;}
+.home-notif-meta{font-size:10px;color:var(--muted);flex-shrink:0;white-space:nowrap;}
+.home-notif-preview .chv{align-self:center;}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- ══ HOME ══ -->
+<div class="page root" id="home">
+  <div style="flex:1;overflow-y:auto;">
+    <div class="top-row">
+      <div class="ctabs">
+        <div class="ctab" onclick="sw('xm')"><div class="cav active" id="cav-xm"></div><span class="cnm active" id="cnm-xm">Sarah</span></div>
+        <div class="ctab" onclick="sw('dd')"><div class="cav" id="cav-dd"></div><span class="cnm" id="cnm-dd">Tommy</span></div>
+      </div>
+      <div class="me-chip" onclick="op('pg-settings')" style="margin-left:auto;">
+        <div class="me-av">👤</div>
+        <span style="font-size:11px;color:var(--muted);">Alex</span>
+      </div>
+    </div>
+
+    <!-- status -->
+    <div class="status-bar" id="h-st">Great sleep and HRV — a good day for outdoor play.</div>
+
+    <!-- latest notification -->
+    <div class="home-notif-card" onclick="op('pg-notify-center')" role="button">
+      <div class="home-notif-preview">
+        <span class="home-notif-ico" id="hn-ico">📍</span>
+        <div class="home-notif-mid">
+          <div class="home-notif-t" id="hn-t">Sarah arrived home</div>
+          <div class="home-notif-s" id="hn-s">Entered Home Zone</div>
+        </div>
+        <div class="home-notif-meta" id="hn-m">At home · 14:05</div>
+        <svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <!-- Today's insight -->
+    <div class="insight-box">
+      <div><div class="ins-lbl">Today's insight</div><div class="ins-title" id="h-ti">Sarah,<br>you look great today</div></div>
+      <div class="ins-sub" id="h-su">Last night: 4 deep-sleep cycles, HRV 46ms above average, vitality score 92.</div>
+      <div class="divd"></div>
+      <div class="ins-grid">
+        <div><div class="ins-lbl">Deep sleep</div><div class="ins-val" id="h-sl">2h 40m</div></div>
+        <div><div class="ins-lbl">HRV today</div><div class="ins-val" id="h-vi">46 ms</div></div>
+        <div><div class="ins-lbl">Steps today</div><div class="ins-val" id="h-st2">8,800</div></div>
+        <div><div class="ins-lbl">Resting HR</div><div class="ins-val" id="h-hr">68 bpm</div></div>
+      </div>
+      <div class="divd"></div>
+      <div class="ins-rec" id="h-rc">Higher HRV suggests good recovery — a moderate outdoor workout fits well today.</div>
+    </div>
+
+    <!-- trends -->
+    <div class="trend-box" id="trend-box">
+      <div class="trend-head">
+        <span class="trend-title">Trend read</span>
+        <span class="trend-sub" id="trend-count">2 things to watch</span>
+      </div>
+      <div class="trend-item" id="trend-1">
+        <div class="trend-item-t" id="trend-1t">Outdoor time is trending down</div>
+        <div class="trend-item-d" id="trend-1d">About 48 min/day outdoors over the past 7 days, ~15% lower than last week. Try a fixed slot after school.</div>
+        <div class="trend-spark" id="trend-1s"><span style="height:40%"></span><span style="height:55%"></span><span style="height:50%"></span><span style="height:45%"></span><span style="height:38%"></span><span style="height:35%"></span><span style="height:32%"></span></div>
+      </div>
+      <div class="trend-item" id="trend-2">
+        <div class="trend-item-t" id="trend-2t">More sedentary time this afternoon</div>
+        <div class="trend-item-d" id="trend-2d">Almost no meaningful movement 13:00–16:00. A ~20 min walk after school can help focus and metabolism.</div>
+      </div>
+    </div>
+
+    <div style="height:12px;"></div>
+  </div>
+  <div class="nav">
+    <div class="nav-pill">
+      <div class="nb active"><svg viewBox="0 0 24 24" style="fill:#fff;stroke:#fff"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="nb" onclick="gd()"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="fab" onclick="on()"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+  </div>
+</div>
+
+<!-- ══ DATA ══ -->
+<div class="page z20" id="pg-data">
+  <div class="top-row" style="border-bottom:.5px solid var(--light);padding:12px 18px 10px;">
+    <div class="ctabs">
+      <div class="ctab" onclick="swd('xm')"><div class="cav active" id="dcav-xm"></div><span class="cnm active" id="dcnm-xm">Sarah</span></div>
+      <div class="ctab" onclick="swd('dd')"><div class="cav" id="dcav-dd"></div><span class="cnm" id="dcnm-dd">Tommy</span></div>
+    </div>
+    <div class="me-chip" onclick="op('pg-settings')" style="margin-left:auto;"><div class="me-av">👤</div><span style="font-size:11px;color:var(--muted);">Alex</span></div>
+  </div>
+  <div class="date-panel">
+    <div class="date-compact">
+      <button class="date-nav" type="button" onclick="shiftDay(-1)">‹</button>
+      <button class="date-main" type="button" onclick="toggleCalendar()">
+        <div class="date-title" id="cal-title">Today</div>
+        <div class="date-sub" id="cal-sub">Readiness 92 · 8,800 steps</div>
+      </button>
+      <button class="date-action" type="button" onclick="jumpToday()">Today</button>
+      <button class="date-nav" type="button" onclick="shiftDay(1)">›</button>
+    </div>
+    <div class="date-expanded" id="cal-expanded">
+      <div class="month-head">
+        <button class="date-nav" type="button" onclick="shiftMonth(-1)">‹</button>
+        <div class="month-title" id="month-title">May 2026</div>
+        <button class="date-nav" type="button" onclick="shiftMonth(1)">›</button>
+      </div>
+      <div class="month-dows"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="date-strip" id="cal-strip"></div>
+      <div class="date-summary">
+        <div class="date-chip" id="cal-chip">Today</div>
+        <div><strong id="cal-score">Readiness 92</strong><br><span id="cal-note">Great sleep and HRV — good for outdoor play.</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="cat-tabs">
+    <div class="cat-tab active" onclick="sc('all',this)">All</div>
+    <div class="cat-tab" onclick="sc('sleep',this)">Sleep</div>
+    <div class="cat-tab" onclick="sc('act',this)">Activity</div>
+    <div class="cat-tab" onclick="sc('hrv',this)">Heart & HRV</div>
+    <div class="cat-tab" onclick="sc('health',this)">Health</div>
+  </div>
+  <div class="page-body" id="ds" style="padding-bottom:8px;"></div>
+  <div class="nav">
+    <div class="nav-pill">
+      <div class="nb" onclick="gh()"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div class="nb active"><svg viewBox="0 0 24 24" style="fill:#fff;stroke:#fff"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="fab" onclick="on()"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+  </div>
+</div>
+
+<!-- ══ LOCATION PAGE ══ -->
+<div class="page z38" id="pg-location" style="display:flex;flex-direction:column;">
+  <!-- topbar with kid tabs -->
+  <div class="top-row" style="border-bottom:.5px solid var(--light);padding:12px 18px 10px;">
+    <div class="ic" onclick="cl('pg-location')" style="margin-right:10px;"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="ctabs">
+      <div class="ctab" onclick="swloc('xm')"><div class="cav active" id="lcav-xm"></div><span class="cnm active" id="lcnm-xm">Sarah</span></div>
+      <div class="ctab" onclick="swloc('dd')"><div class="cav" id="lcav-dd"></div><span class="cnm" id="lcnm-dd">Tommy</span></div>
+    </div>
+    <div class="me-chip" onclick="op('pg-settings')" style="margin-left:auto;"><div class="me-av">👤</div></div>
+  </div>
+
+  <!-- map -->
+  <div class="loc-full-map" style="height:220px;">
+    <div class="map-grid-full"></div>
+    <div class="map-zone-lg"></div>
+    <div class="map-zone-ring-lg"></div>
+    <div class="map-dot-lg"></div>
+    <div class="map-label-lg" id="loc-map-label">Home · Home Zone ✓</div>
+  </div>
+
+  <!-- quick actions -->
+  <div class="map-actions" style="overflow-x:auto;flex-shrink:0;">
+    <div class="map-btn"><svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.8"/></svg>Refresh</div>
+    <div class="map-btn"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Share</div>
+    <div class="map-btn" onclick="op('pg-child-device')"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Manage fences</div>
+  </div>
+
+  <div class="scroll">
+    <!-- zones -->
+    <div class="sec"><div class="sec-lbl">Safe zones</div>
+      <div class="lcard">
+        <div class="li" onclick="op('pg-child-device')">
+          <div class="li-ico">🏠</div>
+          <div class="li-body"><div class="li-lbl">Home</div><div class="li-sub">80m · Always on</div></div>
+          <div class="badge-in">Inside</div>
+          <svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="li" onclick="op('pg-child-device')">
+          <div class="li-ico">🏫</div>
+          <div class="li-body"><div class="li-lbl">School</div><div class="li-sub">120m · Weekdays 7:00—17:00</div></div>
+          <div class="badge-out">Outside</div>
+          <svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="li" onclick="op('pg-child-device')">
+          <div class="li-ico" style="border:1.5px dashed var(--muted);font-size:16px;">+</div>
+          <div class="li-body"><div class="li-lbl" style="color:var(--muted);">Add fence</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- today events -->
+    <div class="sec"><div class="sec-lbl">Today's location events</div>
+      <div class="lcard" style="padding:4px 0;">
+        <div style="padding:10px 14px;display:flex;gap:12px;border-bottom:.5px solid #f0f0f0;">
+          <div style="display:flex;flex-direction:column;align-items:center;"><div class="tl-dot blue"></div><div class="tl-line" style="height:28px;"></div></div>
+          <div style="flex:1;"><div style="font-size:12px;font-weight:500;">Location update</div><div style="font-size:11px;color:var(--muted);">Home Zone · 2 min ago</div></div>
+        </div>
+        <div style="padding:10px 14px;display:flex;gap:12px;border-bottom:.5px solid #f0f0f0;">
+          <div style="display:flex;flex-direction:column;align-items:center;"><div class="tl-dot blue"></div><div class="tl-line" style="height:28px;"></div></div>
+          <div style="flex:1;"><div style="font-size:12px;font-weight:500;">Entered Home Zone</div><div style="font-size:11px;color:var(--muted);">Yesterday 15:32</div></div>
+        </div>
+        <div style="padding:10px 14px;display:flex;gap:12px;">
+          <div style="display:flex;flex-direction:column;align-items:center;"><div class="tl-dot" style="background:var(--muted);"></div></div>
+          <div style="flex:1;"><div style="font-size:12px;font-weight:500;">Left school</div><div style="font-size:11px;color:var(--muted);">Yesterday 15:18</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- safety rules -->
+    <div class="sec"><div class="sec-lbl">Safety rules</div>
+      <div class="lcard">
+        <div class="rule-row"><div class="rule-lbl">Notify when leaving zone</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+        <div class="rule-row"><div class="rule-lbl">Band off while outside zone</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+        <div class="rule-row"><div class="rule-lbl">No location for 30 min</div><div class="tog off" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+        <div class="rule-row"><div class="rule-lbl">Device offline outside zone</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      </div>
+    </div>
+    <div style="height:14px;"></div>
+  </div>
+</div>
+
+<!-- ZONES -->
+<div class="page z39" id="pg-zones">
+  <div class="topbar"><div class="ic" onclick="cl('pg-zones')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Manage fences</div><div style="width:30px"></div></div>
+  <div class="scroll">
+    <div style="padding:14px 16px 4px;"><div class="info-box">Full setup: Profile → Settings → Child devices.</div></div>
+    <div class="sec"><div class="lcard">
+      <div class="li" onclick="opGeofenceFromZones('home')"><div class="li-ico">🏠</div><div class="li-body"><div class="li-lbl">Home</div><div class="li-sub">80m · 412 Maple Ave · Always on</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li" onclick="opGeofenceFromZones('school')"><div class="li-ico">🏫</div><div class="li-body"><div class="li-lbl">School</div><div class="li-sub">120m · Lincoln Elementary · Weekdays</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li" onclick="op('pg-geofence-edit');initGeofenceEdit('new');"><div class="li-ico" style="border:1.5px dashed var(--muted);font-size:16px;">+</div><div class="li-body"><div class="li-lbl" style="color:var(--muted);">Add fence</div><div class="li-sub">Address, radius, schedule</div></div></div>
+    </div></div>
+  </div>
+</div>
+
+<!-- NOTIFY -->
+<div class="page z35" id="pg-notify-center">
+  <div class="topbar"><div class="ic" onclick="cl('pg-notify-center')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Notifications</div><div style="width:30px"></div></div>
+  <div class="notif-cat" id="notif-cats">
+    <div class="cat-tab active" data-nc="all" onclick="ncat('all',this)">All</div>
+    <div class="cat-tab" data-nc="emergency" onclick="ncat('emergency',this)">Urgent</div>
+    <div class="cat-tab" data-nc="safety" onclick="ncat('safety',this)">Location & safety</div>
+    <div class="cat-tab" data-nc="health" onclick="ncat('health',this)">Health insights</div>
+    <div class="cat-tab" data-nc="device" onclick="ncat('device',this)">Device</div>
+  </div>
+  <div class="scroll">
+    <div class="notif-group"><div class="notif-group-lbl">Today</div>
+      <div class="notif-li em" data-nc="emergency" onclick="op('pg-notif-warn')">
+        <div class="notif-li-ico">⚠️</div>
+        <div class="notif-li-body"><div class="notif-li-t">Sarah left the safe zone</div><div class="notif-li-s">Home · Home Zone</div><div class="notif-li-meta"><span class="ntag red">Safety alert</span><span class="notif-li-time">14:32</span></div></div>
+      </div>
+      <div class="notif-li" data-nc="safety" onclick="op('pg-notif-loc');setNotifLocKid('sarah');">
+        <div class="notif-li-ico">📍</div>
+        <div class="notif-li-body"><div class="notif-li-t">Sarah arrived home</div><div class="notif-li-s">Entered Home Zone</div><div class="notif-li-meta"><span class="ntag">At home</span><span class="notif-li-time">14:05</span></div></div>
+      </div>
+      <div class="notif-li" data-nc="safety" onclick="op('pg-notif-loc');setNotifLocKid('tommy');">
+        <div class="notif-li-ico">📍</div>
+        <div class="notif-li-body"><div class="notif-li-t">Tommy Left school</div><div class="notif-li-s">School Zone</div><div class="notif-li-meta"><span class="ntag">Left school</span><span class="notif-li-time">15:18</span></div></div>
+      </div>
+      <div class="notif-li" data-nc="device" onclick="op('pg-notif-device')">
+        <div class="notif-li-ico">⌚</div>
+        <div class="notif-li-body"><div class="notif-li-t">Tommy's band battery is low</div><div class="notif-li-s">NB-Lite · ~18% left</div><div class="notif-li-meta"><span class="ntag">Device</span><span class="notif-li-time">12:40</span></div></div>
+      </div>
+      <div class="notif-li" data-nc="health" onclick="cl('pg-notify-center');op('pg-data');gd();">
+        <div class="notif-li-ico">💡</div>
+        <div class="notif-li-body"><div class="notif-li-t">Sarah reached her step goal</div><div class="notif-li-s">Health insights · Activity</div><div class="notif-li-meta"><span class="ntag">Health</span><span class="notif-li-time">09:10</span></div></div>
+      </div>
+    </div>
+    <div style="height:12px;"></div>
+  </div>
+</div>
+
+<!-- NOTIF WARN -->
+<div class="page z45" id="pg-notif-warn">
+  <div class="topbar"><div class="ic" onclick="cl('pg-notif-warn')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title" style="color:var(--red);">Safety alert</div><div style="width:30px"></div></div>
+  <div class="loc-full-map" style="height:200px;">
+    <div class="map-grid-full"></div>
+    <div class="map-zone-lg"></div>
+    <div class="map-zone-ring-lg" style="border-color:var(--red);opacity:.55;"></div>
+    <div class="map-dot-lg map-dot-warn" style="left:62%;top:42%;transform:translate(-50%,-50%);"></div>
+    <div class="map-label-lg" style="border-color:var(--red);">Outside zone · heads up</div>
+  </div>
+  <div class="scroll">
+    <div class="lcard" style="margin:12px 16px 0;">
+      <div class="field"><div class="field-lbl">Current location</div><div class="field-val">Outside zone · north side of mall row</div></div>
+      <div class="field"><div class="field-lbl">Wear status</div><div class="field-val">Wearing</div></div>
+      <div class="field"><div class="field-lbl">Connection</div><div class="field-val">Online</div></div>
+      <div class="field"><div class="field-lbl">Updated</div><div class="field-val">14:32</div></div>
+    </div>
+    <div class="detail-actions">
+      <div class="map-btn" onclick="cl('pg-notif-warn')">Dismiss</div>
+      <div class="map-btn" style="background:linear-gradient(180deg,#3d9dff,var(--brand));color:#fff;border:none;box-shadow:0 4px 14px rgba(24,130,255,.35);" onclick="op('pg-location');cl('pg-notif-warn');cl('pg-notify-center');">Open live map</div>
+    </div>
+    <div style="height:12px;"></div>
+  </div>
+</div>
+
+<!-- Notification: location -->
+<div class="page z45" id="pg-notif-loc">
+  <div class="topbar"><div class="ic" onclick="cl('pg-notif-loc')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Location update</div><div style="width:30px"></div></div>
+  <div class="loc-full-map" style="height:200px;">
+    <div class="map-grid-full"></div>
+    <div class="map-zone-lg"></div>
+    <div class="map-zone-ring-lg" style="opacity:.45;"></div>
+    <div class="map-dot-lg map-dot-ok" id="notif-loc-dot"></div>
+    <div class="map-label-lg" id="notif-loc-lbl">Home · Home Zone ✓</div>
+  </div>
+  <div class="scroll">
+    <div class="lcard" style="margin:12px 16px 0;">
+      <div class="field"><div class="field-lbl">Current location</div><div class="field-val" id="notif-loc-place">Home · Home Zone</div></div>
+      <div class="field"><div class="field-lbl">Wear status</div><div class="field-val" id="notif-loc-wear">Wearing</div></div>
+      <div class="field"><div class="field-lbl">Battery</div><div class="field-val" id="notif-loc-bat">78%</div></div>
+      <div class="field"><div class="field-lbl">Updated</div><div class="field-val" id="notif-loc-time">14:05</div></div>
+    </div>
+    <div class="sec"><div class="sec-lbl">Today's trail</div>
+      <div class="lcard" style="padding:4px 0;" id="notif-loc-tl">
+        <div style="padding:10px 14px;display:flex;gap:12px;border-bottom:.5px solid #f0f0f0;"><div style="display:flex;flex-direction:column;align-items:center;"><div class="tl-dot blue"></div><div class="tl-line" style="height:24px;"></div></div><div style="flex:1;"><div style="font-size:12px;font-weight:500;">Arrived at Home Zone</div><div style="font-size:11px;color:var(--muted);">14:05 · At home</div></div></div>
+        <div style="padding:10px 14px;display:flex;gap:12px;border-bottom:.5px solid #f0f0f0;"><div style="display:flex;flex-direction:column;align-items:center;"><div class="tl-dot blue"></div><div class="tl-line" style="height:24px;"></div></div><div style="flex:1;"><div style="font-size:12px;font-weight:500;">Left school</div><div style="font-size:11px;color:var(--muted);">15:18 · Tommy</div></div></div>
+        <div style="padding:10px 14px;display:flex;gap:12px;"><div style="display:flex;flex-direction:column;align-items:center;"><div class="tl-dot" style="background:var(--muted);"></div></div><div style="flex:1;"><div style="font-size:12px;font-weight:500;">Entered School Zone</div><div style="font-size:11px;color:var(--muted);">This morning 08:05</div></div></div>
+      </div>
+    </div>
+    <div style="height:12px;"></div>
+  </div>
+</div>
+
+<!-- Notification: device -->
+<div class="page z45" id="pg-notif-device">
+  <div class="topbar"><div class="ic" onclick="cl('pg-notif-device')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Device alert</div><div style="width:30px"></div></div>
+  <div class="scroll" style="padding-top:16px;">
+    <div style="display:flex;align-items:center;gap:14px;padding:0 16px 16px;">
+      <div style="width:56px;height:56px;border-radius:14px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:28px;">⌚</div>
+      <div><div style="font-size:15px;font-weight:500;">Tommy's Nana Band</div><div style="font-size:12px;color:var(--muted);margin-top:2px;">NB-Lite 2023</div></div>
+    </div>
+    <div class="lcard" style="margin:0 16px;">
+      <div class="field"><div class="field-lbl">Event</div><div class="field-val">Battery under 20%</div></div>
+      <div class="field"><div class="field-lbl">Battery left</div><div class="field-val">~18%</div></div>
+      <div class="field"><div class="field-lbl">Time</div><div class="field-val">12:40</div></div>
+    </div>
+    <div class="info-box" style="margin:14px 16px 0;">Charge tonight. Change the low-battery threshold in Settings → Notifications.</div>
+    <div style="height:14px;"></div>
+  </div>
+</div>
+
+<!-- Child devices -->
+<div class="page z40" id="pg-child-device">
+  <div class="topbar"><div class="ic" onclick="cl('pg-child-device')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Child devices</div><div style="width:30px"></div></div>
+  <div class="top-row" style="border-bottom:.5px solid var(--light);padding:10px 18px 8px;">
+    <div class="ctabs" style="flex:1;">
+      <div class="ctab" onclick="swcd('xm')"><div class="cav active" id="cdav-xm"></div><span class="cnm active" id="cdnm-xm">Sarah</span></div>
+      <div class="ctab" onclick="swcd('dd')"><div class="cav" id="cdav-dd"></div><span class="cnm" id="cdnm-dd">Tommy</span></div>
+    </div>
+  </div>
+  <div class="scroll">
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.6px;margin:12px 16px 6px;padding-left:2px;">Connected device</div>
+    <div style="display:flex;align-items:center;gap:12px;padding:13px;border:1.5px solid var(--ink);border-radius:14px;margin:0 16px;">
+      <div style="width:46px;height:46px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⌚</div>
+      <div style="flex:1;"><div class="li-lbl" id="cd-band-name">Sarah's Nana Band</div><div class="li-sub" id="cd-band-sub">NB-Pro 2024 · Connected</div><div style="font-size:11px;margin-top:4px;" id="cd-band-bat">🔋 85%</div></div>
+    </div>
+
+    <div class="sec"><div class="sec-lbl">Safe zones</div>
+      <div class="lcard">
+        <div class="li" onclick="op('pg-geofence-edit');initGeofenceEdit('home');">
+          <div class="li-ico">🏠</div>
+          <div class="li-body"><div class="li-lbl">Home</div><div class="li-sub" id="cd-fence-home-sub">80m · Always on · Enabled</div></div>
+          <svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="li" onclick="op('pg-geofence-edit');initGeofenceEdit('school');">
+          <div class="li-ico">🏫</div>
+          <div class="li-body"><div class="li-lbl">School</div><div class="li-sub" id="cd-fence-school-sub">120m · Weekdays 7:00—17:00 · Enabled</div></div>
+          <svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="li" onclick="op('pg-geofence-edit');initGeofenceEdit('new');">
+          <div class="li-ico" style="border:1.5px dashed var(--muted);font-size:16px;">+</div>
+          <div class="li-body"><div class="li-lbl" style="color:var(--muted);">Add fence</div><div class="li-sub">Map pin, radius, schedule</div></div>
+          <svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec"><div class="sec-lbl">Safety rules</div>
+      <div class="lcard">
+        <div class="rule-row"><div class="rule-lbl">Notify on leave</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+        <div class="rule-row"><div class="rule-lbl">Notify on enter</div><div class="tog off" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+        <div class="rule-row"><div class="rule-lbl">Band off while outside zone</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+        <div class="rule-row"><div class="rule-lbl">No location for a long time</div><div class="tog off" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      </div>
+    </div>
+    <div style="height:14px;"></div>
+  </div>
+</div>
+
+<!-- EDIT FENCE -->
+<div class="page z45" id="pg-geofence-edit">
+  <div class="topbar">
+    <div class="ic" onclick="cl('pg-geofence-edit')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="tb-title" id="gf-edit-title">Edit fence</div>
+    <span class="tb-save" onclick="cl('pg-geofence-edit')">Save</span>
+  </div>
+  <div class="loc-full-map" style="height:160px;">
+    <div class="map-grid-full"></div>
+    <div class="map-zone-lg" id="gf-zone-visual" style="width:100px;height:100px;"></div>
+    <div class="map-zone-ring-lg" id="gf-ring-visual" style="width:100px;height:100px;"></div>
+    <div class="map-dot-lg" id="gf-dot-visual" style="width:18px;height:18px;"></div>
+    <div class="map-label-lg" id="gf-map-hint" style="font-size:11px;">Drag map to adjust center (demo)</div>
+  </div>
+  <div class="scroll">
+    <div class="lcard2" style="margin:12px 16px 0;">
+      <div class="field"><div class="field-lbl">Name</div><input class="form-input" id="gf-name" placeholder="New fence" style="margin-top:6px;border-radius:8px;" value="Home"/></div>
+      <div class="field"><div class="field-lbl">Icon</div><div style="display:flex;gap:8px;margin-top:6px;align-items:center;flex-wrap:wrap;"><span id="gf-icon-display" style="font-size:22px;line-height:1;">🏠</span><span style="font-size:11px;color:var(--muted);">More icons in the full app</span></div></div>
+    </div>
+    <div class="range-row">
+      <div class="field-lbl" style="padding:0 2px 6px;">Fence radius</div>
+      <input type="range" id="gf-radius" min="50" max="500" step="10" value="80" oninput="gfRadiusLabel()"/>
+      <div class="range-val" id="gf-radius-val">80 m (50–500m)</div>
+    </div>
+    <div class="sec" style="margin-top:4px;"><div class="sec-lbl">Active hours</div>
+      <div class="seg" id="gf-seg-time">
+        <div class="seg-opt on" onclick="ss('gf-seg-time',0)">24/7</div>
+        <div class="seg-opt" onclick="ss('gf-seg-time',1)">Weekdays</div>
+        <div class="seg-opt" onclick="ss('gf-seg-time',2)">Custom</div>
+      </div>
+    </div>
+    <div class="sec"><div class="sec-lbl">Alert rules</div>
+      <div class="lcard">
+        <div class="rule-row"><div class="rule-lbl">Notify on enter</div><div class="tog off" id="gf-tog-in" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+        <div class="rule-row"><div class="rule-lbl">Notify on leave</div><div class="tog" id="gf-tog-out" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      </div>
+    </div>
+    <button type="button" class="danger-btn" id="gf-delete-btn" onclick="cl('pg-geofence-edit')">Delete this fence</button>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS ══ -->
+<div class="page z20" id="pg-settings">
+  <div class="topbar"><div class="ic" onclick="cl('pg-settings')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-muted">Settings</div><div style="width:30px"></div></div>
+  <div class="scroll">
+    <div style="display:flex;align-items:center;gap:14px;padding:16px 18px 14px;cursor:pointer;" onclick="op('pg-me')">
+      <div style="width:52px;height:52px;border-radius:50%;border:1.5px solid var(--ink);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">👤</div>
+      <div style="flex:1;"><div style="font-size:17px;font-weight:500;">Alex Chen</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">alex@example.com · Pro member</div></div>
+      <svg class="chv" style="width:14px;height:14px;" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+    <div class="sec"><div class="sec-lbl">Children</div>
+      <div style="display:flex;gap:12px;padding:12px 16px 0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;" onclick="op('pg-kid-s')"><div style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:22px;">🐣</div><div style="font-size:11px;font-weight:500;">Sarah</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;" onclick="op('pg-kid-t')"><div style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:22px;">🧒</div><div style="font-size:11px;font-weight:500;">Tommy</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;" onclick="op('pg-add-child')"><div style="width:48px;height:48px;border-radius:50%;border:1.5px dashed var(--muted);display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:none;stroke:var(--muted);stroke-width:2;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div style="font-size:11px;color:var(--muted);">Add</div></div>
+      </div>
+    </div>
+    <div class="sec"><div class="sec-lbl">Notifications & preferences</div><div class="lcard2">
+      <div class="li2" onclick="op('pg-notif')"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="li-body"><div class="li-lbl">Notification settings</div><div class="li-sub">Summary, alerts, device status</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2" onclick="op('pg-units')"><div class="li2-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="li-body"><div class="li-lbl">Units</div><div class="li-sub">Distance, weight, temperature</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><div class="li-body"><div class="li-lbl">Language</div></div><div class="li-right"><div class="li-val">English</div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Privacy & data</div><div class="lcard2">
+      <div class="li2" onclick="op('pg-datarights')"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="li-body"><div class="li-lbl">Data permissions</div><div class="li-sub">Export or delete records</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2" onclick="op('pg-consent')"><div class="li2-ico"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div class="li-body"><div class="li-lbl">Authorization</div><div class="li-sub">Data collection & AI</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div class="li-body"><div class="li-lbl">Data region</div></div><div class="li-right"><div class="li-val">Singapore</div></div></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Help & feedback</div><div class="lcard2">
+      <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="li-body"><div class="li-lbl">Help center</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="li-body"><div class="li-lbl">Send feedback</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="footer-s">Version 1.0.0 (build 42)</div>
+    <div class="footer-links"><span>Terms of Service</span><span>Privacy Policy</span></div>
+    <div style="height:8px;"></div>
+  </div>
+</div>
+
+<!-- ══ ME ══ -->
+<div class="page z30" id="pg-me">
+  <div class="topbar"><div class="ic" onclick="cl('pg-me')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Profile</div><div style="width:30px"></div></div>
+  <div class="scroll">
+    <div class="me-hero"><div class="me-av-lg">👤<div class="me-av-edit"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div><div style="font-size:19px;font-weight:500;margin-top:10px;">Alex Chen</div><div style="font-size:12px;color:var(--muted);margin-top:3px;">alex@example.com</div></div>
+    <div class="sec" style="margin-top:0;"><div class="sec-lbl">Profile</div><div class="lcard2"><div class="field"><div class="field-lbl">Nickname</div><div class="field-val">Alex Chen</div></div><div class="field"><div class="field-lbl">Email</div><div class="field-val">alex@example.com</div></div></div></div>
+    <div class="sec"><div class="sec-lbl">Membership</div>
+      <div class="plan-box"><div style="font-size:10px;color:var(--muted);letter-spacing:.5px;margin-bottom:6px;">Current plan</div><div style="font-size:22px;font-weight:500;">Pro</div><div style="font-size:12px;color:var(--muted);margin-top:4px;">Renews Jun 1, 2026 · $9.99/mo</div></div>
+      <div class="lcard2" style="margin-top:10px;">
+        <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><div class="li-body"><div class="li-lbl">Change plan</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="li-body"><div class="li-lbl">Billing history</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div class="li-body"><div class="li-lbl">Redeem code</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+    </div>
+    <div class="sec"><div class="sec-lbl">Account security</div><div class="lcard2"><div class="li2" onclick="op('pg-security')"><div class="li2-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="li-body"><div class="li-lbl">Password & login</div><div class="li-sub">Password, 2FA, linked sign-in</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div></div></div>
+    <div class="sec"><div class="lcard2"><div class="li2 red"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><div class="li-body"><div class="li-lbl" style="color:var(--red);">Log out</div></div></div><div class="li2 red"><div class="li2-ico"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></div><div class="li-body"><div class="li-lbl" style="color:var(--red);">Delete account</div><div class="li-sub">This cannot be undone</div></div></div></div></div>
+    <div style="height:14px;"></div>
+  </div>
+</div>
+
+<!-- ══ simplified sub pages ══ -->
+<div class="page z30" id="pg-security"><div class="topbar"><div class="ic" onclick="cl('pg-security')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Password & login</div><div style="width:30px"></div></div><div class="scroll"><div class="sec" style="margin-top:16px;"><div class="lcard2"><div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="li-body"><div class="li-lbl">Change password</div><div class="li-sub">Last changed: 30 days ago</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div><div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div class="li-body"><div class="li-lbl">Two-step verification</div><div class="li-sub">SMS enabled</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div></div></div></div></div>
+<div class="page z30" id="pg-notif"><div class="topbar"><div class="ic" onclick="cl('pg-notif')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Notification settings</div><div style="width:30px"></div></div><div class="scroll"><div class="sec" style="margin-top:16px;"><div class="sec-lbl">Daily digest</div><div class="lcard2"><div class="li2"><div class="li-body"><div class="li-lbl">Daily health digest</div><div class="li-sub">Every day 08:00</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div></div></div><div class="sec"><div class="sec-lbl">Health alerts</div><div class="lcard2"><div class="li2"><div class="li-body"><div class="li-lbl">Abnormal heart rate</div><div class="li-sub">Outside 60–130 bpm</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">Low SpO2</div><div class="li-sub">SpO2 below 93%</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">HRV drop alert</div></div><div class="tog off" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div></div></div><div class="sec"><div class="sec-lbl">Safety alert</div><div class="lcard2"><div class="li2"><div class="li-body"><div class="li-lbl">Left safe zone</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">Device offline alert</div><div class="li-sub">Band offline > 30 min</div></div><div class="tog off" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">Low battery alert</div><div class="li-sub">Below 20%</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div></div></div></div></div>
+<div class="page z30" id="pg-units"><div class="topbar"><div class="ic" onclick="cl('pg-units')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Units</div><div style="width:30px"></div></div><div class="scroll"><div class="sec" style="margin-top:16px;"><div class="sec-lbl">Distance</div><div class="seg" id="sd"><div class="seg-opt on" onclick="ss('sd',0)">Kilometers</div><div class="seg-opt" onclick="ss('sd',1)">Miles</div></div></div><div class="sec" style="margin-top:14px;"><div class="sec-lbl">Weight</div><div class="seg" id="sw"><div class="seg-opt on" onclick="ss('sw',0)">Kilograms</div><div class="seg-opt" onclick="ss('sw',1)">Pounds lb</div></div></div><div class="sec" style="margin-top:14px;"><div class="sec-lbl">Temperature</div><div class="seg" id="st"><div class="seg-opt on" onclick="ss('st',0)">Celsius °C</div><div class="seg-opt" onclick="ss('st',1)">Fahrenheit °F</div></div></div></div></div>
+<div class="page z30" id="pg-datarights"><div class="topbar"><div class="ic" onclick="cl('pg-datarights')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Data permissions</div><div style="width:30px"></div></div><div class="scroll"><div style="padding:16px 16px 4px;"><div class="info-box">You have full control over your data.</div></div><div class="sec" style="margin-top:12px;"><div class="sec-lbl">Export</div><div class="lcard2"><div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="li-body"><div class="li-lbl">Export Sarah's data</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div><div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="li-body"><div class="li-lbl">Export Tommy's data</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div></div></div></div></div>
+<div class="page z30" id="pg-consent"><div class="topbar"><div class="ic" onclick="cl('pg-consent')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Authorization</div><div style="width:30px"></div></div><div class="scroll"><div class="sec" style="margin-top:16px;"><div class="sec-lbl">Data collection</div><div class="lcard2"><div class="li2"><div class="li-body"><div class="li-lbl">Sleep & recovery</div><div class="li-sub">Sleep stages, HRV, resting HR</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">Activity & workouts</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">Physiology</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">Environment & location</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div></div></div><div class="sec"><div class="sec-lbl">AI processing</div><div class="lcard2"><div class="li2"><div class="li-body"><div class="li-lbl">AI insights & analysis</div></div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div><div class="li2"><div class="li-body"><div class="li-lbl">Personalized model training</div></div><div class="tog off" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div></div></div></div></div>
+
+<!-- Kid profile pages -->
+<div class="page z35" id="pg-kid-s">
+  <div class="topbar"><div class="ic" onclick="cl('pg-kid-s')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Sarah</div><div style="width:30px"></div></div>
+  <div class="scroll">
+    <div class="kid-hero"><div class="kid-hero-av">🐣</div><div><div style="font-size:19px;font-weight:500;">Sarah</div><div style="font-size:12px;color:var(--muted);margin-top:4px;">Age 8 · Girl</div></div></div>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.6px;margin:0 16px 7px;padding-left:2px;">Device</div>
+    <div class="kid-dev-card">
+      <div style="width:46px;height:46px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⌚</div>
+      <div class="kid-dev-mid">
+        <div class="kid-dev-top">
+          <div>
+            <div style="font-size:13px;font-weight:500;">Sarah's Nana Band</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">NB-Pro 2024 · Connected</div>
+            <div style="font-size:11px;margin-top:4px;color:#444;">🔋 85% · Synced 2 min ago</div>
+          </div>
+          <div style="text-align:right;"><span class="badge-ota" style="background:var(--bg2);color:var(--muted);">Up to date</span><div class="unlink" style="margin-top:6px;">Unpair</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec"><div class="sec-lbl">Safe zones</div><div class="lcard2">
+      <div class="li2" onclick="openChildFencePage('xm')"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="li-body"><div class="li-lbl">Safe zonesSettings</div><div class="li-sub">Home, school, enter/exit rules</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Location & safety</div><div class="lcard2">
+      <div class="li2" onclick="openKidLocation('xm')"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="li-body"><div class="li-lbl">Location & safety</div><div class="li-sub">Live location & map</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Basic info</div><div class="lcard2">
+      <div class="li2"><div class="li-body"><div style="font-size:11px;color:var(--muted);">Nickname</div><div class="li-lbl" style="margin-top:2px;">Sarah</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2"><div class="li-body"><div style="font-size:11px;color:var(--muted);">Date of birth</div><div class="li-lbl" style="margin-top:2px;">Apr 12, 2016</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Guardians</div><div class="lcard2">
+      <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4"/><circle cx="12" cy="7" r="4"/></svg></div><div class="li-body"><div class="li-lbl">Alex Chen</div><div class="li-sub">Primary (you)</div></div><div class="li-val" style="font-size:10px;">All data</div></div>
+      <div class="li2" onclick="op('pg-invite-guardian')"><div class="li2-ico" style="border:1.5px dashed var(--muted);font-size:18px;">+</div><div class="li-body"><div class="li-lbl">Invite co-guardian</div><div class="li-sub">Share custody & data</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Caregivers</div><div class="lcard2">
+      <div class="li2" onclick="op('pg-invite-caregiver')"><div class="li2-ico" style="border:1.5px dashed var(--muted);font-size:18px;">+</div><div class="li-body"><div class="li-lbl">Invite caregiver</div><div class="li-sub">View-only within permissions</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<div class="page z35" id="pg-kid-t">
+  <div class="topbar"><div class="ic" onclick="cl('pg-kid-t')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Tommy</div><div style="width:30px"></div></div>
+  <div class="scroll">
+    <div class="kid-hero"><div class="kid-hero-av">🧒</div><div><div style="font-size:19px;font-weight:500;">Tommy</div><div style="font-size:12px;color:var(--muted);margin-top:4px;">Age 6 · Boy</div></div></div>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:.6px;margin:0 16px 7px;padding-left:2px;">Device</div>
+    <div class="kid-dev-card">
+      <div style="width:46px;height:46px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⌚</div>
+      <div class="kid-dev-mid">
+        <div class="kid-dev-top">
+          <div>
+            <div style="font-size:13px;font-weight:500;">Tommy's Nana Band</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">NB-Lite 2023 · Connected</div>
+            <div style="font-size:11px;margin-top:4px;color:#444;">🔋 62% · Synced 5 min ago</div>
+          </div>
+          <div style="text-align:right;"><span class="badge-ota">Update avail.</span><div class="unlink" style="margin-top:6px;">Unpair</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sec"><div class="sec-lbl">Safe zones</div><div class="lcard2">
+      <div class="li2" onclick="openChildFencePage('dd')"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="li-body"><div class="li-lbl">Safe zonesSettings</div><div class="li-sub">Home, school, enter/exit rules</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Location & safety</div><div class="lcard2">
+      <div class="li2" onclick="openKidLocation('dd')"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="li-body"><div class="li-lbl">Location & safety</div><div class="li-sub">Live location & map</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Basic info</div><div class="lcard2">
+      <div class="li2"><div class="li-body"><div style="font-size:11px;color:var(--muted);">Nickname</div><div class="li-lbl" style="margin-top:2px;">Tommy</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2"><div class="li-body"><div style="font-size:11px;color:var(--muted);">Date of birth</div><div class="li-lbl" style="margin-top:2px;">Aug 3, 2018</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Guardians</div><div class="lcard2">
+      <div class="li2"><div class="li2-ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4"/><circle cx="12" cy="7" r="4"/></svg></div><div class="li-body"><div class="li-lbl">Alex Chen</div><div class="li-sub">Primary (you)</div></div><div class="li-val" style="font-size:10px;">All data</div></div>
+      <div class="li2" onclick="op('pg-invite-guardian')"><div class="li2-ico" style="border:1.5px dashed var(--muted);font-size:18px;">+</div><div class="li-body"><div class="li-lbl">Invite co-guardian</div><div class="li-sub">Share custody & data</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div class="sec"><div class="sec-lbl">Caregivers</div><div class="lcard2">
+      <div class="li2"><div class="li2-ico" style="font-size:20px;">👵</div><div class="li-body"><div class="li-lbl">Grandma</div><div class="li-sub">Access: all data</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="li2" onclick="op('pg-invite-caregiver')"><div class="li2-ico" style="border:1.5px dashed var(--muted);font-size:18px;">+</div><div class="li-body"><div class="li-lbl">Invite caregiver</div><div class="li-sub">View-only within permissions</div></div><svg class="chv" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div></div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- Invite co-guardian -->
+<div class="page z45" id="pg-invite-guardian">
+  <div class="topbar"><div class="ic" onclick="cl('pg-invite-guardian')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title" style="font-size:13px;">Invite co-guardian</div><div style="width:30px"></div></div>
+  <div class="scroll" style="padding-top:12px;">
+    <div class="info-box" style="margin:0 16px;">We send the invite to watch and app. They install Nana and enter the code to link.</div>
+    <div style="height:14px;"></div>
+    <div class="invite-code-wrap">
+      <div class="invite-code-lbl">Invite code · valid 24h</div>
+      <div class="invite-code-ch" id="code-guardian">A B 4 2 9 1</div>
+      <div class="invite-code-timer" id="timer-guardian">Time left: 23:47:12</div>
+    </div>
+    <button type="button" class="btn-primary" style="margin-top:16px;" onclick="copyInviteCode('AB4291')">Copy code</button>
+    <div class="steps-card"><strong>Steps</strong><ol><li>Share the code by message</li><li>They download Nana and sign up</li><li>They enter the code to link</li><li>After linking, BLE connects when nearby</li></ol></div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- Invite caregiver -->
+<div class="page z45" id="pg-invite-caregiver">
+  <div class="topbar"><div class="ic" onclick="cl('pg-invite-caregiver')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title" style="font-size:13px;">Invite caregiver</div><div style="width:30px"></div></div>
+  <div class="scroll" style="padding-top:12px;">
+    <div class="info-box" style="margin:0 16px;">Caregivers only see data you allow; they cannot edit the child profile.</div>
+    <div style="height:14px;"></div>
+    <div class="invite-code-wrap">
+      <div class="invite-code-lbl">CaregiversInvite code · valid 24h</div>
+      <div class="invite-code-ch" id="code-caregiver">C 7 3 X 8 2</div>
+      <div class="invite-code-timer" id="timer-caregiver">Time left: 23:47:12</div>
+    </div>
+    <button type="button" class="btn-primary" style="margin-top:16px;" onclick="copyInviteCode('C73X82')">Copy code</button>
+    <div class="perm-sec"><div class="perm-lbl">Default access after invite</div><div class="lcard">
+      <div class="rule-row"><div class="rule-lbl">Today overview</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      <div class="rule-row"><div class="rule-lbl">Sleep</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      <div class="rule-row"><div class="rule-lbl">Activity & steps</div><div class="tog off" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      <div class="rule-row"><div class="rule-lbl">Heart rate & HRV</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      <div class="rule-row"><div class="rule-lbl">Health</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+      <div class="rule-row"><div class="rule-lbl">Location & fences</div><div class="tog" onclick="this.classList.toggle('off')"><div class="tog-dot"></div></div></div>
+    </div></div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- add child -->
+<div class="page z30" id="pg-add-child"><div class="topbar"><div class="ic" onclick="cl('pg-add-child')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Add child</div><div style="font-size:11px;color:var(--muted);">1 / 3</div></div><div class="scroll"><div style="padding:20px 20px 0;"><div style="font-size:17px;font-weight:500;margin-bottom:6px;">Basic info</div><div style="font-size:13px;color:var(--muted);margin-bottom:24px;">Enter the child's basic info first, then pair the device.</div><div class="form-field"><div class="form-label">Nickname</div><input class="form-input" placeholder="e.g. Sammy"/></div><div class="form-field"><div class="form-label">Date of birth</div><input class="form-input" placeholder="YYYY-MM-DD"/></div><div class="form-field"><div class="form-label">Gender</div><div class="seg" id="sg-sex" style="margin:0;"><div class="seg-opt on" onclick="ss('sg-sex',0)">Male</div><div class="seg-opt" onclick="ss('sg-sex',1)">Female</div></div></div></div></div><div style="padding:0 16px 20px;"><button class="btn-primary" onclick="op('pg-add-device')">Next: Pair device</button></div></div>
+<div class="page z40" id="pg-add-device"><div class="topbar"><div class="ic" onclick="cl('pg-add-device')"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div><div class="tb-title">Pair device</div><div style="font-size:11px;color:var(--muted);">2 / 3</div></div><div class="scroll"><div style="padding:20px 16px 0;text-align:center;"><div class="band-visual">⌚</div><div style="font-size:17px;font-weight:500;margin-bottom:8px;">Searching for nearby devices…</div><div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Make sure Nana Band is on and Bluetooth is enabled.</div><div class="scan-dots"><div class="scan-dot on"></div><div class="scan-dot on"></div><div class="scan-dot on"></div><div class="scan-dot"></div><div class="scan-dot"></div></div><div style="border:none;border-radius:18px;padding:14px;background:var(--bg);box-shadow:var(--card-shadow);text-align:left;display:flex;align-items:center;gap:12px;"><div style="width:44px;height:44px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:22px;">⌚</div><div style="flex:1;"><div style="font-size:14px;font-weight:500;">Nana Band Pro</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Serial: NB2024-A4F2</div></div><div style="width:10px;height:10px;border-radius:50%;background:var(--ink);"></div></div></div></div><div style="padding:16px 16px 20px;"><button class="btn-primary" onclick="op('pg-add-confirm')">Connect</button></div></div>
+<div class="page z50" id="pg-add-confirm" style="z-index:50;"><div class="topbar"><div style="width:30px"></div><div class="tb-title">Pairing success</div><div style="width:30px"></div></div><div class="scroll"><div style="padding:30px 20px;text-align:center;"><div style="width:72px;height:72px;border-radius:50%;border:none;margin:0 auto 20px;background:linear-gradient(180deg,#e8fff0,#d4f5e3);box-shadow:var(--card-shadow);display:flex;align-items:center;justify-content:center;font-size:32px;">✓</div><div style="font-size:19px;font-weight:500;margin-bottom:8px;">You're connected!</div><div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:24px;">Nana Band is paired. First sync may take a few minutes.</div></div></div><div style="padding:0 16px 20px;"><button class="btn-primary" onclick="closeAddFlow()">Get started</button></div></div>
+
+<!-- ══ NANA AI ══ -->
+<div class="page z55" id="pg-nana">
+  <div class="nana-header">
+    <div class="nana-hav"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+    <div style="flex:1;"><div style="font-size:14px;font-weight:500;">Nana AI <span style="font-size:9px;padding:2px 7px;background:var(--brand-soft);color:var(--brand);border-radius:6px;font-weight:600;margin-left:4px;">LIVE</span></div><div style="font-size:11px;color:var(--muted);margin-top:1px;" id="ns">Connected to your COROS data</div></div>
+    <div class="nana-close" onclick="cl('pg-nana')"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+  </div>
+  <div class="ctx-row">
+    <div class="ctx-pill active" id="ctx-s" onclick="sctx('sarah')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Sarah</div>
+    <div class="ctx-pill" id="ctx-t" onclick="sctx('tommy')"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>Tommy</div>
+    <div class="ctx-pill" id="ctx-b" onclick="sctx('both')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Both</div>
+  </div>
+  <div class="msgs" id="nm"></div>
+  <div class="chips-wrap" id="nc">
+    <div class="q-chip" onclick="ac('Is HRV OK?')">HRV</div>
+    <div class="q-chip" onclick="ac('How was sleep?')">Sleep</div>
+    <div class="q-chip" onclick="ac('Enough activity today?')">Activity</div>
+    <div class="q-chip" onclick="ac('Where are they now?')">Location</div>
+    <div class="q-chip" onclick="ac('Weekly health summary')">Week summary</div>
+  </div>
+  <div class="inp-row">
+    <div class="mic"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+    <input class="n-inp" id="ni" placeholder="Ask about your sleep, HRV, recovery, activity…" onkeydown="if(event.key==='Enter')ds()" oninput="ts()"/>
+    <button class="n-send" id="nsb" onclick="ds()" disabled><svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg></button>
+  </div>
+</div>
+
+</div>
+
+<script>
+var kid='xm',dk='xm',cdev='xm',nctx='sarah',cat='all',ni=false,lk='xm',calDate=new Date(),calView=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+var dys=['Su','Mo','Tu','We','Th','Fr','Today'];
+var calDow=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var calMods=[-0.09,0.03,0.10,0.16,-0.03,-0.12,0];
+var K={
+  xm:{name:'Sarah',ti:'Sarah,\nyou look great today',st:'Great sleep and HRV — a good day for outdoor play.',su:'Last night: 4 deep-sleep cycles, HRV 46ms above average, vitality score 92.',sl:'2h 40m',vi:'46 ms',st2:'8,800',hr:'68 bpm',rc:'Higher HRV suggests good recovery — a moderate outdoor workout fits well today.',loc:{place:'Home · Home Zone',badge:'At home ✓',wearing:'Wearing band'},ln:{i:'📍',t:'Sarah arrived home',s:'Entered Home Zone',m:'At home · 14:05'},
+    tr:{c:'2 things to watch',items:[{t:'Outdoor time is trending down',d:'About 48 min/day outdoors over the past 7 days, ~15% lower than last week. Try a fixed slot after school.',spark:true},{t:'More sedentary time this afternoon',d:'Almost no meaningful movement 13:00–16:00. A ~20 min walk after school can help focus and metabolism.',spark:false}]},
+    d:{sleep:{total:'8h 15m',deep:'2h 40m',score:92,latency:'12 min',waso:'18 min',dchg:'+18m',curve:[22,38,68,85,90,82,65,42,28],stages:[15,35,30,20]},
+       act:{steps:[6200,7100,8300,9200,7800,6900,8800],prev:[5800,6500,7900,8800,7200,6100,8200],avg:7757,rate:110,int:{lo:85,mi:42,hi:18},sun:{today:68,goal:60},cad:142,str:0.58},
+       heart:{avg:82,rhr:68,hrv:[32,38,42,36,44,40,46],htoday:46,hchg:'+8ms',hnote:'Above this week’s average — recovery looks good',hwk:[84,82,86,80,79,83,82]},
+       health:{spo2:98,br:16,temp:'+0.2'}}},
+  dd:{name:'Tommy',ti:'Tommy,\nnice day overall',st:'Steps a little short; HRV a bit low — plan an easy evening.',su:'Slower sleep onset last night, HRV 26ms below average. Step goal ~85% complete.',sl:'1h 55m',vi:'26 ms',st2:'6,800',hr:'72 bpm',rc:'Lower HRV — skip intense exercise today and prioritize rest.',loc:{place:'School · School Zone',badge:'At school ✓',wearing:'Wearing band'},ln:{i:'📍',t:'Tommy left school',s:'School Zone',m:'Left school · 15:18'},
+    tr:{c:'2 things to watch',items:[{t:'Outdoor & sunlight shortfall',d:'Only ~35 min bright light today vs a 60 min goal. A 20 min neighborhood walk before dusk helps.',spark:true},{t:'Step goal not met yet',d:'About 1,200 steps to go — easy walking is enough; no need for hard training.',spark:false}]},
+    d:{sleep:{total:'7h 40m',deep:'1h 55m',score:78,latency:'28 min',waso:'34 min',dchg:'Flat',curve:[18,30,55,70,74,68,50,32,20],stages:[20,42,22,16]},
+       act:{steps:[4800,5200,6100,5800,6400,5500,6800],prev:[4200,4900,5800,5400,5900,5000,6200],avg:5800,rate:85,int:{lo:92,mi:24,hi:6},sun:{today:35,goal:60},cad:128,str:0.48},
+       heart:{avg:88,rhr:72,hrv:[28,24,30,26,32,22,26],htoday:26,hchg:'-6ms',hnote:'Below this week’s average — ease up on intensity',hwk:[89,88,92,87,86,90,88]},
+       health:{spo2:97,br:18,temp:'+0.1'}}}
+};
+
+var builtinReplies={
+  sarah:{'Is HRV OK?':'Sarah’s HRV is 46ms today — above the weekly average of 38ms. Great sign! For an 8-year-old, ~20–80ms is typical; she’s in range and can handle moderate activity.',
+    'How was sleep?':'Excellent night: 8h 15m total, 2h 40m deep sleep, ~12 min to fall asleep, 18 min awake. Score 92 (+4 vs last week). Keep the ~21:00 bedtime routine.',
+    'Enough activity today?':'8,800 steps vs an 8,000 goal (110%). Cadence 142 spm, stride 0.58m, balanced intensity. ~68 min bright light — also on track.',
+    'Where are they now?':'Sarah is home inside the Home Zone geofence. Location updated ~2 minutes ago; band connected and worn — all good ✓',
+    'Weekly health summary':'Strong week: sleep avg 91, steps hit 6/7 days, HRV trending up, sunlight mostly on target. Overall score: 92 🌟'},
+  tommy:{'Is HRV OK?':'Tommy’s HRV is 26ms — below the weekly average of 32ms. For a 6-year-old that often means still recovering. Skip hard workouts and aim for sleep before 9pm.',
+    'How was sleep?':'Mixed night: ~28 min sleep onset (goal <20), 34 min awake, only 1h 55m deep sleep. Reduce screens before bed and keep a fixed lights-out time.',
+    'Enough activity today?':'6,800 steps (~85% of goal), ~1,200 to go — a light 15 min walk helps. With low HRV today, keep activity easy.',
+    'Where are they now?':'Tommy is at school inside the School Zone geofence; band connected and worn — all good ✓',
+    'Weekly health summary':'Okay week: sleep avg 76, steps hit 4/7 days, HRV drifting down. More outdoor play and earlier bedtimes help. Score: 75 — keep going!'},
+  both:{'Is HRV OK?':'Big split today: Sarah 46ms looks great; Tommy 26ms is low. Light activity for Sarah, extra rest for Tommy.',
+    'How was sleep?':'Sarah had a standout night (8h 15m, score 92). Tommy was okay (7h 40m, score 78) with slower sleep onset — focus on his wind-down routine.',
+    'Enough activity today?':'Sarah is on track at 8,800 steps; Tommy is at 6,800 (~1,200 short). A shared park walk can balance both.',
+    'Where are they now?':'Sarah is home (Home Zone); Tommy is at school (School Zone). Both bands connected and inside safe zones ✓',
+    'Weekly health summary':'Sarah ~92 overall; Tommy ~75 with room to grow. Prioritize Tommy’s sleep consistency and outdoor time.'}
+};
+
+function cloneData(o){return JSON.parse(JSON.stringify(o));}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n));}
+function roundTo(n,step){return Math.round(n/step)*step;}
+function parseDur(s){var h=0,m=0,hm=s.match(/(\d+)h/),mm=s.match(/(\d+)m/);if(hm)h=+hm[1];if(mm)m=+mm[1];return h*60+m;}
+function fmtDur(m){m=Math.max(0,Math.round(m));return Math.floor(m/60)+'h '+(m%60)+'m';}
+function cleanDate(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate());}
+function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function sameDay(a,b){return cleanDate(a).getTime()===cleanDate(b).getTime();}
+function isFuture(d){return cleanDate(d).getTime()>cleanDate(new Date()).getTime();}
+function chosenDate(){return cleanDate(calDate);}
+function dataModForDate(d){if(sameDay(d,new Date()))return 0;var n=d.getFullYear()*372+d.getMonth()*31+d.getDate(),mods=[-0.12,-0.08,-0.03,0.04,0.09,0.14,0.02,-0.06,0.11];return mods[Math.abs(n)%mods.length];}
+function dateLabel(short){var d=chosenDate(),y=new Date();var yd=new Date();yd.setDate(yd.getDate()-1);if(sameDay(d,y))return 'Today';if(sameDay(d,yd))return short?'Yesterday':'Yesterday';return short?d.toLocaleDateString('en-US',{month:'short',day:'numeric'}):d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+function weekLabels(){var end=chosenDate(),arr=[];for(var i=6;i>=0;i--){var d=new Date(end);d.setDate(end.getDate()-i);arr.push(i===0?(sameDay(d,new Date())?'Today':calDow[d.getDay()]):calDow[d.getDay()].slice(0,2));}return arr;}
+function monthLabel(){return calView.toLocaleDateString('en-US',{month:'long',year:'numeric'});}
+function noteForDate(d){var m=dataModForDate(d);if(sameDay(d,new Date()))return 'Great sleep and HRV — good for outdoor play.';if(m>.08)return 'Strong recovery day with healthy movement.';if(m<-0.08)return 'Lower recovery signal — keep activity light.';if(m<0)return 'Balanced day, a little less sunlight than goal.';return 'School day rhythm was steady; HRV recovered.';}
+function adjustData(base,code){
+  var d=cloneData(base),m=dataModForDate(chosenDate()),soft=code==='dd'?0.92:1;
+  d.sleep.score=clamp(Math.round(d.sleep.score+(m*70*soft)),60,98);
+  d.sleep.total=fmtDur(parseDur(d.sleep.total)+roundTo(m*95,5));
+  d.sleep.deep=fmtDur(parseDur(d.sleep.deep)+roundTo(m*42,5));
+  d.sleep.latency=Math.max(8,parseInt(d.sleep.latency)-Math.round(m*35))+' min';
+  d.sleep.waso=Math.max(10,parseInt(d.sleep.waso)-Math.round(m*28))+' min';
+  d.sleep.dchg=(m>=0?'+':'')+roundTo(m*90,5)+'m';
+  d.sleep.curve=d.sleep.curve.map(function(v,i){return clamp(Math.round(v+(m*34)-(i%3===0?m*12:0)),12,96);});
+  d.act.steps=d.act.steps.map(function(v,i){return Math.max(2400,Math.round(v*(1+m*(i===6?1.4:.55))));});
+  d.act.rate=clamp(Math.round(d.act.rate+(m*120)),45,135);
+  d.act.int.lo=Math.max(30,Math.round(d.act.int.lo+(m<0?24:-8)));
+  d.act.int.mi=Math.max(8,Math.round(d.act.int.mi+(m*70)));
+  d.act.int.hi=Math.max(0,Math.round(d.act.int.hi+(m*38)));
+  d.act.sun.today=clamp(Math.round(d.act.sun.today+(m*95)),18,95);
+  d.act.cad=clamp(Math.round(d.act.cad+(m*42)),105,158);
+  d.act.str=+(clamp(d.act.str+(m*.16),.38,.72)).toFixed(2);
+  d.heart.hrv=d.heart.hrv.map(function(v,i){return clamp(Math.round(v+(m*42)+(i===6?m*18:0)),18,64);});
+  d.heart.htoday=d.heart.hrv[6];
+  var havg=Math.round(d.heart.hrv.reduce(function(a,b){return a+b;},0)/d.heart.hrv.length);
+  d.heart.hchg=(d.heart.htoday-havg>=0?'+':'')+(d.heart.htoday-havg)+'ms';
+  d.heart.hnote=d.heart.htoday>=havg?'Above this week\'s average — recovery looks good':'Below this week\'s average — keep activity easy';
+  d.heart.avg=clamp(Math.round(d.heart.avg-(m*20)),74,94);
+  d.heart.rhr=clamp(Math.round(d.heart.rhr-(m*16)),62,78);
+  d.heart.hwk=d.heart.hwk.map(function(v){return clamp(Math.round(v-(m*14)),76,96);});
+  d.health.spo2=clamp(Math.round(d.health.spo2+(m>0?0:-1)),95,99);
+  d.health.br=clamp(Math.round(d.health.br-(m*8)),14,20);
+  d.health.temp=(m>=0?'+':'')+(0.1+(Math.abs(m)*1.4)).toFixed(1);
+  return d;
+}
+function renderCalendar(){
+  var strip=document.getElementById('cal-strip');if(!strip)return;
+  var first=new Date(calView.getFullYear(),calView.getMonth(),1),start=new Date(first);start.setDate(first.getDate()-first.getDay());var html='';
+  for(var i=0;i<42;i++){
+    var d=new Date(start);d.setDate(start.getDate()+i);
+    var isOn=sameDay(d,calDate),muted=d.getMonth()!==calView.getMonth(),future=isFuture(d);
+    html+='<button type="button" class="date-cell '+(isOn?'on ':'')+(muted?'muted ':'')+(future?'future':'')+'" '+(future?'':'onclick="pickDateStr(&quot;'+dateKey(d)+'&quot;)"')+'><span class="date-num">'+d.getDate()+'</span><span class="date-dot"></span></button>';
+  }
+  strip.innerHTML=html;
+  document.getElementById('cal-title').textContent=monthLabel();
+  document.getElementById('month-title').textContent=monthLabel();
+  updateCalSummary();
+}
+function updateCalSummary(){
+  var panel=document.getElementById('cal-score');if(!panel)return;
+  var d=adjustData(K[dk].d,dk),note=noteForDate(chosenDate());
+  document.getElementById('cal-title').textContent=dateLabel(false);
+  document.getElementById('cal-sub').textContent='Readiness '+d.sleep.score+' · '+d.act.steps[6].toLocaleString()+' steps';
+  document.getElementById('cal-chip').textContent=dateLabel(true);
+  document.getElementById('cal-score').textContent='Readiness '+d.sleep.score+' · '+d.act.steps[6].toLocaleString()+' steps';
+  document.getElementById('cal-note').textContent=note;
+}
+function setDateAndRefresh(d){if(isFuture(d))return;calDate=cleanDate(d);calView=new Date(calDate.getFullYear(),calDate.getMonth(),1);renderCalendar();rd(dk,cat);updateNanaScope();}
+function closeCalendar(){var p=document.querySelector('#pg-data .date-panel');if(p)p.classList.remove('open');}
+function pickDateStr(s){var p=s.split('-');setDateAndRefresh(new Date(+p[0],+p[1]-1,+p[2]));closeCalendar();}
+function pickDate(i){var d=new Date();d.setDate(d.getDate()-(6-i));setDateAndRefresh(d);}
+function shiftDay(n){var d=chosenDate();d.setDate(d.getDate()+n);setDateAndRefresh(d);}
+function shiftMonth(n){calView=new Date(calView.getFullYear(),calView.getMonth()+n,1);renderCalendar();}
+function toggleCalendar(){var p=document.querySelector('#pg-data .date-panel');if(p)p.classList.toggle('open');}
+function jumpToday(){setDateAndRefresh(new Date());closeCalendar();}
+function updateNanaScope(){var ns=document.getElementById('ns');if(!ns)return;var nm={sarah:'Sarah',tommy:'Tommy',both:'both children'};ns.textContent='Viewing '+nm[nctx]+"'s data for "+dateLabel(false).toLowerCase();}
+function applyTrends(tr){document.getElementById('trend-count').textContent=tr.c;var a=tr.items;document.getElementById('trend-1t').textContent=a[0].t;document.getElementById('trend-1d').textContent=a[0].d;document.getElementById('trend-1s').style.display=a[0].spark?'flex':'none';if(a[1]){document.getElementById('trend-2').style.display='';document.getElementById('trend-2t').textContent=a[1].t;document.getElementById('trend-2d').textContent=a[1].d;}else{document.getElementById('trend-2').style.display='none';}}
+function applyLatestNotif(ln){document.getElementById('hn-ico').textContent=ln.i;document.getElementById('hn-t').textContent=ln.t;document.getElementById('hn-s').textContent=ln.s;document.getElementById('hn-m').textContent=ln.m;}
+function sw(c){kid=c;var k=K[c];['xm','dd'].forEach(function(x){document.getElementById('cav-'+x).classList.toggle('active',x===c);document.getElementById('cnm-'+x).classList.toggle('active',x===c);});document.getElementById('h-ti').innerHTML=k.ti.replace(/\n/g,'<br>');document.getElementById('h-su').textContent=k.su;document.getElementById('h-st').textContent=k.st;document.getElementById('h-sl').textContent=k.sl;document.getElementById('h-vi').textContent=k.vi;document.getElementById('h-st2').textContent=k.st2;document.getElementById('h-hr').textContent=k.hr;document.getElementById('h-rc').textContent=k.rc;
+  applyTrends(k.tr);applyLatestNotif(k.ln);}
+function openKidLocation(code){swloc(code);op('pg-location');}
+function openChildFencePage(code){swcd(code);op('pg-child-device');}
+function copyInviteCode(raw){var t=raw.replace(/\s/g,'');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){alert('Invite code copied');}).catch(function(){alert('Invite code: '+t);});}else{alert('Invite code: '+t);}}
+function ncat(c,el){document.querySelectorAll('#notif-cats .cat-tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.querySelectorAll('#pg-notify-center .notif-li[data-nc]').forEach(function(li){var d=li.getAttribute('data-nc');li.classList.toggle('hidden',!(c==='all'||c===d));});}
+function setNotifLocKid(which){var d=document.getElementById('notif-loc-dot');if(which==='sarah'){document.getElementById('notif-loc-lbl').textContent='Home · Home Zone ✓';document.getElementById('notif-loc-place').textContent='Home · Home Zone';document.getElementById('notif-loc-bat').textContent='78%';document.getElementById('notif-loc-time').textContent='14:05';d.style.left='50%';d.style.top='50%';d.className='map-dot-lg map-dot-ok';}else{document.getElementById('notif-loc-lbl').textContent='On the way · left School Zone';document.getElementById('notif-loc-place').textContent='East of school · walking';document.getElementById('notif-loc-bat').textContent='62%';document.getElementById('notif-loc-time').textContent='15:18';d.style.left='58%';d.style.top='44%';d.className='map-dot-lg map-dot-ok';}}
+function swcd(c){cdev=c;['xm','dd'].forEach(function(x){document.getElementById('cdav-'+x).classList.toggle('active',x===c);document.getElementById('cdnm-'+x).classList.toggle('active',x===c);});var k=K[c];document.getElementById('cd-band-name').textContent=k.name+"'s Nana Band";document.getElementById('cd-band-sub').textContent=(c==='xm'?'NB-Pro 2024 · Connected':'NB-Lite 2023 · Connected');document.getElementById('cd-band-bat').textContent=c==='xm'?'🔋 85%':'🔋 62%';}
+var GFDEF={home:{title:'Edit fence · Home',name:'Home',icon:'🏠',r:80,inOn:false,outOn:true},school:{title:'Edit fence · School',name:'School',icon:'🏫',r:120,inOn:false,outOn:true},new:{title:'New fence',name:'New fence',icon:'📍',r:200,inOn:false,outOn:true}};
+function initGeofenceEdit(key){var g=GFDEF[key]||GFDEF.new,isNew=key==='new';document.getElementById('gf-edit-title').textContent=isNew?GFDEF.new.title:g.title;document.getElementById('gf-name').value=g.name;document.getElementById('gf-icon-display').textContent=g.icon;document.getElementById('gf-radius').value=g.r;var ti=document.getElementById('gf-tog-in'),to=document.getElementById('gf-tog-out');ti.classList.toggle('off',!g.inOn);to.classList.toggle('off',!g.outOn);ss('gf-seg-time',key==='school'?1:0);var del=document.getElementById('gf-delete-btn');if(del)del.style.display=isNew?'none':'block';gfRadiusLabel();}
+function gfRadiusLabel(){var v=+document.getElementById('gf-radius').value;document.getElementById('gf-radius-val').textContent=v+' m (50–500m)';var px=72+((v-50)/(500-50))*58;document.getElementById('gf-zone-visual').style.width=px+'px';document.getElementById('gf-zone-visual').style.height=px+'px';document.getElementById('gf-ring-visual').style.width=px+'px';document.getElementById('gf-ring-visual').style.height=px+'px';}
+function opGeofenceFromZones(key){cl('pg-zones');op('pg-geofence-edit');initGeofenceEdit(key);}
+
+var invTick=null,invDeadline=0;
+function gh(){if(invTick){clearInterval(invTick);invTick=null;}['pg-data','pg-settings','pg-me','pg-location','pg-zones','pg-notify-center','pg-notif-warn','pg-notif-loc','pg-notif-device','pg-child-device','pg-geofence-edit','pg-security','pg-notif','pg-units','pg-datarights','pg-consent','pg-kid-s','pg-kid-t','pg-invite-guardian','pg-invite-caregiver','pg-add-child','pg-add-device','pg-add-confirm','pg-nana'].forEach(function(id){var p=document.getElementById(id);if(p)p.classList.remove('open');});}
+function gd(){var nn=document.getElementById('pg-nana');if(nn)nn.classList.remove('open');document.getElementById('pg-data').classList.add('open');document.getElementById('pg-settings').classList.remove('open');document.getElementById('pg-me').classList.remove('open');rd(dk,cat);}
+function op(id){if(id==='pg-settings'){var m=document.getElementById('pg-me');if(m)m.classList.remove('open');}var p=document.getElementById(id);p.classList.add('open');if(id==='pg-notify-center'){document.querySelectorAll('#pg-notify-center .notif-li[data-nc]').forEach(function(li){li.classList.remove('hidden');});document.querySelectorAll('#notif-cats .cat-tab').forEach(function(t){t.classList.toggle('active',t.getAttribute('data-nc')==='all');});}
+  if(id==='pg-invite-guardian'||id==='pg-invite-caregiver'){if(invTick)clearInterval(invTick);invDeadline=Date.now()+(23*3600+47*60+12)*1000;invTick=setInterval(function(){var ms=Math.max(0,invDeadline-Date.now());var h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000);var str=h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;var g=document.getElementById('timer-guardian'),c=document.getElementById('timer-caregiver');if(g)g.textContent='Time left: '+str;if(c)c.textContent='Time left: '+str;if(ms<=0&&invTick){clearInterval(invTick);invTick=null;}},1000);}}
+function cl(id){document.getElementById(id).classList.remove('open');if(id==='pg-invite-guardian'||id==='pg-invite-caregiver'){if(invTick){clearInterval(invTick);invTick=null;}}}
+function swd(c){dk=c;['xm','dd'].forEach(function(x){document.getElementById('dcav-'+x).classList.toggle('active',x===c);document.getElementById('dcnm-'+x).classList.toggle('active',x===c);});updateCalSummary();rd(c,cat);}
+function swloc(c){lk=c;['xm','dd'].forEach(function(x){document.getElementById('lcav-'+x).classList.toggle('active',x===c);document.getElementById('lcnm-'+x).classList.toggle('active',x===c);});document.getElementById('loc-map-label').textContent=K[c].loc.badge.replace(' ✓','')+(K[c].loc.badge.includes('✓')?' ✓':'');}
+function sc(c,el){cat=c;document.querySelectorAll('#pg-data .cat-tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');rd(dk,c);}
+function ss(id,idx){document.getElementById(id).querySelectorAll('.seg-opt').forEach(function(o,i){o.classList.toggle('on',i===idx);});}
+function closeAddFlow(){['pg-add-child','pg-add-device','pg-add-confirm'].forEach(function(id){cl(id);});}
+
+function rd(c,ct){
+  var k=K[c],d=adjustData(k.d,c),dayName=dateLabel(true),dayPeriod=dateLabel(false),wd=weekLabels();var h='<div style="height:6px;"></div>';
+  var showS=(ct==='all'||ct==='sleep'),showA=(ct==='all'||ct==='act'),showHV=(ct==='all'||ct==='hrv'),showHL=(ct==='all'||ct==='health');
+  if(showS){var s=d.sleep,cw=294,ch=50,cv=s.curve;var pts=cv.map(function(v,i){return(i/(cv.length-1)*cw).toFixed(1)+','+(ch-(v/100)*(ch-8)).toFixed(1);}).join(' ');var area=pts+' '+cw+','+ch+' 0,'+ch;var svg='<svg style="width:100%;height:'+ch+'px;margin-bottom:3px;" viewBox="0 0 '+cw+' '+ch+'" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1882FF" stop-opacity="0.1"/><stop offset="100%" stop-color="#1882FF" stop-opacity="0"/></linearGradient></defs><polygon points="'+area+'" fill="url(#sg)"/><polyline points="'+pts+'" fill="none" stroke="#1882FF" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>';var stC=['#e0e0e0','#aaa','#1a1a1a','#666'],stN=['Awake','Light','Deep','REM'];var sBar=s.stages.map(function(p,i){return'<div style="width:'+p+'%;height:100%;background:'+stC[i]+'"></div>';}).join('');var sLeg=stN.map(function(l,i){return'<div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--muted)"><div style="width:8px;height:8px;border-radius:2px;background:'+stC[i]+'"></div>'+l+' '+s.stages[i]+'%</div>';}).join('');var latOk=parseInt(s.latency)<=20;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>Sleep quality</div><div class="card-period">'+dayName+'</div></div>'+svg+'<div class="tl-row"><span class="tl">21:00</span><span class="tl">00:00</span><span class="tl">03:00</span><span class="tl">06:00</span></div><div style="font-size:9px;color:var(--muted);margin:4px 0 2px;">Sleep stages</div><div class="stage-bar">'+sBar+'</div><div style="display:flex;gap:8px;margin-bottom:8px;">'+sLeg+'</div><div class="stats-row"><div class="stat"><div class="stat-lbl">Total time</div><div class="stat-val" style="font-size:11px;">'+s.total+'</div></div><div class="stat"><div class="stat-lbl">Deep sleep</div><div class="stat-val" style="font-size:11px;">'+s.deep+'</div><div class="stat-ch">'+s.dchg+'</div></div><div class="stat"><div class="stat-lbl">Sleep onset</div><div class="stat-val" style="font-size:11px;">'+s.latency+'</div></div><div class="stat"><div class="stat-lbl">Wakefulness</div><div class="stat-val" style="font-size:11px;">'+s.waso+'</div></div></div><div class="ins-chip '+(latOk?'ok':'warn')+'">💡 '+(latOk?'Smooth sleep onset — deep sleep looks healthy.':'Longer sleep onset — reduce screens before bed.')+'</div></div>';}
+  if(showA){var a=d.act,st=a.steps,pr=a.prev,maxS=Math.max.apply(null,st.concat(pr));var bars=st.map(function(v,i){var h2=Math.round((v/maxS)*56),isT=i===6;return'<div class="bw"><div class="bar'+(isT?' today':'')+'" style="height:'+h2+'px"></div><div class="bl">'+wd[i]+'</div></div>';}).join('');var dif=Math.round((st[6]-pr[6])/pr[6]*100);var iC=['#c7c7cc','#8e8e93','#1882FF'],iV=[a.int.lo,a.int.mi,a.int.hi],iL=['Low','Mid','High'],maxI=Math.max.apply(null,iV);var iBars=iV.map(function(v,i){var h2=Math.round((v/maxI)*44);return'<div class="int-col"><div class="int-bar" style="height:'+h2+'px;background:'+iC[i]+'"></div><div style="font-size:9px;color:var(--muted);">'+v+'m</div></div>';}).join('');var sunOk=a.sun.today>=a.sun.goal;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M13 4v6l3 3-3 3v4"/><path d="M11 4v6L8 13l3 3v4"/></svg></div>Activity</div><div class="card-period">7-day trend</div></div><div class="bar-chart">'+bars+'</div><div class="stats-row"><div class="stat"><div class="stat-lbl">Step count</div><div class="stat-val">'+st[6].toLocaleString()+'</div><div class="stat-ch">'+(dif>=0?'↑':'↓')+Math.abs(dif)+'%</div></div><div class="stat"><div class="stat-lbl">Cadence</div><div class="stat-val">'+a.cad+'</div><div class="stat-ch">steps/min</div></div><div class="stat"><div class="stat-lbl">Stride</div><div class="stat-val">'+a.str+'m</div></div><div class="stat"><div class="stat-lbl">Goal met</div><div class="stat-val">'+a.rate+'%</div></div></div></div>'+'<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>Intensity & sunlight</div><div class="card-period">'+dayName+'</div></div><div class="int-bars">'+iBars+'</div><div style="display:flex;gap:8px;margin-bottom:8px;">'+iL.map(function(l,i){return'<div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--muted)"><div style="width:7px;height:7px;border-radius:2px;background:'+iC[i]+'"></div>'+l+'</div>';}).join('')+'</div><div class="stats-row"><div class="stat"><div class="stat-lbl">Low</div><div class="stat-val">'+a.int.lo+'m</div></div><div class="stat"><div class="stat-lbl">Mid</div><div class="stat-val">'+a.int.mi+'m</div></div><div class="stat"><div class="stat-lbl">High</div><div class="stat-val">'+a.int.hi+'m</div></div></div><div class="ins-chip '+(sunOk?'ok':'warn')+'" style="margin-top:8px;">☀️ Bright light '+a.sun.today+' min'+(sunOk?' · goal reached':' · target '+a.sun.goal+' min, '+Math.max(0,a.sun.goal-a.sun.today)+' min to go')+'</div></div>';}
+  if(showHV){var ht=d.heart,cw=294,ch=38,hw=ht.hwk,hmx=Math.max.apply(null,hw),hmn=Math.min.apply(null,hw);var hpts=hw.map(function(v,i){return(i/(hw.length-1)*cw).toFixed(1)+','+(ch-((v-hmn)/(hmx-hmn||1))*(ch-8)-4).toFixed(1);}).join(' ');var mxH=Math.max.apply(null,ht.hrv),havg=Math.round(ht.hrv.reduce(function(a,b){return a+b;},0)/ht.hrv.length);var hbars=ht.hrv.map(function(v,i){var h2=Math.round((v/mxH)*32),isT=i===6;return'<div class="hrv-bar" style="height:'+h2+'px;background:'+(isT?'#1882FF':'#d1d1d6')+'"></div>';}).join('');var hrvOk=ht.htoday>=havg;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>Heart rate</div><div class="card-period">7-day trend</div></div><svg viewBox="0 0 '+cw+' '+ch+'" preserveAspectRatio="none" style="width:100%;height:'+ch+'px;margin-bottom:6px;"><polyline points="'+hpts+'" fill="none" stroke="#1882FF" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><div class="stats-row"><div class="stat"><div class="stat-lbl">Avg HR</div><div class="stat-val">'+ht.avg+' bpm</div></div><div class="stat"><div class="stat-lbl">Resting HR</div><div class="stat-val">'+ht.rhr+' bpm</div></div></div></div>'+'<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>HRV</div><div class="card-period">7-day trend</div></div><div class="hrv-bars">'+hbars+'</div><div class="tl-row">'+wd.map(function(d){return'<span class="tl">'+d+'</span>';}).join('')+'</div><div class="stats-row" style="margin-top:8px;"><div class="stat"><div class="stat-lbl">HRV today</div><div class="stat-val">'+ht.htoday+' ms</div><div class="stat-ch">'+ht.hchg+'</div></div><div class="stat"><div class="stat-lbl">Week avg</div><div class="stat-val">'+havg+' ms</div></div></div><div class="ins-chip '+(hrvOk?'ok':'warn')+'">💡 '+ht.hnote+'</div></div>';}
+  if(showHL){var hl=d.health;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>Health metrics</div><div class="card-period">'+dayName+'</div></div><div class="h-grid"><div class="h-item"><div class="h-lbl">SpO2</div><div><span class="h-val">'+hl.spo2+'</span><span class="h-unit">%</span></div><div class="h-ch" style="color:var(--ink);">✓ Normal</div></div><div class="h-item"><div class="h-lbl">Resting breathing</div><div><span class="h-val">'+hl.br+'</span><span class="h-unit">/min</span></div><div class="h-ch" style="color:var(--ink);">✓ Normal</div></div><div class="h-item"><div class="h-lbl">Skin temp delta</div><div><span class="h-val" style="font-size:16px;">'+hl.temp+'°C</span></div></div><div class="h-item" style="background:transparent;border:1px solid var(--light);"><div class="h-lbl">Pediatric ref.</div><div style="font-size:10px;color:var(--muted);line-height:1.7;margin-top:3px;">HR 60–120 bpm<br>SpO2 ≥ 95%<br>RR 12–20 /min</div></div></div></div>';}
+  h+='<div style="height:6px;"></div>';document.getElementById('ds').innerHTML=h;
+}
+
+// nana
+function on(){
+  op('pg-nana');
+  updateNanaScope();
+  if(!ni){
+    ni=true;
+    am("Hi! I'm Nana, your AI health assistant.\n\nConnecting to your COROS data...");
+    fetchCorosAndGreet();
+  }
+}
+function sctx(c){nctx=c;['s','t','b'].forEach(function(x){document.getElementById('ctx-'+x).classList.toggle('active',x===(c==='sarah'?'s':c==='tommy'?'t':'b'));});var nm={sarah:'Sarah',tommy:'Tommy',both:'both children'};updateNanaScope();document.getElementById('nc').style.display='flex';document.getElementById('nc').innerHTML='<div class="q-chip" onclick="ac(\'Is HRV OK?\')">HRV</div><div class="q-chip" onclick="ac(\'How was sleep?\')">Sleep</div><div class="q-chip" onclick="ac(\'Enough activity today?\')">Activity</div><div class="q-chip" onclick="ac(\'Where are they now?\')">Location</div><div class="q-chip" onclick="ac(\'Weekly health summary\')">Week summary</div>';}
+function gt(){var n=new Date();return n.getHours()+':'+(n.getMinutes()<10?'0':'')+n.getMinutes();}
+function es(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function au(t){var m=document.getElementById('nm'),el=document.createElement('div');el.className='msg-u';el.innerHTML='<div class="u-av">👤</div><div class="u-col"><div class="u-bub">'+es(t)+'</div><div class="u-time">'+gt()+'</div></div>';m.appendChild(el);m.scrollTop=m.scrollHeight;}
+function st2(){var m=document.getElementById('nm'),el=document.createElement('div');el.className='msg-n';el.id='tel';el.innerHTML='<div class="n-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="n-col"><div class="typing-bub"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div></div>';m.appendChild(el);m.scrollTop=m.scrollHeight;}
+function rt(){var t=document.getElementById('tel');if(t)t.remove();}
+function am(t){var m=document.getElementById('nm'),el=document.createElement('div');el.className='msg-n';el.innerHTML='<div class="n-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="n-col"><div class="n-bub">'+es(t).replace(/\n/g,'<br>')+'</div><div class="n-time">'+gt()+'</div></div>';m.appendChild(el);m.scrollTop=m.scrollHeight;}
+function ac(q){
+  document.getElementById('nc').style.display='none';
+  au(q);st2();
+  callNanaAI(q);
+}
+function ds(){
+  var inp=document.getElementById('ni'),v=inp.value.trim();
+  if(!v)return;
+  inp.value='';ts();
+  document.getElementById('nc').style.display='none';
+  au(v);st2();
+  callNanaAI(v);
+}
+function ts(){document.getElementById('nsb').disabled=!document.getElementById('ni').value.trim();}
+renderCalendar();
+rd('xm','all');
+applyTrends(K.xm.tr);
+applyLatestNotif(K.xm.ln);
+
+// ── NANA AI ENGINE ─────────────────────────────────────────────────────────
+// CONFIGURE: set your Vercel proxy URL here after deployment
+var PROXY_URL = 'https://nana-proxy-ruddy.vercel.app/api/chat';
+
+var chatHistory = [];
+
+var NANA_SYSTEM = 'You are Nana, a warm personal health assistant. You have access to the user's real-time COROS health data. Rules: be concise (under 100 words per reply), plain text only (no markdown, no asterisks), speak directly with actual numbers from the data. Always fetch COROS data before answering health questions. Today: ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+async function callProxy(userMessage, history) {
+  var resp = await fetch(PROXY_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      system: NANA_SYSTEM,
+      messages: history.concat([{role:'user', content: userMessage}])
+    })
+  });
+  if (!resp.ok) {
+    var err = await resp.text();
+    throw new Error('Proxy error ' + resp.status + ': ' + err);
+  }
+  return resp.json();
+}
+
+function extractText(data) {
+  if (!data || !data.content) return '';
+  return data.content
+    .filter(function(b){ return b.type === 'text'; })
+    .map(function(b){ return b.text; })
+    .join(' ').trim();
+}
+
+async function fetchCorosAndGreet() {
+  try {
+    var data = await callProxy(
+      'Use COROS tools to fetch my health data for today: daily health, HRV assessment, sleep, and recovery status. Then give me a friendly 2-sentence summary of my current status.',
+      []
+    );
+    var reply = extractText(data);
+    if (!reply) reply = "Connected to your COROS data! Ask me anything.";
+    rt(); am(reply);
+    chatHistory = [
+      {role:'user', content:'[fetch initial data]'},
+      {role:'assistant', content: reply}
+    ];
+  } catch(e) {
+    rt();
+    am("Couldn't reach the server. Check that PROXY_URL is configured and Vercel is deployed.");
+    console.error(e);
+  }
+}
+
+async function callNanaAI(userMsg) {
+  try {
+    var data = await callProxy(userMsg, chatHistory);
+    var reply = extractText(data);
+    if (!reply) reply = 'No response — try again!';
+    rt(); am(reply);
+    chatHistory.push({role:'user', content: userMsg});
+    chatHistory.push({role:'assistant', content: reply});
+    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+  } catch(e) {
+    rt();
+    am('Error reaching server. Is Vercel deployed and PROXY_URL set?');
+    console.error(e);
+  }
+}
+// ── END NANA AI ENGINE ──────────────────────────────────────────────────────
+</script>
+</body>
+</html>
