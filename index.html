@@ -1075,7 +1075,7 @@ function shiftMonth(n){calView=new Date(calView.getFullYear(),calView.getMonth()
 function toggleCalendar(){var p=document.querySelector('#pg-data .date-panel');if(p)p.classList.toggle('open');}
 function jumpToday(){setDateAndRefresh(new Date());closeCalendar();}
 function updateNanaScope(){var ns=document.getElementById('ns');if(!ns)return;var nm={sarah:'Sarah',tommy:'Tommy',both:'both children'};ns.textContent='Viewing '+nm[nctx]+"'s data for "+dateLabel(false).toLowerCase();}
-function applyTrends(tr){document.getElementById('trend-count').textContent=tr.c;var a=tr.items;document.getElementById('trend-1t').textContent=a[0].t;document.getElementById('trend-1d').textContent=a[0].d;document.getElementById('trend-1s').style.display=a[0].spark?'flex':'none';if(a[1]){document.getElementById('trend-2').style.display='';document.getElementById('trend-2t').textContent=a[1].t;document.getElementById('trend-2d').textContent=a[1].d;}else{document.getElementById('trend-2').style.display='none';}}
+function applyTrends(tr){document.getElementById('trend-count').textContent=tr.c;var a=tr.items;document.getElementById('trend-1t').textContent=a[0].t;document.getElementById('trend-1d').textContent=a[0].d;var s1=document.getElementById('trend-1s');if(s1)s1.style.display='none';if(a[1]){document.getElementById('trend-2').style.display='';document.getElementById('trend-2t').textContent=a[1].t;document.getElementById('trend-2d').textContent=a[1].d;}else{document.getElementById('trend-2').style.display='none';}}
 function applyLatestNotif(ln){document.getElementById('hn-ico').textContent=ln.i;document.getElementById('hn-t').textContent=ln.t;document.getElementById('hn-s').textContent=ln.s;document.getElementById('hn-m').textContent=ln.m;}
 function sw(c){kid=c;var k=K[c];['xm','dd'].forEach(function(x){document.getElementById('cav-'+x).classList.toggle('active',x===c);document.getElementById('cnm-'+x).classList.toggle('active',x===c);});document.getElementById('h-ti').innerHTML=k.ti.replace(/\n/g,'<br>');document.getElementById('h-su').textContent=k.su;document.getElementById('h-st').textContent=k.st;document.getElementById('h-sl').textContent=k.sl;document.getElementById('h-vi').textContent=k.vi;document.getElementById('h-st2').textContent=k.st2;document.getElementById('h-hr').textContent=k.hr;document.getElementById('h-rc').textContent=k.rc;
   applyTrends(k.tr);applyLatestNotif(k.ln);}
@@ -1128,30 +1128,7 @@ function es(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,
 function au(t){var m=document.getElementById('nm'),el=document.createElement('div');el.className='msg-u';el.innerHTML='<div class="u-av">👤</div><div class="u-col"><div class="u-bub">'+es(t)+'</div><div class="u-time">'+gt()+'</div></div>';m.appendChild(el);m.scrollTop=m.scrollHeight;}
 function st2(){var m=document.getElementById('nm'),el=document.createElement('div');el.className='msg-n';el.id='tel';el.innerHTML='<div class="n-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="n-col"><div class="typing-bub"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div></div>';m.appendChild(el);m.scrollTop=m.scrollHeight;}
 function rt(){var t=document.getElementById('tel');if(t)t.remove();}
-function renderNanaBubble(t) {
-  // Strip any ||CARD: data, just show plain text
-  var sep = t.indexOf('||CARD:');
-  var textPart = sep >= 0 ? t.slice(0, sep).trim() : t;
-  return {text: es(textPart).replace(/\n/g,'<br>'), card: ''};
-}
-
-function am(t){
-  var m=document.getElementById('nm');
-  var el=document.createElement('div');
-  el.className='msg-n';
-  var parsed = renderNanaBubble(t);
-  el.style.flexDirection='column';
-  var rowHtml='<div style="display:flex;align-items:flex-start;gap:0;">'
-    +'<div class="n-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>'
-    +'<div class="n-col"><div class="n-bub">'+parsed.text+'</div><div class="n-time">'+gt()+'</div></div>'
-    +'</div>';
-  var cardSection = parsed.card
-    ? '<div style="padding:2px 8px 6px 52px;">' + parsed.card + '</div>'
-    : '';
-  el.innerHTML = rowHtml + cardSection;
-  m.appendChild(el);
-  m.scrollTop=m.scrollHeight;
-}
+function am(t){var m=document.getElementById('nm'),el=document.createElement('div');el.className='msg-n';el.innerHTML='<div class="n-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div class="n-col"><div class="n-bub">'+es(t).replace(/\n/g,'<br>')+'</div><div class="n-time">'+gt()+'</div></div>';m.appendChild(el);m.scrollTop=m.scrollHeight;}
 function ac(q){
   document.getElementById('nc').style.display='none';
   au(q);st2();
@@ -1171,305 +1148,20 @@ rd('xm','all');
 applyTrends(K.xm.tr);
 applyLatestNotif(K.xm.ln);
 
-// ── GARMIN LIVE DATA ────────────────────────────────────────────────────────
-var GARMIN_API = 'https://nana-garmin.onrender.com';
-
-async function fetchGarminData() {
-  try {
-    var resp = await fetch(GARMIN_API + '/api/health');
-    if (!resp.ok) return;
-    var d = await resp.json();
-    if (d.error) return;
-
-    // Update home page cards
-    var hrv = d.hrv || 0;
-    var rhr = d.resting_hr || 0;
-    var steps = d.steps || 0;
-    var deep = d.sleep ? d.sleep.deep : '—';
-    var sleepTotal = d.sleep ? d.sleep.total : '—';
-    var sleepScore = d.sleep ? d.sleep.score : 0;
-    var bb = d.body_battery || 0;
-    var stress = d.stress_avg || 0;
-    var calories = d.calories || 0;
-
-    // Home insight cards
-    var elSl = document.getElementById('h-sl');
-    var elVi = document.getElementById('h-vi');
-    var elSt2 = document.getElementById('h-st2');
-    var elHr = document.getElementById('h-hr');
-    var elSu = document.getElementById('h-su');
-    var elSt = document.getElementById('h-st');
-    var elTi = document.getElementById('h-ti');
-    var elRc = document.getElementById('h-rc');
-
-    if (elSl) elSl.textContent = deep;
-    if (elVi) elVi.textContent = hrv + ' ms';
-    if (elSt2) elSt2.textContent = steps.toLocaleString();
-    if (elHr) elHr.textContent = rhr + ' bpm';
-
-    // Status bar
-    var statusMsg = '';
-    if (hrv > 70) statusMsg = 'HRV 优秀，今天状态很好，适合运动。';
-    else if (hrv > 50) statusMsg = 'HRV 正常，保持稳定的日常节奏。';
-    else statusMsg = 'HRV 偏低，今天注意休息，避免高强度训练。';
-    if (elSt) elSt.textContent = statusMsg;
-
-    // Today insight title & subtitle
-    if (elTi) elTi.innerHTML = '你好，<br>今日实时数据已更新';
-    if (elSu) elSu.textContent = '睡眠 ' + sleepTotal + '，评分 ' + sleepScore + '，HRV ' + hrv + 'ms，压力指数 ' + stress + '。';
-
-    // Recommendation
-    var rec = '';
-    if (hrv >= 70 && stress < 30) rec = 'HRV 高且压力低，今天是高强度训练的好时机。';
-    else if (hrv >= 50) rec = '身体状态稳定，适合中等强度活动。';
-    else rec = 'HRV 偏低，建议今天以恢复为主，轻松散步即可。';
-    if (elRc) elRc.textContent = rec;
-
-    // Update K data for charts too
-    if (K && K.xm) {
-      K.xm.sl = deep;
-      K.xm.vi = hrv + ' ms';
-      K.xm.st2 = steps.toLocaleString();
-      K.xm.hr = rhr + ' bpm';
-      K.xm.d.heart.rhr = rhr;
-      K.xm.d.heart.htoday = hrv;
-      K.xm.d.act.steps[6] = steps;
-      K.xm.d.sleep.total = sleepTotal;
-      K.xm.d.sleep.deep = deep;
-      K.xm.d.sleep.score = sleepScore;
-    }
-
-    console.log('Garmin data loaded:', d);
-  } catch(e) {
-    console.log('Garmin fetch failed:', e);
-  }
-}
-
-// Fetch week trend data
-
-async function fetchGarminWeek() {
-  try {
-    var resp = await fetch(GARMIN_API + '/api/week');
-    if (!resp.ok) return;
-    var days = await resp.json();
-    if (!days || !days.length) return;
-
-    // Extract arrays (7 days, oldest first)
-    var steps = days.map(function(d){ return d.steps || 0; });
-    var rhrArr = days.map(function(d){ return d.resting_hr || 0; });
-    var stressArr = days.map(function(d){ return d.stress || 0; });
-
-    // Update K data
-    if (K && K.xm && K.xm.d) {
-      // Steps bar chart (7 days)
-      K.xm.d.act.steps = steps;
-      K.xm.d.act.prev = steps.map(function(v){ return Math.round(v * 0.92); });
-      var avgSteps = Math.round(steps.reduce(function(a,b){return a+b;},0) / steps.length);
-      K.xm.d.act.avg = avgSteps;
-
-      // Heart rate trend
-      K.xm.d.heart.hwk = rhrArr;
-      K.xm.d.heart.rhr = rhrArr[rhrArr.length-1] || K.xm.d.heart.rhr;
-
-      // Update date sub with real steps
-      var todaySteps = steps[steps.length-1] || 0;
-      var calSub = document.getElementById('cal-sub');
-      if (calSub) calSub.textContent = 'Steps ' + todaySteps.toLocaleString() + ' · Stress ' + (stressArr[stressArr.length-1] || 0);
-    }
-
-    // Re-render data page with fresh data
-    rd('xm', 'all');
-    console.log('Garmin week data loaded:', days);
-  } catch(e) {
-    console.log('Garmin week fetch failed:', e);
-  }
-}
-
-// Fetch today + week + AI trends on load
-var garminTodayData = null;
-var garminWeekData = null;
-
-async function loadAllGarminData() {
-  try {
-    // Fetch today and week in parallel
-    var [todayResp, weekResp] = await Promise.all([
-      fetch(GARMIN_API + '/api/health'),
-      fetch(GARMIN_API + '/api/week')
-    ]);
-    if (todayResp.ok) {
-      garminTodayData = await todayResp.json();
-      if (!garminTodayData.error) updateHomePage(garminTodayData);
-    }
-    if (weekResp.ok) {
-      garminWeekData = await weekResp.json();
-      if (garminWeekData && garminWeekData.length) updateWeekCharts(garminWeekData);
-    }
-    // Generate AI trends after both loaded
-    if (garminTodayData && garminWeekData) {
-      fetchGarminTrends(garminWeekData, garminTodayData);
-    }
-  } catch(e) {
-    console.log('Garmin load error:', e);
-  }
-}
-
-function updateHomePage(d) {
-  var hrv = d.hrv || 0;
-  var rhr = d.resting_hr || 0;
-  var steps = d.steps || 0;
-  var deep = d.sleep ? d.sleep.deep : '—';
-  var sleepTotal = d.sleep ? d.sleep.total : '—';
-  var sleepScore = d.sleep ? d.sleep.score : 0;
-  var stress = d.stress_avg || 0;
-
-  var elSl = document.getElementById('h-sl');
-  var elVi = document.getElementById('h-vi');
-  var elSt2 = document.getElementById('h-st2');
-  var elHr = document.getElementById('h-hr');
-  var elSu = document.getElementById('h-su');
-  var elSt = document.getElementById('h-st');
-  var elTi = document.getElementById('h-ti');
-  var elRc = document.getElementById('h-rc');
-
-  if (elSl) elSl.textContent = deep;
-  if (elVi) elVi.textContent = hrv + ' ms';
-  if (elSt2) elSt2.textContent = steps.toLocaleString();
-  if (elHr) elHr.textContent = rhr + ' bpm';
-
-  var statusMsg = hrv > 70 ? 'HRV 优秀，今天状态很好，适合运动。' :
-                  hrv > 50 ? 'HRV 正常，保持稳定的日常节奏。' :
-                             'HRV 偏低，今天注意休息，避免高强度训练。';
-  if (elSt) elSt.textContent = statusMsg;
-  if (elTi) elTi.innerHTML = '你好，<br>今日实时数据已更新';
-  if (elSu) elSu.textContent = '睡眠 ' + sleepTotal + '，评分 ' + sleepScore + '，HRV ' + hrv + 'ms，压力指数 ' + stress + '。';
-
-  var rec = hrv >= 70 && stress < 30 ? 'HRV 高且压力低，今天是高强度训练的好时机。' :
-            hrv >= 50 ? '身体状态稳定，适合中等强度活动。' :
-                        'HRV 偏低，建议今天以恢复为主，轻松散步即可。';
-  if (elRc) elRc.textContent = rec;
-
-  if (K && K.xm) {
-    K.xm.d.heart.rhr = rhr;
-    K.xm.d.heart.htoday = hrv;
-    K.xm.d.act.steps[6] = steps;
-    K.xm.d.sleep.total = sleepTotal;
-    K.xm.d.sleep.deep = deep;
-    K.xm.d.sleep.score = sleepScore;
-  }
-}
-
-function updateWeekCharts(days) {
-  var steps = days.map(function(d){ return d.steps || 0; });
-  var rhrArr = days.map(function(d){ return d.resting_hr || 0; });
-  var stressArr = days.map(function(d){ return d.stress || 0; });
-
-  if (K && K.xm && K.xm.d) {
-    K.xm.d.act.steps = steps;
-    K.xm.d.act.prev = steps.map(function(v){ return Math.round(v * 0.92); });
-    K.xm.d.act.avg = Math.round(steps.reduce(function(a,b){return a+b;},0) / steps.length);
-    K.xm.d.heart.hwk = rhrArr;
-    K.xm.d.heart.rhr = rhrArr[rhrArr.length-1] || K.xm.d.heart.rhr;
-
-    var calSub = document.getElementById('cal-sub');
-    if (calSub) calSub.textContent = 'Steps ' + (steps[6]||0).toLocaleString() + ' · Stress ' + (stressArr[6]||0);
-  }
-  rd('xm', 'all');
-}
-
-loadAllGarminData();
-
-
-async function fetchGarminTrends(weekData, todayData) {
-  try {
-    // Build a concise data summary for the AI
-    var summary = weekData.map(function(d, i) {
-      var label = i === 6 ? 'Today' : 'Day-' + (6-i);
-      return label + ': steps=' + d.steps + ', rhr=' + d.resting_hr + 'bpm, stress=' + d.stress;
-    }).join('\n');
-
-    var todaySummary = 'Today: sleep=' + todayData.sleep.total +
-      ' (score ' + todayData.sleep.score + '), HRV=' + todayData.hrv + 'ms' +
-      ', body_battery=' + todayData.body_battery +
-      ', calories=' + todayData.calories;
-
-    var prompt = 'Based on my 7-day health data, identify 2 actionable trends or insights. ' +
-      'Be specific, concise, and practical. Each insight: one short title (max 8 words) + one sentence detail (max 25 words). ' +
-      'Reply ONLY in JSON format: {"trends":[{"title":"...","detail":"..."},{"title":"...","detail":"..."}]}\n\n' +
-      'Weekly data (oldest to newest):\n' + summary + '\n' + todaySummary;
-
-    var resp = await fetch('https://nana-proxy-ruddy.vercel.app/api/chat', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        system: 'You are a health data analyst. Reply only with valid JSON, no markdown, no explanation.',
-        messages: [{role: 'user', content: prompt}]
-      })
-    });
-
-    if (!resp.ok) return;
-    var data = await resp.json();
-    var text = (data.content || []).filter(function(b){ return b.type === 'text'; }).map(function(b){ return b.text; }).join('');
-    
-    // Parse JSON response
-    var clean = text.replace(/```json|```/g, '').trim();
-    var parsed = JSON.parse(clean);
-    var trends = parsed.trends || [];
-    if (!trends.length) return;
-
-    // Update Trend read UI
-    var countEl = document.getElementById('trend-count');
-    if (countEl) countEl.textContent = trends.length + ' things to watch';
-
-    var t1 = document.getElementById('trend-1t');
-    var d1 = document.getElementById('trend-1d');
-    if (t1 && trends[0]) t1.textContent = trends[0].title;
-    if (d1 && trends[0]) d1.textContent = trends[0].detail;
-
-    if (trends[1]) {
-      var t2 = document.getElementById('trend-2t');
-      var d2 = document.getElementById('trend-2d');
-      var el2 = document.getElementById('trend-2');
-      if (el2) el2.style.display = '';
-      if (t2) t2.textContent = trends[1].title;
-      if (d2) d2.textContent = trends[1].detail;
-    }
-
-    console.log('AI trends loaded:', trends);
-  } catch(e) {
-    console.log('Trend AI failed:', e);
-  }
-}
-
-// ── END GARMIN LIVE DATA ────────────────────────────────────────────────────
-
-
 // ── NANA AI ENGINE ─────────────────────────────────────────────────────────
 // CONFIGURE: set your Vercel proxy URL here after deployment
 var PROXY_URL = 'https://nana-proxy-ruddy.vercel.app/api/chat';
 
 var chatHistory = [];
 
-function buildNanaSystem() {
-  var base = 'You are Nana, a warm AI health assistant for parents. The health data belongs to the parent\'s child (named Sarah or Tommy). You are speaking to the parent. Rules: (1) Refer to the child by name (Sarah), e.g. "Sarah\'s HRV is 90ms today". (2) Keep advice concise, plain text, no markdown, no asterisks, under 80 words. (3) When your reply includes health metrics, append a data card at the end using this exact format: ||CARD:label:value:unit,label:value:unit (e.g. ||CARD:HRV:90:ms,压力:27:,静息心率:57:bpm). Only include metrics relevant to the question. Advice text goes BEFORE the ||CARD marker. Today: ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) + '.';
-  if (garminTodayData && !garminTodayData.error) {
-    var d = garminTodayData;
-    base += ' User health data today: HRV=' + d.hrv + 'ms, resting HR=' + d.resting_hr + 'bpm, steps=' + d.steps + ', sleep=' + (d.sleep ? d.sleep.total + ' score ' + d.sleep.score : 'N/A') + ', deep sleep=' + (d.sleep ? d.sleep.deep : 'N/A') + ', stress=' + d.stress_avg + ', body battery=' + d.body_battery + ', calories=' + d.calories + '.';
-  }
-  if (garminWeekData && garminWeekData.length) {
-    var weekSteps = garminWeekData.map(function(d){ return d.steps; }).join(',');
-    var weekRhr = garminWeekData.map(function(d){ return d.resting_hr; }).join(',');
-    var weekStress = garminWeekData.map(function(d){ return d.stress; }).join(',');
-    base += ' Past 7 days (oldest→today) steps=[' + weekSteps + '], rhr=[' + weekRhr + '], stress=[' + weekStress + '].';
-  }
-  return base;
-}
+var NANA_SYSTEM = 'You are Nana, a warm personal health assistant. You have access to the user\'s real-time COROS health data. Rules: be concise (under 100 words per reply), plain text only (no markdown, no asterisks), speak directly with actual numbers from the data. Always fetch COROS data before answering health questions. Today: ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 
 async function callProxy(userMessage, history) {
   var resp = await fetch(PROXY_URL, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({
-      system: buildNanaSystem(),
+      system: NANA_SYSTEM,
       messages: history.concat([{role:'user', content: userMessage}])
     })
   });
@@ -1490,21 +1182,20 @@ function extractText(data) {
 
 async function fetchCorosAndGreet() {
   try {
-    await new Promise(function(r){ setTimeout(r, 1500); });
-    var greetPrompt = garminTodayData && !garminTodayData.error
-      ? 'Greet me with a 2-sentence friendly summary of my health status today based on my data.'
-      : 'Greet me as my health assistant.';
-    var data = await callProxy(greetPrompt, []);
+    var data = await callProxy(
+      'Use COROS tools to fetch my health data for today: daily health, HRV assessment, sleep, and recovery status. Then give me a friendly 2-sentence summary of my current status.',
+      []
+    );
     var reply = extractText(data);
-    if (!reply) reply = "Hi! I can see your health data. Ask me anything!";
+    if (!reply) reply = "Connected to your COROS data! Ask me anything.";
     rt(); am(reply);
     chatHistory = [
-      {role:'user', content:'[initial greeting]'},
+      {role:'user', content:'[fetch initial data]'},
       {role:'assistant', content: reply}
     ];
   } catch(e) {
     rt();
-    am("Hi! I'm Nana. Ask me about your sleep, HRV, or activity!");
+    am("Couldn't reach the server. Check that PROXY_URL is configured and Vercel is deployed.");
     console.error(e);
   }
 }
@@ -1525,6 +1216,148 @@ async function callNanaAI(userMsg) {
   }
 }
 // ── END NANA AI ENGINE ──────────────────────────────────────────────────────
+
+// ── GARMIN + NANA AI ENGINE ────────────────────────────────────────────────
+var PROXY_URL = 'https://nana-proxy-ruddy.vercel.app/api/chat';
+var GARMIN_API = 'https://nana-garmin.onrender.com';
+var chatHistory = [];
+var garminTodayData = null;
+var garminWeekData = null;
+
+function buildNanaSystem() {
+  var base = 'You are Nana, a warm AI health assistant for parents. The health data belongs to the parent\'s child (Sarah). You are speaking to the parent. Rules: (1) Always reply in Chinese. (2) Refer to child by name Sarah. (3) Concise, plain text, no markdown, under 80 words. (4) Mention key numbers naturally. Today: ' + new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',year:'numeric'}) + '.';
+  if (garminTodayData && !garminTodayData.error) {
+    var d = garminTodayData;
+    base += ' Sarah今日数据: HRV=' + d.hrv + 'ms, 静息心率=' + d.resting_hr + 'bpm, 步数=' + d.steps + ', 睡眠=' + (d.sleep ? d.sleep.total + ' 评分' + d.sleep.score : 'N/A') + ', 深睡=' + (d.sleep ? d.sleep.deep : 'N/A') + ', 压力=' + d.stress_avg + ', 体能电量=' + d.body_battery + ', 卡路里=' + d.calories + '.';
+  }
+  if (garminWeekData && garminWeekData.length) {
+    var ws = garminWeekData.map(function(d){ return d.steps; }).join(',');
+    var wr = garminWeekData.map(function(d){ return d.resting_hr; }).join(',');
+    var wst = garminWeekData.map(function(d){ return d.stress; }).join(',');
+    base += ' 近7天(旧→新) 步数=[' + ws + '], 静息心率=[' + wr + '], 压力=[' + wst + '].';
+  }
+  return base;
+}
+
+async function callProxy(userMessage, history) {
+  var resp = await fetch(PROXY_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      system: buildNanaSystem(),
+      messages: history.concat([{role:'user', content: userMessage}])
+    })
+  });
+  if (!resp.ok) throw new Error('Proxy error ' + resp.status);
+  return resp.json();
+}
+
+function extractText(data) {
+  if (!data || !data.content) return '';
+  return data.content.filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join(' ').trim();
+}
+
+async function fetchCorosAndGreet() {
+  try {
+    await new Promise(function(r){ setTimeout(r, 1500); });
+    var prompt = garminTodayData && !garminTodayData.error
+      ? '用一两句话友好地告诉我Sarah今天的健康状态如何。'
+      : '用中文问候我，告诉我可以询问Sarah的健康数据。';
+    var data = await callProxy(prompt, []);
+    var reply = extractText(data);
+    if (!reply) reply = '你好！我是Nana，可以问我关于Sarah的睡眠、HRV或活动情况。';
+    rt(); am(reply);
+    chatHistory = [{role:'user',content:'[初始问候]'},{role:'assistant',content:reply}];
+  } catch(e) {
+    rt(); am('你好！我是Nana，你的健康助手。');
+  }
+}
+
+async function callNanaAI(userMsg) {
+  try {
+    var data = await callProxy(userMsg, chatHistory);
+    var reply = extractText(data);
+    if (!reply) reply = '没有收到回复，请再试一次。';
+    rt(); am(reply);
+    chatHistory.push({role:'user',content:userMsg});
+    chatHistory.push({role:'assistant',content:reply});
+    if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
+  } catch(e) {
+    rt(); am('连接失败，请检查网络后重试。');
+  }
+}
+
+function updateHomePage(d) {
+  var hrv=d.hrv||0, rhr=d.resting_hr||0, steps=d.steps||0;
+  var deep=d.sleep?d.sleep.deep:'—', sleepTotal=d.sleep?d.sleep.total:'—';
+  var sleepScore=d.sleep?d.sleep.score:0, stress=d.stress_avg||0;
+  var elSl=document.getElementById('h-sl'), elVi=document.getElementById('h-vi');
+  var elSt2=document.getElementById('h-st2'), elHr=document.getElementById('h-hr');
+  var elSu=document.getElementById('h-su'), elSt=document.getElementById('h-st');
+  var elTi=document.getElementById('h-ti'), elRc=document.getElementById('h-rc');
+  if(elSl)elSl.textContent=deep;
+  if(elVi)elVi.textContent=hrv+' ms';
+  if(elSt2)elSt2.textContent=steps.toLocaleString();
+  if(elHr)elHr.textContent=rhr+' bpm';
+  var statusMsg=hrv>70?'HRV 优秀，今天状态很好，适合运动。':hrv>50?'HRV 正常，保持稳定的日常节奏。':'HRV 偏低，今天注意休息，避免高强度训练。';
+  if(elSt)elSt.textContent=statusMsg;
+  if(elTi)elTi.innerHTML='你好，<br>今日实时数据已更新';
+  if(elSu)elSu.textContent='睡眠 '+sleepTotal+'，评分 '+sleepScore+'，HRV '+hrv+'ms，压力 '+stress+'。';
+  var rec=hrv>=70&&stress<30?'HRV 高且压力低，今天是高强度训练的好时机。':hrv>=50?'身体状态稳定，适合中等强度活动。':'HRV 偏低，建议今天以恢复为主，轻松散步即可。';
+  if(elRc)elRc.textContent=rec;
+  if(K&&K.xm){K.xm.d.heart.rhr=rhr;K.xm.d.heart.htoday=hrv;K.xm.d.act.steps[6]=steps;K.xm.d.sleep.total=sleepTotal;K.xm.d.sleep.deep=deep;K.xm.d.sleep.score=sleepScore;}
+}
+
+function updateWeekCharts(days) {
+  var steps=days.map(function(d){return d.steps||0;});
+  var rhrArr=days.map(function(d){return d.resting_hr||0;});
+  var stressArr=days.map(function(d){return d.stress||0;});
+  if(K&&K.xm&&K.xm.d){
+    K.xm.d.act.steps=steps;
+    K.xm.d.act.prev=steps.map(function(v){return Math.round(v*0.92);});
+    K.xm.d.act.avg=Math.round(steps.reduce(function(a,b){return a+b;},0)/steps.length);
+    K.xm.d.heart.hwk=rhrArr;
+    K.xm.d.heart.rhr=rhrArr[rhrArr.length-1]||K.xm.d.heart.rhr;
+    var calSub=document.getElementById('cal-sub');
+    if(calSub)calSub.textContent='步数 '+(steps[6]||0).toLocaleString()+' · 压力 '+(stressArr[6]||0);
+  }
+  rd('xm','all');
+}
+
+async function fetchGarminTrends(weekData, todayData) {
+  try {
+    var summary=weekData.map(function(d,i){var l=i===6?'今天':'第'+(6-i)+'天前';return l+': 步数='+d.steps+', 静息心率='+d.resting_hr+'bpm, 压力='+d.stress;}).join('\n');
+    var todaySummary='今天: 睡眠='+todayData.sleep.total+'(评分'+todayData.sleep.score+'), HRV='+todayData.hrv+'ms, 体能='+todayData.body_battery;
+    var prompt='根据孩子7天健康数据，找出2个有价值的趋势或建议。每条：标题（6字内）+ 一句说明（20字内，具体可操作）。只回复JSON：{"trends":[{"title":"...","detail":"..."},{"title":"...","detail":"..."}]}\n\n'+summary+'\n'+todaySummary;
+    var resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:'You are a child health analyst. Reply only with valid JSON, no markdown.',messages:[{role:'user',content:prompt}]})});
+    if(!resp.ok)return;
+    var data=await resp.json();
+    var text=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+    var clean=text.replace(/```json|```/g,'').trim();
+    var parsed=JSON.parse(clean);
+    var trends=parsed.trends||[];
+    if(!trends.length)return;
+    var countEl=document.getElementById('trend-count');
+    if(countEl)countEl.textContent=trends.length+' 条趋势';
+    var t1=document.getElementById('trend-1t'),d1=document.getElementById('trend-1d');
+    if(t1&&trends[0])t1.textContent=trends[0].title;
+    if(d1&&trends[0])d1.textContent=trends[0].detail;
+    if(trends[1]){var t2=document.getElementById('trend-2t'),d2=document.getElementById('trend-2d'),el2=document.getElementById('trend-2');if(el2)el2.style.display='';if(t2)t2.textContent=trends[1].title;if(d2)d2.textContent=trends[1].detail;}
+  } catch(e){console.log('Trend AI failed:',e);}
+}
+
+async function loadAllGarminData() {
+  try {
+    var results=await Promise.all([fetch(GARMIN_API+'/api/health'),fetch(GARMIN_API+'/api/week')]);
+    if(results[0].ok){garminTodayData=await results[0].json();if(!garminTodayData.error)updateHomePage(garminTodayData);}
+    if(results[1].ok){garminWeekData=await results[1].json();if(garminWeekData&&garminWeekData.length)updateWeekCharts(garminWeekData);}
+    if(garminTodayData&&garminWeekData)fetchGarminTrends(garminWeekData,garminTodayData);
+  } catch(e){console.log('Garmin load error:',e);}
+}
+
+loadAllGarminData();
+// ── END ENGINE ──────────────────────────────────────────────────────────────
+
 </script>
 </body>
 </html>
