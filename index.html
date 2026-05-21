@@ -1154,7 +1154,7 @@ var PROXY_URL = 'https://nana-proxy-ruddy.vercel.app/api/chat';
 
 var chatHistory = [];
 
-var NANA_SYSTEM = 'You are Nana, a warm personal health assistant. You have access to the user's real-time COROS health data. Rules: be concise (under 100 words per reply), plain text only (no markdown, no asterisks), speak directly with actual numbers from the data. Always fetch COROS data before answering health questions. Today: ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+var NANA_SYSTEM = 'You are Nana, a warm personal health assistant. You have access to the user\'s real-time COROS health data. Rules: be concise (under 100 words per reply), plain text only (no markdown, no asterisks), speak directly with actual numbers from the data. Always fetch COROS data before answering health questions. Today: ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 
 async function callProxy(userMessage, history) {
   var resp = await fetch(PROXY_URL, {
