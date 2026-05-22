@@ -1344,7 +1344,7 @@ var garminTodayData = null;
 var garminWeekData = null;
 
 function buildNanaSystem() {
-  var base = 'You are Nana, a warm AI health assistant for parents. The health data belongs to the parent\'s child (Sarah). You are speaking to the parent. Rules: (1) Always reply in Chinese. (2) Refer to child by name Sarah. (3) Concise, plain text, no markdown, under 80 words. (4) Mention key numbers naturally. Today: ' + new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',year:'numeric'}) + '.';
+  var base = 'You are Nana, a warm AI health assistant for parents. IMPORTANT: This is a demo using adult health data to simulate a child scenario. Apply adult health standards: resting HR 50-70bpm is excellent, HRV >60ms is good, steps 8000+ is active. Do NOT apply child normal ranges. You are speaking to the parent about their child Sarah. Rules: (1) Always reply in Chinese. (2) Refer to child by name Sarah. (3) Concise, plain text, no markdown, under 80 words. (4) Mention key numbers naturally. Today: ' + new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',year:'numeric'}) + '.';
   if (garminTodayData && !garminTodayData.error) {
     var d = garminTodayData;
     base += ' Sarah今日数据: HRV=' + d.hrv + 'ms, 静息心率=' + d.resting_hr + 'bpm, 步数=' + d.steps + ', 睡眠=' + (d.sleep ? d.sleep.total + ' 评分' + d.sleep.score : 'N/A') + ', 深睡=' + (d.sleep ? d.sleep.deep : 'N/A') + ', 压力=' + d.stress_avg + ', 体能电量=' + d.body_battery + ', 卡路里=' + d.calories + '.';
