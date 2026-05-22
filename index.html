@@ -1464,6 +1464,8 @@ function updateHomePage(d) {
       K.xm.d.sleep.breathing_disruption_cn=d.sleep.breathing_disruption_cn||'无';
       K.xm.d.sleep.restless_count=d.sleep.restless_count||0;
     }
+    // Re-render data page if week data already loaded
+    if(garminWeekData) rd('xm','all');
   }
 }
 
