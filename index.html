@@ -357,17 +357,18 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,#f7f9fc 0%,#e8f
 
     <!-- Today's insight -->
     <div class="insight-box">
-      <div><div class="ins-lbl">Today's insight</div><div class="ins-title" id="h-ti">Sarah,<br>you look great today</div></div>
-      <div class="ins-sub" id="h-su">Last night: 4 deep-sleep cycles, HRV 46ms above average, vitality score 92.</div>
+      <div class="ins-lbl">今日洞察</div>
+      <div class="ins-title" id="h-ti">正在获取数据...</div>
+      <div class="ins-sub" id="h-su"></div>
       <div class="divd"></div>
       <div class="ins-grid">
-        <div><div class="ins-lbl">Deep sleep</div><div class="ins-val" id="h-sl">2h 40m</div></div>
-        <div><div class="ins-lbl">HRV today</div><div class="ins-val" id="h-vi">46 ms</div></div>
-        <div><div class="ins-lbl">Steps today</div><div class="ins-val" id="h-st2">8,800</div></div>
-        <div><div class="ins-lbl">Resting HR</div><div class="ins-val" id="h-hr">68 bpm</div></div>
+        <div><div class="ins-lbl">深睡</div><div class="ins-val" id="h-sl">—</div></div>
+        <div><div class="ins-lbl">HRV</div><div class="ins-val" id="h-vi">—</div></div>
+        <div><div class="ins-lbl">今日步数</div><div class="ins-val" id="h-st2">—</div></div>
+        <div><div class="ins-lbl">静息心率</div><div class="ins-val" id="h-hr">—</div></div>
       </div>
       <div class="divd"></div>
-      <div class="ins-rec" id="h-rc">Higher HRV suggests good recovery — a moderate outdoor workout fits well today.</div>
+      <div class="ins-rec" id="h-rc">正在生成建议...</div>
     </div>
 
     <!-- trends -->
@@ -379,7 +380,7 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,#f7f9fc 0%,#e8f
       <div class="trend-item" id="trend-1">
         <div class="trend-item-t" id="trend-1t">Outdoor time is trending down</div>
         <div class="trend-item-d" id="trend-1d">About 48 min/day outdoors over the past 7 days, ~15% lower than last week. Try a fixed slot after school.</div>
-        <div class="trend-spark" id="trend-1s"><span style="height:40%"></span><span style="height:55%"></span><span style="height:50%"></span><span style="height:45%"></span><span style="height:38%"></span><span style="height:35%"></span><span style="height:32%"></span></div>
+        
       </div>
       <div class="trend-item" id="trend-2">
         <div class="trend-item-t" id="trend-2t">More sedentary time this afternoon</div>
@@ -1103,16 +1104,134 @@ function ss(id,idx){document.getElementById(id).querySelectorAll('.seg-opt').for
 function closeAddFlow(){['pg-add-child','pg-add-device','pg-add-confirm'].forEach(function(id){cl(id);});}
 
 function rd(c,ct){
-  var k=K[c],d=adjustData(k.d,c),dayName=dateLabel(true),dayPeriod=dateLabel(false),wd=weekLabels();var h='<div style="height:6px;"></div>';
+  var k=K[c],d=adjustData(k.d,c),dayName=dateLabel(true),wd=weekLabels();
+  var h='<div style="height:6px;"></div>';
   var showS=(ct==='all'||ct==='sleep'),showA=(ct==='all'||ct==='act'),showHV=(ct==='all'||ct==='hrv'),showHL=(ct==='all'||ct==='health');
-  if(showS){var s=d.sleep,cw=294,ch=50,cv=s.curve;var pts=cv.map(function(v,i){return(i/(cv.length-1)*cw).toFixed(1)+','+(ch-(v/100)*(ch-8)).toFixed(1);}).join(' ');var area=pts+' '+cw+','+ch+' 0,'+ch;var svg='<svg style="width:100%;height:'+ch+'px;margin-bottom:3px;" viewBox="0 0 '+cw+' '+ch+'" preserveAspectRatio="none"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1882FF" stop-opacity="0.1"/><stop offset="100%" stop-color="#1882FF" stop-opacity="0"/></linearGradient></defs><polygon points="'+area+'" fill="url(#sg)"/><polyline points="'+pts+'" fill="none" stroke="#1882FF" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>';var stC=['#e0e0e0','#aaa','#1a1a1a','#666'],stN=['Awake','Light','Deep','REM'];var sBar=s.stages.map(function(p,i){return'<div style="width:'+p+'%;height:100%;background:'+stC[i]+'"></div>';}).join('');var sLeg=stN.map(function(l,i){return'<div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--muted)"><div style="width:8px;height:8px;border-radius:2px;background:'+stC[i]+'"></div>'+l+' '+s.stages[i]+'%</div>';}).join('');var latOk=parseInt(s.latency)<=20;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>Sleep quality</div><div class="card-period">'+dayName+'</div></div>'+svg+'<div class="tl-row"><span class="tl">21:00</span><span class="tl">00:00</span><span class="tl">03:00</span><span class="tl">06:00</span></div><div style="font-size:9px;color:var(--muted);margin:4px 0 2px;">Sleep stages</div><div class="stage-bar">'+sBar+'</div><div style="display:flex;gap:8px;margin-bottom:8px;">'+sLeg+'</div><div class="stats-row"><div class="stat"><div class="stat-lbl">Total time</div><div class="stat-val" style="font-size:11px;">'+s.total+'</div></div><div class="stat"><div class="stat-lbl">Deep sleep</div><div class="stat-val" style="font-size:11px;">'+s.deep+'</div><div class="stat-ch">'+s.dchg+'</div></div><div class="stat"><div class="stat-lbl">Sleep onset</div><div class="stat-val" style="font-size:11px;">'+s.latency+'</div></div><div class="stat"><div class="stat-lbl">Wakefulness</div><div class="stat-val" style="font-size:11px;">'+s.waso+'</div></div></div><div class="ins-chip '+(latOk?'ok':'warn')+'">💡 '+(latOk?'Smooth sleep onset — deep sleep looks healthy.':'Longer sleep onset — reduce screens before bed.')+'</div></div>';}
-  if(showA){var a=d.act,st=a.steps,pr=a.prev,maxS=Math.max.apply(null,st.concat(pr));var bars=st.map(function(v,i){var h2=Math.round((v/maxS)*56),isT=i===6;return'<div class="bw"><div class="bar'+(isT?' today':'')+'" style="height:'+h2+'px"></div><div class="bl">'+wd[i]+'</div></div>';}).join('');var dif=Math.round((st[6]-pr[6])/pr[6]*100);var iC=['#c7c7cc','#8e8e93','#1882FF'],iV=[a.int.lo,a.int.mi,a.int.hi],iL=['Low','Mid','High'],maxI=Math.max.apply(null,iV);var iBars=iV.map(function(v,i){var h2=Math.round((v/maxI)*44);return'<div class="int-col"><div class="int-bar" style="height:'+h2+'px;background:'+iC[i]+'"></div><div style="font-size:9px;color:var(--muted);">'+v+'m</div></div>';}).join('');var sunOk=a.sun.today>=a.sun.goal;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M13 4v6l3 3-3 3v4"/><path d="M11 4v6L8 13l3 3v4"/></svg></div>Activity</div><div class="card-period">7-day trend</div></div><div class="bar-chart">'+bars+'</div><div class="stats-row"><div class="stat"><div class="stat-lbl">Step count</div><div class="stat-val">'+st[6].toLocaleString()+'</div><div class="stat-ch">'+(dif>=0?'↑':'↓')+Math.abs(dif)+'%</div></div><div class="stat"><div class="stat-lbl">Cadence</div><div class="stat-val">'+a.cad+'</div><div class="stat-ch">steps/min</div></div><div class="stat"><div class="stat-lbl">Stride</div><div class="stat-val">'+a.str+'m</div></div><div class="stat"><div class="stat-lbl">Goal met</div><div class="stat-val">'+a.rate+'%</div></div></div></div>'+'<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>Intensity & sunlight</div><div class="card-period">'+dayName+'</div></div><div class="int-bars">'+iBars+'</div><div style="display:flex;gap:8px;margin-bottom:8px;">'+iL.map(function(l,i){return'<div style="display:flex;align-items:center;gap:3px;font-size:9px;color:var(--muted)"><div style="width:7px;height:7px;border-radius:2px;background:'+iC[i]+'"></div>'+l+'</div>';}).join('')+'</div><div class="stats-row"><div class="stat"><div class="stat-lbl">Low</div><div class="stat-val">'+a.int.lo+'m</div></div><div class="stat"><div class="stat-lbl">Mid</div><div class="stat-val">'+a.int.mi+'m</div></div><div class="stat"><div class="stat-lbl">High</div><div class="stat-val">'+a.int.hi+'m</div></div></div><div class="ins-chip '+(sunOk?'ok':'warn')+'" style="margin-top:8px;">☀️ Bright light '+a.sun.today+' min'+(sunOk?' · goal reached':' · target '+a.sun.goal+' min, '+Math.max(0,a.sun.goal-a.sun.today)+' min to go')+'</div></div>';}
-  if(showHV){var ht=d.heart,cw=294,ch=38,hw=ht.hwk,hmx=Math.max.apply(null,hw),hmn=Math.min.apply(null,hw);var hpts=hw.map(function(v,i){return(i/(hw.length-1)*cw).toFixed(1)+','+(ch-((v-hmn)/(hmx-hmn||1))*(ch-8)-4).toFixed(1);}).join(' ');var mxH=Math.max.apply(null,ht.hrv),havg=Math.round(ht.hrv.reduce(function(a,b){return a+b;},0)/ht.hrv.length);var hbars=ht.hrv.map(function(v,i){var h2=Math.round((v/mxH)*32),isT=i===6;return'<div class="hrv-bar" style="height:'+h2+'px;background:'+(isT?'#1882FF':'#d1d1d6')+'"></div>';}).join('');var hrvOk=ht.htoday>=havg;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>Heart rate</div><div class="card-period">7-day trend</div></div><svg viewBox="0 0 '+cw+' '+ch+'" preserveAspectRatio="none" style="width:100%;height:'+ch+'px;margin-bottom:6px;"><polyline points="'+hpts+'" fill="none" stroke="#1882FF" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg><div class="stats-row"><div class="stat"><div class="stat-lbl">Avg HR</div><div class="stat-val">'+ht.avg+' bpm</div></div><div class="stat"><div class="stat-lbl">Resting HR</div><div class="stat-val">'+ht.rhr+' bpm</div></div></div></div>'+'<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>HRV</div><div class="card-period">7-day trend</div></div><div class="hrv-bars">'+hbars+'</div><div class="tl-row">'+wd.map(function(d){return'<span class="tl">'+d+'</span>';}).join('')+'</div><div class="stats-row" style="margin-top:8px;"><div class="stat"><div class="stat-lbl">HRV today</div><div class="stat-val">'+ht.htoday+' ms</div><div class="stat-ch">'+ht.hchg+'</div></div><div class="stat"><div class="stat-lbl">Week avg</div><div class="stat-val">'+havg+' ms</div></div></div><div class="ins-chip '+(hrvOk?'ok':'warn')+'">💡 '+ht.hnote+'</div></div>';}
-  if(showHL){var hl=d.health;h+='<div class="card-d"><div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>Health metrics</div><div class="card-period">'+dayName+'</div></div><div class="h-grid"><div class="h-item"><div class="h-lbl">SpO2</div><div><span class="h-val">'+hl.spo2+'</span><span class="h-unit">%</span></div><div class="h-ch" style="color:var(--ink);">✓ Normal</div></div><div class="h-item"><div class="h-lbl">Resting breathing</div><div><span class="h-val">'+hl.br+'</span><span class="h-unit">/min</span></div><div class="h-ch" style="color:var(--ink);">✓ Normal</div></div><div class="h-item"><div class="h-lbl">Skin temp delta</div><div><span class="h-val" style="font-size:16px;">'+hl.temp+'°C</span></div></div><div class="h-item" style="background:transparent;border:1px solid var(--light);"><div class="h-lbl">Pediatric ref.</div><div style="font-size:10px;color:var(--muted);line-height:1.7;margin-top:3px;">HR 60–120 bpm<br>SpO2 ≥ 95%<br>RR 12–20 /min</div></div></div></div>';}
-  h+='<div style="height:6px;"></div>';document.getElementById('ds').innerHTML=h;
+
+  // ── SLEEP ──
+  if(showS){
+    var s=d.sleep;
+    var stColors=['#e0e0e0','#888','#1a1a1a','#4B9EFF'];
+    var stNames=['清醒','浅睡','深睡','REM'];
+    var stPct=s.stages; // [awake%, light%, deep%, rem%]
+    var sBar=stPct.map(function(p,i){return'<div style="flex:'+p+';height:100%;background:'+stColors[i]+';border-radius:'+(i===0?'6px 0 0 6px':i===3?'0 6px 6px 0':'0')+'"></div>';}).join('');
+    var sLeg=stNames.map(function(l,i){return'<div style="display:flex;align-items:center;gap:3px;font-size:10px;color:var(--muted)"><div style="width:8px;height:8px;border-radius:2px;background:'+stColors[i]+'"></div>'+l+' '+stPct[i]+'%</div>';}).join('');
+    h+='<div class="card-d">'
+      +'<div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>睡眠质量</div><div class="card-period">'+dayName+'</div></div>'
+      +'<div style="display:flex;height:10px;width:100%;border-radius:6px;overflow:hidden;margin-bottom:6px;">'+sBar+'</div>'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">'+sLeg+'</div>'
+      +'<div class="stats-row">'
+      +'<div class="stat"><div class="stat-lbl">总时长</div><div class="stat-val" style="font-size:13px;">'+s.total+'</div></div>'
+      +'<div class="stat"><div class="stat-lbl">深睡</div><div class="stat-val" style="font-size:13px;">'+s.deep+'</div><div class="stat-ch">'+s.dchg+'</div></div>'
+      +'<div class="stat"><div class="stat-lbl">入睡用时</div><div class="stat-val" style="font-size:13px;">'+s.latency+'</div></div>'
+      +'<div class="stat"><div class="stat-lbl">夜间清醒</div><div class="stat-val" style="font-size:13px;">'+s.waso+'</div></div>'
+      +'</div>'
+      +'<div class="ins-chip ok">💡 深睡占比 '+stPct[2]+'%，REM '+stPct[3]+'%</div>'
+      +'</div>';
+  }
+
+  // ── ACTIVITY ──
+  if(showA){
+    var a=d.act,st=a.steps;
+    // Build activity list from garminActivities global
+    var actListHtml='';
+    if(window.garminActivities&&garminActivities.length){
+      actListHtml=garminActivities.map(function(act){
+        var dist=act.distance_km>0?'<span style="color:var(--muted);font-size:11px;">'+act.distance_km+'km</span>':'';
+        var hr=act.avg_hr>0?'<span style="color:var(--muted);font-size:11px;">♥'+act.avg_hr+'</span>':'';
+        var date=act.date?'<span style="color:var(--muted);font-size:10px;margin-left:auto;">'+act.date.slice(5)+'</span>':'';
+        return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:.5px solid var(--light);">'
+          +'<span style="font-size:20px;">'+act.icon+'</span>'
+          +'<div style="flex:1;min-width:0;">'
+          +'<div style="font-size:13px;font-weight:500;color:var(--ink);">'+act.name+'</div>'
+          +'<div style="display:flex;gap:8px;margin-top:2px;">'+
+            '<span style="color:var(--muted);font-size:11px;">'+act.duration_min+'min</span>'
+            +dist+hr
+          +'</div>'
+          +'</div>'+date
+          +'</div>';
+      }).join('');
+    } else {
+      actListHtml='<div style="color:var(--muted);font-size:13px;padding:12px 0;text-align:center;">暂无近期运动记录</div>';
+    }
+    h+='<div class="card-d">'
+      +'<div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/></svg></div>近期运动</div><div class="card-period">最近14天</div></div>'
+      +'<div style="font-size:12px;color:var(--muted);margin-bottom:4px;">今日步数 <strong style="color:var(--ink);">'+st[6].toLocaleString()+'</strong></div>'
+      +actListHtml
+      +'</div>';
+  }
+
+  // ── RECOVERY ──
+  if(showHV){
+    var hd=d.heart;
+    var hrv=hd.htoday||0, baseline=hd.hbaseline||42, rhr=hd.rhr||0;
+    // Recovery score: blend HRV vs baseline + low RHR bonus
+    var hrvScore=Math.min(100,Math.round((hrv/Math.max(baseline,1))*70));
+    var rhrScore=rhr>0?Math.max(0,Math.min(30,Math.round((80-rhr)/80*30))):15;
+    var recovery=Math.min(100,hrvScore+rhrScore);
+
+    var recColor='#1882FF';
+    var recLabel=recovery>=80?'状态极佳，今天适合运动 💪':recovery>=60?'状态良好，保持日常节奏 👍':'建议今天多休息，减少高强度活动 😴';
+    var hrvArrow=hrv>=baseline?'↑':'↓';
+    var hrvColor=hrv>=baseline?'#1882FF':'#aaa';
+    var rhrLabel=rhr<65?'偏低（优秀）':rhr<80?'正常':rhr<90?'偏高':'注意';
+
+    // Progress bar dots
+    var total=10, filled=Math.round(recovery/10);
+    var dots='';
+    for(var i=0;i<total;i++){
+      dots+='<div style="width:'+(i<filled?'20px':'16px')+';height:'+(i<filled?'8px':'6px')+';border-radius:4px;background:'+(i<filled?recColor:'#e5e5ea')+';transition:all .3s;"></div>';
+    }
+
+    // 7-day HRV sparkline
+    var hrvWk=hd.hrv||[],maxH=Math.max.apply(null,hrvWk)||1,minH=Math.min.apply(null,hrvWk)||0;
+    var cw=294,ch=36;
+    var pts=hrvWk.map(function(v,i){return(i/(hrvWk.length-1)*cw).toFixed(1)+','+(ch-Math.max(4,Math.round(((v-minH+2)/(maxH-minH+4))*(ch-4)))).toFixed(1);}).join(' ');
+    var area=pts+' '+cw+','+ch+' 0,'+ch;
+    var spark='<svg style="width:100%;height:'+ch+'px;" viewBox="0 0 '+cw+' '+ch+'" preserveAspectRatio="none">'
+      +'<defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+recColor+'" stop-opacity="0.15"/><stop offset="100%" stop-color="'+recColor+'" stop-opacity="0"/></linearGradient></defs>'
+      +'<polygon points="'+area+'" fill="url(#rg)"/>'
+      +'<polyline points="'+pts+'" fill="none" stroke="'+recColor+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+      +'</svg>';
+
+    h+='<div class="card-d">'
+      +'<div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>恢复状态</div><div class="card-period">今日</div></div>'
+      // Recovery score + bar
+      +'<div style="margin-bottom:12px;">'
+        +'<div style="display:flex;align-items:baseline;gap:4px;margin-bottom:8px;">'
+          +'<span style="font-size:24px;font-weight:700;color:'+recColor+';">'+recovery+'</span>'
+          +'<span style="font-size:13px;color:var(--muted);">% 恢复度</span>'
+        +'</div>'
+        +'<div style="display:flex;gap:3px;align-items:center;margin-bottom:6px;">'+dots+'</div>'
+        +'<div style="font-size:12px;color:var(--muted);">'+recLabel+'</div>'
+      +'</div>'
+      // HRV sparkline
+      +'<div style="font-size:11px;color:var(--muted);margin-bottom:2px;">HRV 近7天</div>'
+      +spark
+      // Stats row
+      +'<div class="stats-row" style="margin-top:8px;">'
+        +'<div class="stat"><div class="stat-lbl">今日 HRV</div><div class="stat-val">'+hrv+' ms <span style="color:'+hrvColor+';font-size:12px;">'+hrvArrow+'</span></div></div>'
+        +'<div class="stat"><div class="stat-lbl">静息心率</div><div class="stat-val">'+rhr+' bpm</div><div class="stat-ch" style="font-size:10px;">'+rhrLabel+'</div></div>'
+      +'</div>'
+      +'</div>';
+  }
+
+  // ── HEALTH ──
+  if(showHL){
+    var hl=d.health;
+    h+='<div class="card-d">'
+      +'<div class="card-head"><div class="card-title"><div class="card-ico"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>健康指标</div><div class="card-period">'+dayName+'</div></div>'
+      +'<div class="stats-row">'
+      +'<div class="stat"><div class="stat-lbl">血氧 SpO₂</div><div class="stat-val">'+hl.spo2+'%</div></div>'
+      +'<div class="stat"><div class="stat-lbl">呼吸频率</div><div class="stat-val">'+hl.br+' /min</div></div>'
+      +'<div class="stat"><div class="stat-lbl">皮温偏差</div><div class="stat-val">'+hl.temp+'°C</div></div>'
+      +'</div>'
+      +'</div>';
+  }
+
+  document.getElementById('ds').innerHTML=h;
 }
 
-// nana
 function on(){
   op('pg-nana');
   updateNanaScope();
@@ -1287,25 +1406,57 @@ async function callNanaAI(userMsg) {
   }
 }
 
+
+
 function updateHomePage(d) {
   var hrv=d.hrv||0, rhr=d.resting_hr||0, steps=d.steps||0;
   var deep=d.sleep?d.sleep.deep:'—', sleepTotal=d.sleep?d.sleep.total:'—';
   var sleepScore=d.sleep?d.sleep.score:0, stress=d.stress_avg||0;
-  var elSl=document.getElementById('h-sl'), elVi=document.getElementById('h-vi');
-  var elSt2=document.getElementById('h-st2'), elHr=document.getElementById('h-hr');
-  var elSu=document.getElementById('h-su'), elSt=document.getElementById('h-st');
-  var elTi=document.getElementById('h-ti'), elRc=document.getElementById('h-rc');
-  if(elSl)elSl.textContent=deep;
-  if(elVi)elVi.textContent=hrv+' ms';
-  if(elSt2)elSt2.textContent=steps.toLocaleString();
-  if(elHr)elHr.textContent=rhr+' bpm';
-  var statusMsg=hrv>70?'HRV 优秀，今天状态很好，适合运动。':hrv>50?'HRV 正常，保持稳定的日常节奏。':'HRV 偏低，今天注意休息，避免高强度训练。';
-  if(elSt)elSt.textContent=statusMsg;
-  if(elTi)elTi.innerHTML='你好，<br>今日实时数据已更新';
-  if(elSu)elSu.textContent='睡眠 '+sleepTotal+'，评分 '+sleepScore+'，HRV '+hrv+'ms，压力 '+stress+'。';
-  var rec=hrv>=70&&stress<30?'HRV 高且压力低，今天是高强度训练的好时机。':hrv>=50?'身体状态稳定，适合中等强度活动。':'HRV 偏低，建议今天以恢复为主，轻松散步即可。';
-  if(elRc)elRc.textContent=rec;
-  if(K&&K.xm){K.xm.d.heart.rhr=rhr;K.xm.d.heart.htoday=hrv;K.xm.d.act.steps[6]=steps;K.xm.d.sleep.total=sleepTotal;K.xm.d.sleep.deep=deep;K.xm.d.sleep.score=sleepScore;}
+  var calories=Math.round(d.calories)||0;
+
+  // Update 2x2 grid
+  var elSl=document.getElementById('h-sl'); if(elSl)elSl.textContent=deep;
+  var elVi=document.getElementById('h-vi'); if(elVi)elVi.textContent=hrv+' ms';
+  var elSt2=document.getElementById('h-st2'); if(elSt2)elSt2.textContent=steps.toLocaleString();
+  var elHr=document.getElementById('h-hr'); if(elHr)elHr.textContent=rhr+' bpm';
+
+  // Generate AI insight title + recommendation
+  generateInsightTitle(d);
+
+  // Update K data
+  if(K&&K.xm){
+    K.xm.d.heart.rhr=rhr;K.xm.d.heart.htoday=hrv;K.xm.d.heart.hbaseline=42;
+    K.xm.d.act.steps[6]=steps;
+    K.xm.d.sleep.total=sleepTotal;K.xm.d.sleep.deep=deep;K.xm.d.sleep.score=sleepScore;
+    if(d.sleep){
+      var dp=d.sleep.deep_pct||0,rm=d.sleep.rem_pct||0,lt=d.sleep.light_pct||0,aw=d.sleep.awake_pct||0;
+      K.xm.d.sleep.stages=[aw,lt,dp,rm];
+      K.xm.d.sleep.latency=d.sleep.latency||'—';
+      K.xm.d.sleep.waso=d.sleep.awake||'—';
+    }
+  }
+}
+
+async function generateInsightTitle(d) {
+  try {
+    var prompt = '根据以下数据，用10字以内写一个今日状态标题（直接说结论），再用一句话（20字内）说明原因，再用一句话给家长建议。格式：{"title":"...","sub":"...","rec":"..."}。数据：睡眠'+d.sleep.total+'评分'+d.sleep.score+'，HRV'+d.hrv+'ms，压力'+d.stress_avg+'，步数'+d.steps+'。';
+    var resp = await fetch(PROXY_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({system:'You are a children health assistant. Reply only valid JSON, no markdown.',messages:[{role:'user',content:prompt}]})
+    });
+    if(!resp.ok) return;
+    var data = await resp.json();
+    var text = (data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+    var clean = text.replace(/```json|```/g,'').trim();
+    var parsed = JSON.parse(clean);
+    var elTi=document.getElementById('h-ti'), elSu=document.getElementById('h-su'), elRc=document.getElementById('h-rc');
+    if(elTi&&parsed.title) elTi.textContent=parsed.title;
+    if(elSu&&parsed.sub) elSu.textContent=parsed.sub;
+    if(elRc&&parsed.rec) elRc.textContent=parsed.rec;
+  } catch(e) {
+    var elTi=document.getElementById('h-ti');
+    if(elTi) elTi.textContent=d.hrv>=70?'今日状态良好':'今日注意休息';
+  }
 }
 
 function updateWeekCharts(days) {
@@ -1346,11 +1497,18 @@ async function fetchGarminTrends(weekData, todayData) {
   } catch(e){console.log('Trend AI failed:',e);}
 }
 
+var garminActivities = null;
+
 async function loadAllGarminData() {
   try {
-    var results=await Promise.all([fetch(GARMIN_API+'/api/health'),fetch(GARMIN_API+'/api/week')]);
+    var results=await Promise.all([
+      fetch(GARMIN_API+'/api/health'),
+      fetch(GARMIN_API+'/api/week'),
+      fetch(GARMIN_API+'/api/activities')
+    ]);
     if(results[0].ok){garminTodayData=await results[0].json();if(!garminTodayData.error)updateHomePage(garminTodayData);}
     if(results[1].ok){garminWeekData=await results[1].json();if(garminWeekData&&garminWeekData.length)updateWeekCharts(garminWeekData);}
+    if(results[2].ok){var acts=await results[2].json();if(Array.isArray(acts)){garminActivities=acts;rd('xm','all');}}
     if(garminTodayData&&garminWeekData)fetchGarminTrends(garminWeekData,garminTodayData);
   } catch(e){console.log('Garmin load error:',e);}
 }
