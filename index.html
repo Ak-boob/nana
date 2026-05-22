@@ -1122,11 +1122,15 @@ function rd(c,ct){
       +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">'+sLeg+'</div>'
       +'<div class="stats-row">'
       +'<div class="stat"><div class="stat-lbl">总时长</div><div class="stat-val" style="font-size:13px;">'+s.total+'</div></div>'
-      +'<div class="stat"><div class="stat-lbl">深睡</div><div class="stat-val" style="font-size:13px;">'+s.deep+'</div><div class="stat-ch">'+s.dchg+'</div></div>'
-      +'<div class="stat"><div class="stat-lbl">入睡用时</div><div class="stat-val" style="font-size:13px;">'+s.latency+'</div></div>'
-      +'<div class="stat"><div class="stat-lbl">夜间清醒</div><div class="stat-val" style="font-size:13px;">'+s.waso+'</div></div>'
+      +'<div class="stat"><div class="stat-lbl">深睡</div><div class="stat-val" style="font-size:13px;">'+s.deep+'</div></div>'
+      +'<div class="stat"><div class="stat-lbl">睡眠效率</div><div class="stat-val" style="font-size:13px;">'+(s.efficiency||'—')+'%</div></div>'
+      +'<div class="stat"><div class="stat-lbl">夜醒次数</div><div class="stat-val" style="font-size:13px;">'+(s.awake_count||0)+'次</div></div>'
       +'</div>'
-      +'<div class="ins-chip ok">💡 深睡占比 '+stPct[2]+'%，REM '+stPct[3]+'%</div>'
+      // SpO2 warning if available
+      +(s.lowest_spo2>0 ? '<div class="ins-chip '+(s.spo2_alert==="critical"?"warn":s.spo2_alert==="warning"?"warn":"ok")+'" style="'+(s.spo2_alert!=="normal"?"background:#fff0f0;color:#FF3B30;":"")+'">'+
+        (s.spo2_alert==="critical"?"🚨":s.spo2_alert==="warning"?"⚠️":s.spo2_alert==="caution"?"💛":"✅")+
+        ' 夜间最低血氧 '+s.lowest_spo2+'%'+(s.spo2_alert!=="normal"?" · 建议关注":"")+'</div>' : '')
+      +'<div class="ins-chip ok">深睡 '+stPct[2]+'% · REM '+stPct[3]+'%'+(s.breathing_disruption&&s.breathing_disruption!=="NONE"?' · 呼吸中断'+s.breathing_disruption_cn:'')+'</div>'
       +'</div>';
   }
 
@@ -1347,7 +1351,19 @@ function buildNanaSystem() {
   var base = 'You are Nana, a warm AI health assistant for parents. IMPORTANT: This is a demo using adult health data to simulate a child scenario. Apply adult health standards: resting HR 50-70bpm is excellent, HRV >60ms is good, steps 8000+ is active. Do NOT apply child normal ranges. You are speaking to the parent about their child Sarah. Rules: (1) Always reply in Chinese. (2) Refer to child by name Sarah. (3) Concise, plain text, no markdown, under 80 words. (4) Mention key numbers naturally. Today: ' + new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',year:'numeric'}) + '.';
   if (garminTodayData && !garminTodayData.error) {
     var d = garminTodayData;
-    base += ' Sarah今日数据: HRV=' + d.hrv + 'ms, 静息心率=' + d.resting_hr + 'bpm, 步数=' + d.steps + ', 睡眠=' + (d.sleep ? d.sleep.total + ' 评分' + d.sleep.score : 'N/A') + ', 深睡=' + (d.sleep ? d.sleep.deep : 'N/A') + ', 压力=' + d.stress_avg + ', 体能电量=' + d.body_battery + ', 卡路里=' + d.calories + '.';
+    var sleepExtra = d.sleep ? (
+      ' 睡眠效率'+(d.sleep.efficiency||0)+'%'+
+      ' 夜醒'+(d.sleep.awake_count||0)+'次'+
+      (d.sleep.lowest_spo2>0?' 夜间最低血氧'+d.sleep.lowest_spo2+'%('+d.sleep.spo2_alert+')':'')+
+      (d.sleep.breathing_disruption&&d.sleep.breathing_disruption!=='NONE'?' 呼吸中断'+d.sleep.breathing_disruption_cn:'') +
+      (d.sleep.restless_count>0?' 翻身'+d.sleep.restless_count+'次':'')
+    ) : '';
+    base += ' Sarah今日数据: HRV='+d.hrv+'ms, 静息心率='+d.resting_hr+'bpm, 步数='+d.steps+
+      ', 睡眠='+(d.sleep?d.sleep.total+' 评分'+d.sleep.score:'N/A')+
+      ', 深睡='+(d.sleep?d.sleep.deep:'N/A')+
+      ', 压力='+d.stress_avg+', 体能电量='+d.body_battery+', 卡路里='+d.calories+
+      sleepExtra+'.';
+    base += ' 健康判断标准: 睡眠效率>85%良好; 夜间血氧<90%需关注,<85%立即就医; 翻身>50次睡眠不安稳; 呼吸中断MEDIUM/HIGH建议就医.';
   }
   if (garminWeekData && garminWeekData.length) {
     var ws = garminWeekData.map(function(d){ return d.steps; }).join(',');
@@ -1433,6 +1449,14 @@ function updateHomePage(d) {
       K.xm.d.sleep.stages=[aw,lt,dp,rm];
       K.xm.d.sleep.latency=d.sleep.latency||'—';
       K.xm.d.sleep.waso=d.sleep.awake||'—';
+      K.xm.d.sleep.efficiency=d.sleep.efficiency||0;
+      K.xm.d.sleep.awake_count=d.sleep.awake_count||0;
+      K.xm.d.sleep.lowest_spo2=d.sleep.lowest_spo2||0;
+      K.xm.d.sleep.avg_spo2=d.sleep.avg_spo2||0;
+      K.xm.d.sleep.spo2_alert=d.sleep.spo2_alert||'normal';
+      K.xm.d.sleep.breathing_disruption=d.sleep.breathing_disruption||'NONE';
+      K.xm.d.sleep.breathing_disruption_cn=d.sleep.breathing_disruption_cn||'无';
+      K.xm.d.sleep.restless_count=d.sleep.restless_count||0;
     }
   }
 }
