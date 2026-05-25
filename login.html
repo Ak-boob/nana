@@ -213,7 +213,7 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',sans-serif;color:
     <p>将 Nana Band 手环与你的账号配对，开始同步孩子的实时健康数据</p>
   </div>
   <div class="bind-options">
-    <div class="bind-card" onclick="showScreen('s-bluetooth')">
+    <div class="bind-card" onclick="showScreen('s-child-info')">
       <div class="bind-card-row">
         <div class="bind-icon">
           <svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><circle cx="12" cy="15" r="2"/><line x1="9" y1="7" x2="15" y2="7"/></svg>
@@ -229,6 +229,48 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',sans-serif;color:
       <span>作为监护人 / 看护人绑定？</span>
       <a href="#">使用邀请码 →</a>
     </div>
+  </div>
+</div>
+
+<!-- CHILD INFO -->
+<div class="screen" id="s-child-info">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showScreen('s-bind')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+  <div class="form-body">
+    <div>
+      <div class="sec-title">孩子的基本信息</div>
+      <div class="sec-sub">填写后将用于个性化健康分析和报告</div>
+    </div>
+
+    <!-- Avatar picker -->
+    <div style="display:flex;justify-content:center;margin:4px 0 8px;">
+      <div style="position:relative;cursor:pointer;" onclick="cycleAvatar()">
+        <div id="child-avatar" style="width:72px;height:72px;border-radius:50%;background:var(--brand-soft);border:2px solid var(--brand);display:flex;align-items:center;justify-content:center;font-size:36px;">🐣</div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--brand);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">昵称</div>
+      <input class="field-input" type="text" id="child-name" placeholder="例如：小明、Lily" maxlength="20"/>
+    </div>
+    <div class="field-group">
+      <div class="field-label">出生日期</div>
+      <input class="field-input" type="date" id="child-dob" max="2024-12-31" min="2015-01-01"/>
+    </div>
+    <div class="field-group">
+      <div class="field-label">性别</div>
+      <div style="display:flex;background:#f2f2f7;border-radius:12px;padding:4px;gap:4px;">
+        <button id="gender-boy" onclick="selectGender('boy')" style="flex:1;height:44px;border-radius:9px;border:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;background:var(--ink);color:#fff;font-family:'DM Sans',sans-serif;">👦 男孩</button>
+        <button id="gender-girl" onclick="selectGender('girl')" style="flex:1;height:44px;border-radius:9px;border:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;background:transparent;color:#8e8e9a;font-family:'DM Sans',sans-serif;">👧 女孩</button>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="submitChildInfo()" style="margin-top:8px;">下一步：搜索设备</button>
   </div>
 </div>
 
@@ -332,6 +374,43 @@ setTimeout(function(){ showScreen('s-login'); }, 2000);
 function doLogin() {
   if (localStorage.getItem('nana_device')) { goApp(); return; }
   showScreen('s-bind');
+}
+
+var childGender = 'boy';
+var avatarList = ['🐣','🐥','🦊','🐨','🐼','🐯','🦁','🐸'];
+var avatarIdx = 0;
+
+function cycleAvatar() {
+  avatarIdx = (avatarIdx + 1) % avatarList.length;
+  document.getElementById('child-avatar').textContent = avatarList[avatarIdx];
+}
+
+function selectGender(g) {
+  childGender = g;
+  var boy = document.getElementById('gender-boy');
+  var girl = document.getElementById('gender-girl');
+  if (g === 'boy') {
+    boy.style.background = 'var(--ink)'; boy.style.color = '#fff';
+    girl.style.background = 'transparent'; girl.style.color = '#8e8e9a';
+  } else {
+    girl.style.background = 'var(--ink)'; girl.style.color = '#fff';
+    boy.style.background = 'transparent'; boy.style.color = '#8e8e9a';
+  }
+}
+
+function submitChildInfo() {
+  var name = document.getElementById('child-name').value.trim();
+  var dob = document.getElementById('child-dob').value;
+  if (!name) { alert('请输入孩子的昵称'); return; }
+  if (!dob) { alert('请选择出生日期'); return; }
+  // Save to localStorage
+  localStorage.setItem('nana_child', JSON.stringify({
+    name: name,
+    dob: dob,
+    gender: childGender,
+    avatar: avatarList[avatarIdx]
+  }));
+  showScreen('s-bluetooth');
 }
 
 function startScan() {
