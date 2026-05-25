@@ -323,6 +323,13 @@ html,body{height:100%;margin:0;background:linear-gradient(180deg,#f7f9fc 0%,#e8f
 </style>
 </head>
 <body>
+<script>
+(function(){
+  if(!localStorage.getItem('nana_logged_in')){
+    window.location.replace('login.html');
+  }
+})();
+</script>
 <div class="phone">
 
 <!-- ══ HOME ══ -->
