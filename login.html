@@ -138,6 +138,11 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',-apple-system,san
 .btn-enter{width:100%;height:54px;background:#fff;color:var(--ink);border:none;border-radius:16px;font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
 .btn-enter:active{scale:.97;}
 .btn-skip{height:44px;background:transparent;border:none;font-size:14px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;}
+.field-input.err{border-color:#FF3B30;background:#fffafa;}
+.field-input.ok{border-color:#34C759;}
+.banner-red{background:#fff0ef;color:#c0392b;}
+.banner-orange{background:#fff8ee;color:#c47000;}
+.banner-blue{background:#e8f2ff;color:#0057cc;}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
@@ -195,16 +200,20 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',-apple-system,san
       <div class="sec-title">邮箱登录</div>
       <div class="sec-sub">使用你注册时的邮箱和密码</div>
     </div>
+    <!-- Error banner -->
+    <div id="email-error-banner" style="display:none;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5;"></div>
     <div class="field-group">
       <div class="field-label">邮箱地址</div>
-      <input class="field-input" type="email" placeholder="your@email.com"/>
+      <input class="field-input" id="email-input" type="email" placeholder="your@email.com" oninput="clearEmailError()"/>
+      <div id="email-hint" style="font-size:12px;color:#FF3B30;display:none;margin-top:2px;"></div>
     </div>
     <div class="field-group">
       <div class="field-label">密码</div>
-      <input class="field-input" type="password" placeholder="输入密码"/>
-      <div class="field-forgot">忘记密码？</div>
+      <input class="field-input" id="pwd-input" type="password" placeholder="输入密码" oninput="clearEmailError()"/>
+      <div id="pwd-hint" style="font-size:12px;color:#FF3B30;display:none;margin-top:2px;"></div>
+      <div class="field-forgot" onclick="showForgotPassword()">忘记密码？</div>
     </div>
-    <button class="btn-primary" onclick="doLogin()">登录</button>
+    <button class="btn-primary" id="btn-email-login" onclick="doEmailLogin()">登录</button>
     <div class="signup-row">还没有账号？<a href="#">立即注册</a></div>
   </div>
 </div>
@@ -376,9 +385,115 @@ setTimeout(function(){
   if(cur === 's-splash') showScreen('s-login');
 }, 4000);
 
+// ── Demo credentials ──────────────────────────────────
+var DEMO_EMAIL = 'demo@nanaband.com';
+var DEMO_PWD   = 'nana2026';
+var loginAttempts = 0;
+// ──────────────────────────────────────────────────────
+
 function doLogin() {
+  // Social login (Apple / Google) — skip validation
   if (localStorage.getItem('nana_device')) { goApp(); return; }
   showScreen('s-bind');
+}
+
+function clearEmailError() {
+  document.getElementById('email-error-banner').style.display = 'none';
+  document.getElementById('email-hint').style.display = 'none';
+  document.getElementById('pwd-hint').style.display = 'none';
+  var ei = document.getElementById('email-input');
+  var pi = document.getElementById('pwd-input');
+  if (ei) { ei.classList.remove('err','ok'); }
+  if (pi) { pi.classList.remove('err','ok'); }
+}
+
+function showBanner(msg, type) {
+  var b = document.getElementById('email-error-banner');
+  b.className = 'banner-' + type;
+  b.style.display = 'block';
+  b.style.borderRadius = '12px';
+  b.style.padding = '12px 14px';
+  b.style.fontSize = '13px';
+  b.style.lineHeight = '1.5';
+  b.innerHTML = msg;
+}
+
+function showForgotPassword() {
+  showBanner('📧 重置链接已发送到你的邮箱，请查收。', 'blue');
+}
+
+function doEmailLogin() {
+  var email = (document.getElementById('email-input').value || '').trim();
+  var pwd   = (document.getElementById('pwd-input').value || '').trim();
+  var ei    = document.getElementById('email-input');
+  var pi    = document.getElementById('pwd-input');
+  var hint  = document.getElementById('email-hint');
+  var phint = document.getElementById('pwd-hint');
+
+  clearEmailError();
+
+  // ── 1. Empty fields ──
+  if (!email) {
+    ei.classList.add('err');
+    hint.textContent = '请输入邮箱地址';
+    hint.style.display = 'block';
+    return;
+  }
+
+  // ── 2. Email format ──
+  var emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailReg.test(email)) {
+    ei.classList.add('err');
+    hint.textContent = '⚠️ 邮箱格式不正确，请重新输入';
+    hint.style.display = 'block';
+    return;
+  }
+
+  // ── 3. Email not registered ──
+  if (email.toLowerCase() !== DEMO_EMAIL) {
+    ei.classList.add('err');
+    showBanner('📭 <strong>该邮箱尚未注册</strong><br>是否使用此邮箱创建新账号？<br><span style="color:#1882FF;cursor:pointer;font-weight:500;onclick="showScreen(&quot;s-login&quot;)">→ 返回注册</span>', 'orange');
+    return;
+  }
+
+  // ── 4. Empty password ──
+  if (!pwd) {
+    pi.classList.add('err');
+    phint.textContent = '请输入密码';
+    phint.style.display = 'block';
+    return;
+  }
+
+  // ── 5. Account locked ──
+  if (loginAttempts >= 5) {
+    showBanner('🚫 <strong>账号已临时锁定</strong><br>连续输错密码 5 次，请 30 分钟后重试，或点"忘记密码"重置。', 'red');
+    return;
+  }
+
+  // ── 6. Wrong password ──
+  if (pwd !== DEMO_PWD) {
+    loginAttempts++;
+    pi.classList.add('err');
+    var left = 5 - loginAttempts;
+    if (left <= 0) {
+      showBanner('🚫 <strong>账号已临时锁定</strong><br>连续输错密码 5 次，请 30 分钟后重试，或点"忘记密码"重置。', 'red');
+    } else {
+      phint.textContent = '⚠️ 密码不正确，还剩 ' + left + ' 次尝试';
+      phint.style.display = 'block';
+      showBanner('🔒 <strong>密码不正确</strong><br>请检查大小写，或使用"忘记密码"重置。', 'red');
+    }
+    return;
+  }
+
+  // ── 7. Success ──
+  loginAttempts = 0;
+  ei.classList.add('ok');
+  pi.classList.add('ok');
+  showBanner('✅ 登录成功，正在跳转...', 'blue');
+  setTimeout(function() {
+    if (localStorage.getItem('nana_device')) { goApp(); }
+    else { showScreen('s-bind'); }
+  }, 800);
 }
 
 function startScan() {
