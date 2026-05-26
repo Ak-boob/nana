@@ -1621,22 +1621,14 @@ async function manualRefresh() {
 }
 
 async function loadAllGarminData() {
-  // First load from cache for instant display
+  // Always load from cache only — manual refresh button triggers Garmin API
   var hasCached = await loadFromCache();
-  // Then check if we need fresh data (cache older than 30 min or no cache)
-  try {
-    var cached = await window.storage.get(STORAGE_KEY);
-    var needsFresh = true;
-    if (cached) {
-      var data = JSON.parse(cached.value);
-      var age = Date.now() - (data.ts || 0);
-      needsFresh = age > 30 * 60 * 1000; // 30 minutes
-    }
-    if (needsFresh || !hasCached) {
-      await fetchFromGarmin();
-    }
-  } catch(e) {
-    if (!hasCached) await fetchFromGarmin();
+  if (!hasCached) {
+    // No cache at all (first time) — show hint to refresh
+    var elTi = document.getElementById('h-ti');
+    var elRc = document.getElementById('h-rc');
+    if (elTi) elTi.textContent = '点击右上角 ↻ 获取数据';
+    if (elRc) elRc.textContent = '首次使用请点刷新按钮同步最新健康数据。';
   }
 }
 
