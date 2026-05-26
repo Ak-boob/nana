@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Nana Band</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap');
+/* fonts loaded async */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{--ink:#0f0f12;--muted:#8e8e9a;--brand:#1882FF;--brand-soft:#e8f2ff;--radius:16px;}
-html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',sans-serif;color:var(--ink);overflow:hidden;}
+html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',-apple-system,sans-serif;color:var(--ink);overflow:hidden;}
 .phone{max-width:390px;height:100dvh;margin:0 auto;background:#f7f8fc;position:relative;overflow:hidden;}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;transform:translateX(28px);}
 .screen.active{opacity:1;pointer-events:all;transform:translateX(0);}
@@ -137,7 +137,10 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',sans-serif;color:
 #s-success p{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:32px;white-space:pre-line;}
 .btn-enter{width:100%;height:54px;background:#fff;color:var(--ink);border:none;border-radius:16px;font-size:16px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;}
 .btn-enter:active{scale:.97;}
+.btn-skip{height:44px;background:transparent;border:none;font-size:14px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&amp;family=DM+Serif+Display:ital@0;1&amp;display=swap" rel="stylesheet">
 </head>
 <body>
 <div class="phone">
@@ -213,7 +216,7 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',sans-serif;color:
     <p>将 Nana Band 手环与你的账号配对，开始同步孩子的实时健康数据</p>
   </div>
   <div class="bind-options">
-    <div class="bind-card" onclick="showScreen('s-child-info')">
+    <div class="bind-card" onclick="showScreen('s-bluetooth')">
       <div class="bind-card-row">
         <div class="bind-icon">
           <svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><circle cx="12" cy="15" r="2"/><line x1="9" y1="7" x2="15" y2="7"/></svg>
@@ -229,48 +232,6 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',sans-serif;color:
       <span>作为监护人 / 看护人绑定？</span>
       <a href="#">使用邀请码 →</a>
     </div>
-  </div>
-</div>
-
-<!-- CHILD INFO -->
-<div class="screen" id="s-child-info">
-  <div class="top-bar">
-    <button class="back-btn" onclick="showScreen('s-bind')">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
-  </div>
-  <div class="form-body">
-    <div>
-      <div class="sec-title">孩子的基本信息</div>
-      <div class="sec-sub">填写后将用于个性化健康分析和报告</div>
-    </div>
-
-    <!-- Avatar picker -->
-    <div style="display:flex;justify-content:center;margin:4px 0 8px;">
-      <div style="position:relative;cursor:pointer;" onclick="cycleAvatar()">
-        <div id="child-avatar" style="width:72px;height:72px;border-radius:50%;background:var(--brand-soft);border:2px solid var(--brand);display:flex;align-items:center;justify-content:center;font-size:36px;">🐣</div>
-        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--brand);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="field-group">
-      <div class="field-label">昵称</div>
-      <input class="field-input" type="text" id="child-name" placeholder="例如：小明、Lily" maxlength="20"/>
-    </div>
-    <div class="field-group">
-      <div class="field-label">出生日期</div>
-      <input class="field-input" type="date" id="child-dob" max="2024-12-31" min="2015-01-01"/>
-    </div>
-    <div class="field-group">
-      <div class="field-label">性别</div>
-      <div style="display:flex;background:#f2f2f7;border-radius:12px;padding:4px;gap:4px;">
-        <button id="gender-boy" onclick="selectGender('boy')" style="flex:1;height:44px;border-radius:9px;border:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;background:var(--ink);color:#fff;font-family:'DM Sans',sans-serif;">👦 男孩</button>
-        <button id="gender-girl" onclick="selectGender('girl')" style="flex:1;height:44px;border-radius:9px;border:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;background:transparent;color:#8e8e9a;font-family:'DM Sans',sans-serif;">👧 女孩</button>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="submitChildInfo()" style="margin-top:8px;">下一步：搜索设备</button>
   </div>
 </div>
 
@@ -341,6 +302,46 @@ html,body{height:100%;background:#f7f8fc;font-family:'DM Sans',sans-serif;color:
   </div>
 </div>
 
+<!-- CHILD INFO -->
+<div class="screen" id="s-child-info">
+  <div class="top-bar">
+    <button class="back-btn" onclick="showScreen('s-bluetooth')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+  <div class="form-body">
+    <div>
+      <div class="sec-title">填写孩子信息</div>
+      <div class="sec-sub">设备已配对成功！填写基本信息，开始个性化健康追踪。</div>
+    </div>
+    <div style="display:flex;justify-content:center;margin:4px 0 8px;">
+      <div style="position:relative;cursor:pointer;" onclick="cycleAvatar()">
+        <div id="child-avatar" style="width:72px;height:72px;border-radius:50%;background:var(--brand-soft);border:2px solid var(--brand);display:flex;align-items:center;justify-content:center;font-size:36px;">🐣</div>
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--brand);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">昵称</div>
+      <input class="field-input" type="text" id="child-name" placeholder="例如：小明、Lily" maxlength="20"/>
+    </div>
+    <div class="field-group">
+      <div class="field-label">出生日期</div>
+      <input class="field-input" type="date" id="child-dob" max="2024-12-31" min="2015-01-01"/>
+    </div>
+    <div class="field-group">
+      <div class="field-label">性别</div>
+      <div style="display:flex;background:#f2f2f7;border-radius:12px;padding:4px;gap:4px;">
+        <button id="gender-boy" onclick="selectGender('boy')" style="flex:1;height:44px;border-radius:9px;border:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;background:var(--ink);color:#fff;font-family:'DM Sans',sans-serif;">👦 男孩</button>
+        <button id="gender-girl" onclick="selectGender('girl')" style="flex:1;height:44px;border-radius:9px;border:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;background:transparent;color:#8e8e9a;font-family:'DM Sans',sans-serif;">👧 女孩</button>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="submitChildInfo()" style="margin-top:8px;">完成设置</button>
+    <button class="btn-skip" onclick="skipChildInfo()">暂时跳过</button>
+  </div>
+</div>
+
 <!-- SUCCESS -->
 <div class="screen" id="s-success">
   <div class="success-ring">
@@ -370,10 +371,59 @@ function showScreen(id) {
 }
 
 setTimeout(function(){ showScreen('s-login'); }, 2000);
+// Fallback: force login if still on splash after 4s
+setTimeout(function(){
+  if(cur === 's-splash') showScreen('s-login');
+}, 4000);
 
 function doLogin() {
   if (localStorage.getItem('nana_device')) { goApp(); return; }
   showScreen('s-bind');
+}
+
+function startScan() {
+  var st = document.getElementById('bt-status');
+  var fd = document.getElementById('bt-found');
+  var pb = document.getElementById('btn-pair');
+  st.textContent = '正在扫描附近设备...';
+  fd.classList.remove('show'); pb.style.display = 'none';
+  var msgs = ['正在扫描附近设备...','搜索中，请稍候...','正在查找 Nana Band...'];
+  var i = 0;
+  scanTimer = setInterval(function(){ st.textContent = msgs[i++ % msgs.length]; }, 900);
+  setTimeout(function(){
+    clearInterval(scanTimer);
+    st.textContent = '发现 1 台设备';
+    fd.classList.add('show');
+    pb.style.display = 'block';
+  }, 3500);
+}
+
+function stopScan() {
+  if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
+  document.getElementById('bt-found').classList.remove('show');
+  document.getElementById('btn-pair').style.display = 'none';
+}
+
+function doPair() {
+  localStorage.setItem('nana_device', 'nana_band');
+  showScreen('s-child-info');
+}
+
+function nextDigit(el, idx) {
+  el.value = el.value.replace(/\D/g,'');
+  var boxes = document.querySelectorAll('.code-box');
+  if (el.value && idx < 5) boxes[idx+1].focus();
+}
+
+function doInvite() {
+  var boxes = document.querySelectorAll('.code-box');
+  var code = Array.from(boxes).map(function(b){return b.value;}).join('');
+  if (code.length < 6) { alert('请输入完整的 6 位邀请码'); return; }
+  localStorage.setItem('nana_device', 'caregiver');
+  localStorage.setItem('nana_role', 'caregiver');
+  document.getElementById('success-title').textContent = '绑定成功';
+  document.getElementById('success-msg').textContent = '你已成功加入为看护人\n可查看已授权的健康数据';
+  showScreen('s-success');
 }
 
 var childGender = 'boy';
@@ -403,60 +453,17 @@ function submitChildInfo() {
   var dob = document.getElementById('child-dob').value;
   if (!name) { alert('请输入孩子的昵称'); return; }
   if (!dob) { alert('请选择出生日期'); return; }
-  // Save to localStorage
   localStorage.setItem('nana_child', JSON.stringify({
-    name: name,
-    dob: dob,
-    gender: childGender,
-    avatar: avatarList[avatarIdx]
+    name: name, dob: dob, gender: childGender, avatar: avatarList[avatarIdx]
   }));
-  showScreen('s-bluetooth');
-}
-
-function startScan() {
-  var st = document.getElementById('bt-status');
-  var fd = document.getElementById('bt-found');
-  var pb = document.getElementById('btn-pair');
-  st.textContent = '正在扫描附近设备...';
-  fd.classList.remove('show'); pb.style.display = 'none';
-  var msgs = ['正在扫描附近设备...','搜索中，请稍候...','正在查找 Nana Band...'];
-  var i = 0;
-  scanTimer = setInterval(function(){ st.textContent = msgs[i++ % msgs.length]; }, 900);
-  setTimeout(function(){
-    clearInterval(scanTimer);
-    st.textContent = '发现 1 台设备';
-    fd.classList.add('show');
-    pb.style.display = 'block';
-  }, 3500);
-}
-
-function stopScan() {
-  if (scanTimer) { clearInterval(scanTimer); scanTimer = null; }
-  document.getElementById('bt-found').classList.remove('show');
-  document.getElementById('btn-pair').style.display = 'none';
-}
-
-function doPair() {
-  localStorage.setItem('nana_device', 'nana_band');
-  document.getElementById('success-title').textContent = '设备已连接';
-  document.getElementById('success-msg').textContent = 'Nana Band 手环配对成功\n正在同步健康数据';
+  document.getElementById('success-title').textContent = '全部设置完成';
+  document.getElementById('success-msg').textContent = name + ' 的 Nana Band 已就绪开始追踪健康数据';
   showScreen('s-success');
 }
 
-function nextDigit(el, idx) {
-  el.value = el.value.replace(/\D/g,'');
-  var boxes = document.querySelectorAll('.code-box');
-  if (el.value && idx < 5) boxes[idx+1].focus();
-}
-
-function doInvite() {
-  var boxes = document.querySelectorAll('.code-box');
-  var code = Array.from(boxes).map(function(b){return b.value;}).join('');
-  if (code.length < 6) { alert('请输入完整的 6 位邀请码'); return; }
-  localStorage.setItem('nana_device', 'caregiver');
-  localStorage.setItem('nana_role', 'caregiver');
-  document.getElementById('success-title').textContent = '绑定成功';
-  document.getElementById('success-msg').textContent = '你已成功加入为看护人\n可查看已授权的健康数据';
+function skipChildInfo() {
+  document.getElementById('success-title').textContent = '设备已连接';
+  document.getElementById('success-msg').textContent = 'Nana Band 手环配对成功可稍后在设置中完善孩子信息';
   showScreen('s-success');
 }
 
