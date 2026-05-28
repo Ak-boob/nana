@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nana · Home & Plan</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --brand:#1882FF;--brand-soft:rgba(232,242,255,.72);
+  --ink:#1c1c1e;--muted:#8e8e93;--line:rgba(60,60,67,.1);
+  --bg:rgba(255,255,255,.55);--bg2:rgba(242,242,247,.55);
+  --green:#34c759;--amber:#ff9500;--red:#ff3b30;--purple:#AF52DE;
+  --glass-bg:rgba(255,255,255,.58);
+  --glass-bg-strong:rgba(255,255,255,.72);
+  --glass-bg-soft:rgba(255,255,255,.42);
+  --glass-border:rgba(255,255,255,.68);
+  --glass-border-dim:rgba(255,255,255,.38);
+  --glass-blur:blur(26px) saturate(185%);
+  --glass-blur-light:blur(18px) saturate(170%);
+  --glass-shadow:0 0 0 .5px rgba(0,0,0,.03),0 4px 24px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --shadow:var(--glass-shadow);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;background:radial-gradient(ellipse 120% 80% at 50% 0%,#c7d9f5 0%,#dbeafe 35%,#dde7ff 70%,#cfd8ef 100%);min-height:100vh;margin:0;}
+.device-stage{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:28px 16px;gap:20px;flex-wrap:wrap;}
+.proto-panel{align-self:center;display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.65);box-shadow:var(--glass-shadow);min-width:148px;}
+.proto-lbl{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.proto-btn{padding:10px 12px;border-radius:11px;border:none;background:var(--brand);color:#fff;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;line-height:1.35;text-align:left;}
+.proto-btn:active{opacity:.85;}
+.proto-btn:disabled{opacity:.4;cursor:not-allowed;}
+.proto-hint{font-size:10px;color:var(--muted);line-height:1.45;}
+.proto-state{font-size:10px;color:var(--ink);line-height:1.45;padding:6px 8px;border-radius:8px;background:var(--glass-bg-soft);}
+.iphone-shell{position:relative;padding:13px;border-radius:54px;background:linear-gradient(165deg,#5a5a5c 0%,#3a3a3c 8%,#1d1d1f 35%,#2c2c2e 65%,#1a1a1c 100%);box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 0 2px #0d0d0f,0 2px 0 rgba(255,255,255,.06) inset,0 50px 100px rgba(0,0,0,.32),0 16px 40px rgba(0,0,0,.18);}
+.iphone-shell::before{content:'';position:absolute;inset:13px;border-radius:44px;box-shadow:0 0 0 1px rgba(0,0,0,.65);pointer-events:none;z-index:5;}
+.iphone-btn{position:absolute;background:linear-gradient(180deg,#4a4a4c,#2a2a2c);border-radius:2px;z-index:2;}
+.iphone-btn-silent{left:-1px;top:112px;width:3px;height:26px;border-radius:2px 0 0 2px;}
+.iphone-btn-vol-up{left:-1px;top:158px;width:3px;height:44px;border-radius:2px 0 0 2px;}
+.iphone-btn-vol-down{left:-1px;top:214px;width:3px;height:44px;border-radius:2px 0 0 2px;}
+.iphone-btn-power{right:-1px;top:178px;width:3px;height:68px;border-radius:0 2px 2px 0;}
+.phone{width:360px;height:720px;border-radius:44px;position:relative;overflow:hidden;background:#000;box-shadow:none;border:none;}
+.dynamic-island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:118px;height:33px;background:#000;border-radius:19px;z-index:99;box-shadow:0 2px 8px rgba(0,0,0,.45);}
+.home-indicator{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:132px;height:5px;background:rgba(0,0,0,.22);border-radius:3px;z-index:55;pointer-events:none;}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:linear-gradient(165deg,#dceeff 0%,#edf5ff 38%,#f2f0ff 72%,#e8eeff 100%);overflow:hidden;}
+.screen::before,.screen::after{content:'';position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
+.screen::before{top:-70px;right:-50px;width:220px;height:220px;background:radial-gradient(circle,rgba(24,130,255,.22) 0%,transparent 68%);}
+.screen::after{bottom:100px;left:-55px;width:190px;height:190px;background:radial-gradient(circle,rgba(175,82,222,.14) 0%,transparent 68%);}
+.scroll{flex:1;overflow-y:auto;padding-bottom:88px;-webkit-overflow-scrolling:touch;}
+.view{position:relative;z-index:1;display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;}
+.view.on{display:flex;}
+.scroll::-webkit-scrollbar{display:none;}
+
+/* shared top — 毛玻璃顶栏 */
+.top-row{display:flex;align-items:center;padding:46px 18px 10px;flex-shrink:0;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border-bottom:.5px solid var(--glass-border-dim);}
+.topbar{padding:44px 18px 10px;display:flex;align-items:center;gap:10px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border-bottom:.5px solid var(--glass-border-dim);flex-shrink:0;}
+.ctabs{display:flex;gap:10px;flex:1;}
+.ctab{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
+.cav{width:38px;height:38px;border-radius:50%;border:2.5px solid transparent;background:var(--glass-bg);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:inset 0 .5px 0 rgba(255,255,255,.8);}
+.cav.on{border-color:var(--brand);background:rgba(255,255,255,.78);}
+.cnm{font-size:10px;color:var(--muted);}
+.cnm.on{color:var(--brand);font-weight:600;}
+.ctab{position:relative;}
+.ctab-badge{position:absolute;top:0;right:2px;min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:var(--red);color:#fff;font-size:9px;font-weight:700;line-height:15px;text-align:center;display:none;box-shadow:0 1px 4px rgba(255,59,48,.35);}
+.me-av{width:38px;height:38px;border-radius:50%;border:.5px solid var(--glass-border);background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;margin-left:auto;box-shadow:var(--glass-shadow);}
+
+/* nav — Apple Health 风格：左下角浮动毛玻璃 */
+.nav{position:absolute;left:16px;bottom:22px;z-index:50;padding:0;background:none;border:none;box-shadow:none;display:flex;align-items:center;justify-content:flex-start;pointer-events:none;}
+.nav-pill{display:flex;gap:2px;padding:4px;border-radius:22px;pointer-events:auto;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px solid var(--glass-border);box-shadow:var(--glass-shadow);}
+.nb{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:18px;border:none;background:transparent;transition:background .2s,transform .15s;}
+.nb:active{transform:scale(.94);}
+.nb svg{width:17px;height:17px;fill:none;stroke:var(--muted);stroke-width:1.85;transition:stroke .2s;}
+.nb.on{background:rgba(255,255,255,.88);box-shadow:0 1px 4px rgba(0,0,0,.08),inset 0 .5px 0 rgba(255,255,255,.9);}
+.nb.on svg{stroke:var(--brand);stroke-width:2;}
+.ic-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.ic-nana-btn{font-size:10px;color:var(--purple);font-weight:600;background:rgba(245,240,255,.65);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border-radius:7px;padding:3px 8px;cursor:pointer;border:.5px solid rgba(175,82,222,.15);white-space:nowrap;}
+.ic-nana-btn:active{opacity:.75;}
+.dn-nana{font-size:11px;color:var(--purple);font-weight:600;margin-top:8px;cursor:pointer;display:inline-block;}
+.dn-nana:active{opacity:.7;}
+.nana-sheet{position:absolute;inset:0;z-index:300;pointer-events:none;opacity:0;transition:opacity .25s;}
+.nana-sheet.open{pointer-events:auto;opacity:1;}
+.nana-sheet-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.nana-sheet-panel{position:absolute;left:0;right:0;bottom:0;background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-radius:22px 22px 0 0;border-top:.5px solid var(--glass-border);padding:16px 16px 28px;box-shadow:0 -8px 40px rgba(0,0,0,.12);transform:translateY(100%);transition:transform .28s ease;}
+.nana-sheet.open .nana-sheet-panel{transform:translateY(0);}
+.nana-sheet-hd{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.nana-sheet-av{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,#AF52DE,#7B61FF);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.nana-sheet-av svg{width:12px;height:12px;fill:#fff;}
+.nana-sheet-title{font-size:14px;font-weight:600;color:var(--ink);}
+.nana-sheet-note{font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.45;}
+.nana-sheet-ctx{font-size:10px;font-weight:600;color:var(--purple);letter-spacing:.04em;margin-bottom:8px;}
+.nana-sheet-reply{font-size:13px;color:var(--ink);line-height:1.65;padding:12px 13px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border-dim);border-radius:14px;margin-bottom:14px;}
+.nana-sheet-done{width:100%;padding:11px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;}
+.nana-sheet-done:active{opacity:.85;}
+
+/* ── FEED ── */
+.date-strip{padding:10px 18px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.date-main{font-size:16px;font-weight:600;color:var(--ink);}
+.live-badge{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--green);background:rgba(232,255,232,.65);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid rgba(52,199,89,.2);border-radius:8px;padding:3px 9px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:lp 1.4s ease-in-out infinite;}
+@keyframes lp{0%,100%{opacity:1;}50%{opacity:.3;}}
+.feed{padding:4px 16px 20px;}
+.now-block{margin-bottom:12px;}
+.now-label{font-size:10px;font-weight:700;color:var(--green);letter-spacing:.05em;display:flex;align-items:center;gap:5px;margin-bottom:8px;}
+.now-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(52,199,89,.3),transparent);}
+.fi{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;}
+.fi-time{width:38px;flex-shrink:0;text-align:right;padding-top:10px;}
+.fi-time-val{font-size:10px;font-weight:500;color:var(--muted);line-height:1;}
+.fi-time-val.recent{color:var(--ink);font-weight:600;}
+.fi-track{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:22px;}
+.fi-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;position:relative;z-index:2;}
+.fi-line{flex:1;width:1.5px;background:var(--line);margin-top:3px;min-height:8px;}
+.fi-card{flex:1;border-radius:18px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px solid var(--glass-border);box-shadow:var(--glass-shadow);overflow:hidden;}
+.fi-card.click{cursor:pointer;}
+.fi-card.click:active{opacity:.88;}
+.fc-live{padding:12px 13px;background:rgba(255,255,255,.22);}
+.fc-live-row{display:flex;align-items:center;gap:10px;}
+.fc-live-ico{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.fc-live-body{flex:1;}
+.fc-live-title{font-size:13px;font-weight:500;color:var(--ink);}
+.fc-live-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.fc-live-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;display:flex;align-items:center;gap:4px;}
+.fc-plan{padding:12px 13px;background:rgba(24,130,255,.72);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border-top:.5px solid rgba(255,255,255,.22);}
+.fc-plan-row{display:flex;align-items:center;gap:10px;}
+.fc-plan-ico{font-size:18px;flex-shrink:0;}
+.fc-plan-body{flex:1;}
+.fc-plan-title{font-size:13px;font-weight:600;color:#fff;}
+.fc-plan-sub{font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;}
+.fc-plan-prog{margin-top:7px;background:rgba(255,255,255,.2);border-radius:4px;height:3px;overflow:hidden;}
+.fc-plan-fill{height:100%;background:rgba(255,255,255,.9);border-radius:4px;transition:width .4s ease;}
+.fc-plan-chev{color:rgba(255,255,255,.5);font-size:16px;}
+.fc-ai{padding:11px 13px;background:rgba(255,255,255,.18);border-top:.5px solid var(--glass-border-dim);display:flex;gap:9px;align-items:flex-start;}
+.fc-ai-av{width:24px;height:24px;border-radius:8px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.fc-ai-av svg{width:10px;height:10px;fill:var(--muted);}
+.fc-ai-body{flex:1;}
+.fc-ai-lbl{font-size:9px;font-weight:600;letter-spacing:.04em;color:var(--muted);margin-bottom:2px;}
+.fc-ai-text{font-size:12px;color:var(--ink);line-height:1.55;font-weight:400;}
+.fc-ai-foot{font-size:10px;color:var(--faint, #aeaeb2);margin-top:6px;line-height:1.4;}
+.fc-ai-chips{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center;}
+.fc-ai-chip{font-size:10px;padding:0;border:none;background:none;color:var(--brand);font-weight:600;cursor:pointer;}
+.fc-ai-chip.pu{color:var(--muted);font-weight:500;}
+.fc-ai-chip:not(.pu)::after{content:' →';font-size:9px;opacity:.7;}
+.fi-dot.nana-insight{background:var(--glass-bg);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border);box-shadow:var(--glass-shadow);}
+.fi-dot.nana-insight svg{fill:var(--muted);}
+.fc-act{padding:12px 13px;}
+.fc-act-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.fc-act-ico{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.fc-act-title{font-size:13px;font-weight:500;color:var(--ink);flex:1;}
+.fc-act-dur{font-size:11px;font-weight:600;color:var(--brand);}
+.fc-act-metrics{display:flex;gap:6px;}
+.fc-act-m{flex:1;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border-dim);border-radius:8px;padding:6px 8px;text-align:center;}
+.fc-act-m-val{font-size:12px;font-weight:500;color:var(--ink);}
+.fc-act-m-lbl{font-size:9px;color:var(--muted);margin-top:1px;}
+.fc-act-note{font-size:11px;color:#555;line-height:1.5;margin-top:8px;padding-top:8px;border-top:.5px solid var(--line);}
+.fc-simple{padding:10px 13px;display:flex;align-items:center;gap:10px;}
+.fc-simple-ico{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.fc-simple-body{flex:1;}
+.fc-simple-title{font-size:12px;font-weight:500;color:var(--ink);}
+.fc-simple-sub{font-size:10px;color:var(--muted);margin-top:1px;}
+.prop-qrow-tag.wait-est{color:var(--brand);font-weight:600;white-space:nowrap;}
+.fc-morning{padding:14px;}
+.fc-m-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.fc-m-av{width:28px;height:28px;border-radius:8px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fc-m-av svg{width:12px;height:12px;fill:var(--muted);}
+.fc-m-lbl{font-size:9px;font-weight:600;letter-spacing:.04em;color:var(--muted);}
+.fc-m-title{font-size:14px;font-weight:500;color:var(--ink);line-height:1.35;margin-bottom:5px;}
+.fc-m-body{font-size:11px;color:#444;line-height:1.65;margin-bottom:10px;}
+.fc-m-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
+.fc-m-cell{background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border-dim);border-radius:10px;padding:8px 10px;}
+.fc-m-cell-lbl{font-size:9px;color:var(--muted);margin-bottom:1px;text-transform:uppercase;letter-spacing:.04em;}
+.fc-m-cell-val{font-size:15px;font-weight:500;color:var(--ink);}
+.fc-m-cell-chg{font-size:10px;margin-top:1px;}
+.up{color:var(--green);}
+.fc-m-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.fc-m-chip{font-size:10px;padding:4px 10px;border-radius:9px;border:.5px solid rgba(24,130,255,.18);background:var(--brand-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);color:var(--brand);cursor:pointer;}
+.older-sep{display:flex;align-items:center;gap:8px;margin:6px 0 10px;cursor:pointer;}
+.older-line{flex:1;height:.5px;background:var(--line);}
+.older-lbl{font-size:10px;color:var(--muted);font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.older-lbl svg{width:11px;height:11px;fill:none;stroke:var(--muted);stroke-width:2;transition:transform .2s;}
+.older-lbl.open svg{transform:rotate(180deg);}
+.older-content{display:none;}
+.older-content.open{display:block;}
+
+.feed-sep{margin:2px 0 12px;padding:0 2px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.feed-sep::after{content:'';flex:1;height:1px;background:var(--line);}
+
+/* plan proposal (parent ask) — 决策区 */
+.proposal{margin:0 0 8px;border-radius:16px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);overflow:hidden;border:.5px solid rgba(255,149,0,.28);position:relative;box-shadow:var(--glass-shadow);}
+.proposal::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--amber);}
+.prop-header{padding:12px 14px 11px 15px;background:rgba(255,250,245,.55);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);}
+.prop-lbl{font-size:10px;font-weight:700;color:#b45309;letter-spacing:.02em;}
+.prop-queue-pos{font-size:10px;font-weight:600;color:#b45309;background:rgba(255,149,0,.1);padding:2px 7px;border-radius:6px;}
+.prop-hd-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
+.prop-title{font-size:15px;font-weight:600;color:var(--ink);line-height:1.35;letter-spacing:-.01em;}
+.prop-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.45;}
+.prop-hint{margin-top:10px;padding-top:9px;border-top:.5px solid rgba(255,149,0,.12);font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.prop-hint-cta{font-size:11px;font-weight:600;color:#b45309;flex-shrink:0;}
+.prop-active-strip{display:none;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:rgba(24,130,255,.1);border-bottom:.5px solid rgba(24,130,255,.12);}
+.prop-active-text{flex:1;min-width:0;}
+.prop-active-lbl{font-size:9px;font-weight:700;color:var(--brand);letter-spacing:.04em;display:block;margin-bottom:2px;}
+.prop-active-title{font-size:12px;font-weight:600;color:var(--ink);display:block;}
+.prop-active-day{font-size:10px;color:var(--muted);margin-top:1px;display:block;}
+.prop-active-go{font-size:11px;font-weight:600;color:var(--brand);background:var(--brand-soft);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0;}
+.prop-active-go:active{opacity:.8;}
+.prop-invite-hook{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.45;}
+.prop-quick-actions{display:flex;gap:8px;margin-top:12px;}
+.prop-quick-actions .prop-btn{flex:1;}
+.prop-learn-link{display:block;width:100%;margin-top:10px;padding:0;border:none;background:none;font-size:11px;font-weight:600;color:#b45309;text-align:center;cursor:pointer;font-family:inherit;}
+.prop-learn-link:active{opacity:.7;}
+.prop-cta{display:none;}
+.prop-decide{display:none;padding:0 0 4px;}
+.prop-decide.open{display:block;}
+.prop-research-toggle{display:none;}
+.prop-research{display:none;padding:10px 13px 8px;border-top:.5px solid rgba(255,149,0,.1);margin-top:0;background:rgba(255,250,245,.35);}
+.prop-research.open{display:block;}
+.prop-research-hd{font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--brand);margin-bottom:8px;}
+.prop-res-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--brand);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.prop-res-lbl::after{content:'';flex:1;height:1px;background:var(--line);}
+.prop-res-text{font-size:11px;color:#333;line-height:1.7;}
+.prop-res-nums{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.prop-res-num{background:var(--brand-soft);border-radius:8px;padding:5px 9px;flex:1;min-width:72px;}
+.prop-res-num-val{font-size:13px;font-weight:600;color:var(--brand);}
+.prop-res-num-lbl{font-size:9px;color:var(--muted);}
+.prop-src{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5;font-style:italic;}
+.prop-actions{display:flex;gap:8px;padding:0 13px 12px;margin-top:0;}
+.prop-btn{flex:1;padding:10px 0;border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;border:none;text-align:center;transition:opacity .15s;}
+.prop-btn.primary{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(24,130,255,.3);}
+.prop-btn.ghost{background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);color:var(--muted);border:.5px solid var(--glass-border-dim);}
+.prop-btn:active{opacity:.8;}
+.prop-done{padding:14px 13px;text-align:center;display:none;}
+.prop-done-ico{font-size:28px;margin-bottom:6px;}
+.prop-done-txt{font-size:12px;color:var(--ink);line-height:1.55;}
+.prop-done-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.prop-queue-wrap{border-top:.5px solid rgba(255,149,0,.1);background:rgba(255,255,255,.25);}
+.prop-queue-toggle{padding:8px 14px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:space-between;}
+.prop-queue-toggle:active{opacity:.8;}
+.prop-queue-toggle .pq-chev{font-size:10px;transition:transform .2s;}
+.prop-queue-wrap.open .prop-queue-toggle .pq-chev{transform:rotate(180deg);}
+.prop-queue-list{display:none;padding:0 13px 10px;}
+.prop-queue-wrap.open .prop-queue-list{display:block;}
+.prop-qrow{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:11px;margin-bottom:6px;cursor:pointer;border:.5px solid var(--glass-border-dim);background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);}
+.prop-qrow:last-child{margin-bottom:0;}
+.prop-qrow:active{opacity:.9;}
+.prop-qrow.on{border-color:rgba(255,149,0,.3);background:rgba(255,250,245,.65);}
+.prop-qrow.wait{opacity:.72;cursor:default;}
+.prop-qrow-ico{font-size:15px;flex-shrink:0;}
+.prop-qrow-body{flex:1;min-width:0;}
+.prop-qrow-title{font-size:12px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prop-qrow-sub{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.prop-qrow-tag{font-size:9px;font-weight:600;color:var(--muted);flex-shrink:0;}
+.prop-qrow.on .prop-qrow-tag{color:#b45309;}
+.prop-wait-note{margin:0 14px 8px;padding:8px 10px;border-radius:10px;background:var(--bg2);font-size:11px;color:var(--muted);line-height:1.45;border:.5px dashed var(--line);}
+.prop-wait-note b{color:var(--ink);font-weight:600;}
+.prop-snooze{display:block;text-align:center;font-size:11px;color:var(--muted);padding:0 14px 10px;cursor:pointer;}
+.prop-snooze:active{opacity:.7;}
+.prop-btn:disabled{opacity:.45;cursor:not-allowed;}
+
+/* ── PLAN ── */
+.plan-hero{margin:0 16px 10px;border-radius:18px;padding:14px 14px 12px;background:rgba(24,130,255,.78);backdrop-filter:blur(22px) saturate(165%);-webkit-backdrop-filter:blur(22px) saturate(165%);border:.5px solid rgba(255,255,255,.28);box-shadow:0 8px 32px rgba(24,130,255,.22),var(--glass-shadow);color:#fff;position:relative;overflow:hidden;}
+.ph-focus{font-size:10px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.04em;margin-bottom:5px;}
+.ph-title{font-size:16px;font-weight:600;line-height:1.3;letter-spacing:-.01em;}
+.ph-summary{font-size:11px;color:rgba(255,255,255,.82);line-height:1.5;margin-top:5px;}
+.ph-summary strong{font-weight:600;color:#fff;}
+.plan-section-lbl{font-size:10px;color:var(--muted);letter-spacing:.5px;padding:4px 18px 8px;text-transform:uppercase;}
+.focus-placeholder{margin:0 16px 12px;border-radius:16px;padding:13px 14px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px dashed rgba(24,130,255,.22);box-shadow:var(--glass-shadow);}
+.fp-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.fp-text{font-size:11px;color:var(--muted);line-height:1.6;}
+.plan-proposals{margin:0 16px 10px;}
+.plan-prop-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 2px;}
+.plan-prop-lbl{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;}
+.plan-prop-pos{font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:6px;}
+.plan-carousel{margin-bottom:10px;}
+.plan-carousel-nav{display:flex;align-items:center;gap:8px;padding:4px 2px 8px;}
+.plan-nav-btn{width:36px;height:36px;border-radius:50%;border:.5px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);box-shadow:var(--glass-shadow);font-size:18px;color:var(--brand);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;line-height:1;}
+.plan-nav-btn:active{opacity:.75;transform:scale(.96);}
+.plan-nav-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none;}
+.plan-nav-center{flex:1;min-width:0;text-align:center;}
+.plan-nav-title{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.plan-nav-state{font-size:10px;color:var(--muted);margin-top:2px;}
+.plan-dots{display:flex;justify-content:center;gap:5px;padding-bottom:6px;}
+.plan-dot{width:6px;height:6px;border-radius:50%;background:var(--line);cursor:pointer;transition:all .2s;}
+.plan-dot.on{width:16px;border-radius:3px;background:var(--brand);}
+.prop-qrow.state-active{border-color:rgba(24,130,255,.25);}
+.prop-qrow.state-active .prop-qrow-tag{color:var(--brand);}
+.prop-qrow.state-done{opacity:.85;}
+
+/* experiment card */
+.experiment-wrap{margin:0 16px 12px;}
+.experiment-card{border-radius:20px;background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px solid rgba(24,130,255,.18);box-shadow:var(--glass-shadow);overflow:hidden;animation:fadeIn .4s ease;}
+.exp-top{padding:11px 14px 10px;background:rgba(248,251,255,.55);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border-bottom:.5px solid rgba(24,130,255,.08);}
+.exp-badge-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.exp-badge{font-size:9px;font-weight:700;letter-spacing:.04em;color:var(--brand);background:var(--brand-soft);padding:2px 7px;border-radius:5px;}
+.exp-remain{font-size:10px;color:var(--muted);font-weight:500;}
+.exp-title{font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;}
+.exp-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4;}
+.exp-body{padding:11px 13px 12px;}
+.exp-watch-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--purple);text-transform:uppercase;margin-bottom:6px;}
+.exp-days{display:flex;gap:6px;margin-bottom:10px;}
+.exp-day{flex:1;text-align:center;padding:7px 4px;border-radius:10px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border-dim);transition:all .2s;}
+.exp-day.cur{background:var(--brand-soft);border-color:rgba(24,130,255,.2);}
+.exp-day.done{background:#E8FFE8;border-color:rgba(52,199,89,.15);}
+.exp-day-num{font-size:10px;font-weight:700;color:var(--muted);}
+.exp-day.cur .exp-day-num{color:var(--brand);}
+.exp-day.done .exp-day-num{color:var(--green);}
+.exp-day-lbl{font-size:8px;color:var(--muted);margin-top:2px;}
+.exp-day.done .exp-day-lbl{color:var(--green);}
+.exp-signal{padding:9px 11px;border-radius:11px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border-dim);margin-bottom:8px;}
+.exp-signal-lbl{font-size:9px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:4px;}
+.exp-signal-lbl::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);}
+.exp-signal-text{font-size:11px;color:var(--ink);line-height:1.5;}
+.exp-signal.muted{background:rgba(250,250,250,.45);}
+.exp-signal.muted .exp-signal-lbl::before{background:var(--muted);}
+.exp-foot{font-size:10px;color:var(--muted);line-height:1.45;padding-top:8px;border-top:.5px solid var(--line);}
+.experiment-card.concluded{border-color:rgba(52,199,89,.15);box-shadow:0 2px 12px rgba(52,199,89,.06);}
+.exp-concluded{padding:12px 14px;}
+.exp-conc-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.exp-conc-title{font-size:14px;font-weight:600;color:var(--ink);line-height:1.35;flex:1;}
+.exp-conc-text{font-size:11px;color:var(--muted);line-height:1.5;}
+.exp-conc-nums{display:flex;gap:6px;margin-top:10px;}
+.exp-conc-num{flex:1;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border-dim);border-radius:8px;padding:6px 8px;text-align:center;}
+.exp-conc-num.help{background:#E8FFE8;}
+.exp-conc-num-val{font-size:13px;font-weight:600;color:var(--ink);}
+.exp-conc-num.help .exp-conc-num-val{color:var(--green);}
+.exp-conc-num-lbl{font-size:9px;color:var(--muted);margin-top:2px;}
+.exp-conc-tag{flex-shrink:0;font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;}
+.exp-conc-tag.helping{background:#E8FFE8;color:#1a7a30;}
+.exp-conc-tag.unclear,.exp-conc-tag.mixed{background:var(--bg2);color:var(--muted);}
+.ins-card.new-ins{border:.5px solid rgba(52,199,89,.25);animation:fadeIn .5s ease;}
+.feed-exp-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.22);color:#fff;margin-top:5px;display:inline-block;}
+.tab-row{display:flex;margin:0 16px 10px;background:var(--bg2);border-radius:14px;padding:3px;}
+.tab{flex:1;text-align:center;font-size:12px;font-weight:500;color:var(--muted);padding:7px 0;border-radius:11px;cursor:pointer;transition:all .18s;}
+.tab.on{background:var(--bg);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.tab-panel{display:none;}
+.tab-panel.on{display:block;}
+.slbl{font-size:10px;color:var(--muted);letter-spacing:.5px;padding:8px 18px 5px;text-transform:uppercase;}
+.task{margin:0 16px 8px;border-radius:18px;background:var(--bg);box-shadow:var(--shadow);padding:12px 13px;display:flex;gap:11px;align-items:flex-start;}
+.task.hi{border:.5px solid rgba(24,130,255,.22);}
+.task.new{border:.5px solid rgba(52,199,89,.35);animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+.task .new-tag{font-size:9px;font-weight:700;color:var(--green);background:#E8FFE8;padding:2px 6px;border-radius:4px;margin-left:4px;vertical-align:middle;}
+.tcheck{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .2s;}
+.tcheck.done{background:var(--green);border-color:var(--green);}
+.tcheck.done::after{content:'✓';font-size:12px;color:#fff;font-weight:700;}
+.tbody{flex:1;}
+.ttitle{font-size:13px;font-weight:500;color:var(--ink);line-height:1.35;}
+.ttitle.done{color:var(--muted);text-decoration:line-through;}
+.tsub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.45;}
+.tpill{display:inline-block;font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;margin-top:5px;}
+.twhy{font-size:10px;color:var(--brand);font-weight:500;margin-top:5px;cursor:pointer;}
+.day-note{margin:0 16px 10px;border-radius:16px;padding:12px 13px;background:rgba(245,240,255,.58);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px solid rgba(175,82,222,.15);box-shadow:var(--glass-shadow);}
+.dn-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--purple);margin-bottom:4px;text-transform:uppercase;}
+.dn-text{font-size:12px;color:var(--ink);line-height:1.6;}
+.dn-chips{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.dn-chip{font-size:10px;padding:4px 10px;border-radius:8px;border:.5px solid rgba(175,82,222,.2);background:rgba(255,255,255,.8);color:var(--purple);cursor:pointer;}
+.day-grid{margin:0 16px 10px;background:var(--bg);border-radius:18px;box-shadow:var(--shadow);padding:13px;}
+.dg-title{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:10px;}
+.dg-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.dg-cell{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.dg-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
+.dg-lbl{font-size:8px;color:var(--muted);}
+.trend-card{margin:0 16px 10px;background:var(--bg);border-radius:18px;box-shadow:var(--shadow);padding:13px 13px 11px;}
+.tc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.tc-title{font-size:12px;font-weight:600;color:var(--ink);}
+.tc-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;}
+.tc-chart{display:flex;align-items:flex-end;gap:3px;height:52px;margin-bottom:4px;}
+.tc-bar{flex:1;border-radius:3px 3px 0 0;min-width:0;}
+.tc-axis{display:flex;justify-content:space-between;}
+.tc-axis span{font-size:8px;color:var(--muted);}
+.tc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px;padding-top:10px;border-top:.5px solid var(--line);}
+.tc-stat{text-align:center;}
+.tc-stat-lbl{font-size:9px;color:var(--muted);margin-bottom:2px;}
+.tc-stat-val{font-size:13px;font-weight:500;}
+.ins-card{margin:0 16px 8px;border-radius:18px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px solid var(--glass-border);box-shadow:var(--glass-shadow);overflow:hidden;}
+.ic-main{padding:13px 13px 11px;cursor:pointer;}
+.ic-row{display:flex;gap:10px;align-items:flex-start;}
+.ic-ico{width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.ic-body{flex:1;}
+.ic-title{font-size:13px;font-weight:500;color:var(--ink);}
+.ic-sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.45;}
+.ic-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:.5px solid var(--glass-border-dim);}
+.ic-tag{font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;}
+.ic-ev-btn{font-size:10px;color:var(--brand);font-weight:600;background:var(--brand-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border-radius:7px;padding:3px 8px;cursor:pointer;display:flex;align-items:center;gap:3px;border:.5px solid rgba(24,130,255,.12);}
+.ic-evidence{display:none;border-top:.5px solid var(--glass-border-dim);padding:10px 13px 12px;background:rgba(250,251,255,.45);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);}
+.ic-evidence.open{display:block;}
+.ev-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--brand);text-transform:uppercase;margin-bottom:5px;}
+.ev-text{font-size:11px;color:#333;line-height:1.7;}
+.ev-nums{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;}
+.ev-num{background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border-dim);border-radius:8px;padding:5px 9px;}
+.ev-num-val{font-size:13px;font-weight:600;color:var(--brand);}
+.ev-num-lbl{font-size:9px;color:var(--muted);}
+.continuity{margin:0 16px 10px;border-radius:14px;padding:11px 13px;background:rgba(245,240,255,.52);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px solid rgba(175,82,222,.12);box-shadow:var(--glass-shadow);}
+.ct-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--purple);text-transform:uppercase;margin-bottom:4px;}
+.ct-text{font-size:12px;color:var(--ink);line-height:1.55;}
+.ct-link{font-size:11px;color:var(--purple);font-weight:600;margin-top:6px;cursor:pointer;}
+.next-plan{margin:0 16px 10px;border-radius:16px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px dashed rgba(60,60,67,.14);box-shadow:var(--glass-shadow);padding:12px 13px;opacity:.85;}
+.np-row{display:flex;gap:10px;align-items:center;}
+.np-ico{width:36px;height:36px;border-radius:12px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:.5px solid var(--glass-border-dim);}
+.np-lock{font-size:10px;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:5px;}
+.lock-bar{flex:1;height:3px;background:var(--bg2);border-radius:2px;overflow:hidden;}
+.lock-fill{height:100%;background:var(--brand);border-radius:2px;transition:width .4s ease;}
+
+.nana-followup-chip{font-size:11px;padding:5px 11px;border-radius:10px;border:.5px solid rgba(24,130,255,.22);background:var(--brand-soft);color:var(--brand);cursor:pointer;font-family:inherit;font-weight:500;}
+.nana-followup-chip:active{opacity:.75;}
+/* toast */
+.toast{position:absolute;top:52px;left:50%;transform:translateX(-50%) translateY(-8px);background:rgba(28,28,30,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#fff;font-size:11px;padding:8px 14px;border-radius:10px;border:.5px solid rgba(255,255,255,.12);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:200;white-space:nowrap;max-width:300px;text-align:center;line-height:1.4;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="device-stage">
+  <div class="iphone-shell">
+    <div class="iphone-btn iphone-btn-silent" aria-hidden="true"></div>
+    <div class="iphone-btn iphone-btn-vol-up" aria-hidden="true"></div>
+    <div class="iphone-btn iphone-btn-vol-down" aria-hidden="true"></div>
+    <div class="iphone-btn iphone-btn-power" aria-hidden="true"></div>
+    <div class="phone">
+      <div class="dynamic-island" aria-hidden="true"></div>
+      <div id="toast" class="toast"></div>
+
+      <div class="screen">
+
+    <!-- ══════════ FEED (首页) ══════════ -->
+    <div class="view on" id="view-feed">
+      <div class="topbar">
+        <div class="ctabs">
+          <div class="ctab" onclick="swChild('s')">
+            <div class="cav on" id="fcav-s">🐣</div>
+            <span class="ctab-badge" id="fcbadge-s">1</span>
+            <span class="cnm on" id="fcnm-s">Sarah</span>
+          </div>
+          <div class="ctab" onclick="swChild('t')">
+            <div class="cav" id="fcav-t">🦁</div>
+            <span class="ctab-badge" id="fcbadge-t">1</span>
+            <span class="cnm" id="fcnm-t">Tommy</span>
+          </div>
+        </div>
+        <div class="me-av">👤</div>
+      </div>
+      <div class="date-strip">
+        <div class="date-main" id="feed-date">Wednesday, May 27</div>
+        <div class="live-badge"><div class="live-dot"></div><span id="feed-time">16:22</span></div>
+      </div>
+      <div class="scroll">
+        <div class="feed">
+
+          <!-- 仅在有征询时显示 -->
+          <div class="proposal" id="proposal-card">
+            <div id="proposal-pending">
+              <div class="prop-active-strip" id="prop-active-strip" style="display:none;">
+                <div class="prop-active-text">
+                  <span class="prop-active-lbl">小实验进行中 · 详情在 Plan</span>
+                  <span class="prop-active-title" id="prop-active-title">放学后多待外面一会儿</span>
+                  <span class="prop-active-day" id="prop-active-day">Day 1 / 3</span>
+                </div>
+                <button type="button" class="prop-active-go" onclick="swView('plan')">查看进度</button>
+              </div>
+              <div id="prop-invite-block">
+                <div class="prop-header">
+                  <div class="prop-hd-row">
+                    <span class="prop-lbl">需要你决定</span>
+                    <span class="prop-queue-pos" id="prop-queue-pos">1 / 3</span>
+                  </div>
+                  <div class="prop-title" id="prop-title">傍晚户外散步 20 分钟</div>
+                  <div class="prop-invite-hook" id="prop-invite-hook">试 3 天 · 无打卡 · 手环自动观察</div>
+                  <div class="prop-quick-actions">
+                    <button type="button" class="prop-btn ghost" onclick="declineProposal()">暂不</button>
+                    <button type="button" class="prop-btn primary" id="prop-approve-btn" onclick="approveProposal()">开始 3 天</button>
+                  </div>
+                  <button type="button" class="prop-learn-link" id="prop-learn-link" onclick="openPropDecide()">了解为什么建议 →</button>
+                </div>
+                <div class="prop-wait-note" id="prop-wait-note" style="display:none;"></div>
+                <div class="prop-decide" id="prop-decide">
+                  <div class="prop-research" id="prop-research-wrap">
+                    <div class="prop-research-hd">依据与数据</div>
+                    <div class="prop-res-text" id="prop-research"></div>
+                    <div class="prop-res-nums" id="prop-nums"></div>
+                    <div class="prop-src" id="prop-src"></div>
+                  </div>
+                  <span class="prop-snooze" onclick="snoozeProposal()">本周不提醒此项</span>
+                </div>
+                <div class="prop-queue-wrap" id="prop-queue-wrap">
+                  <div class="prop-queue-toggle" onclick="togglePropQueue()">
+                    <span id="prop-queue-toggle-lbl">还有 2 项建议</span>
+                    <span class="pq-chev">▾</span>
+                  </div>
+                  <div class="prop-queue-list" id="prop-queue-list"></div>
+                </div>
+              </div>
+            </div>
+            <div class="prop-done" id="proposal-done">
+              <div class="prop-done-ico" id="prop-done-ico">✓</div>
+              <div class="prop-done-txt" id="prop-done-txt"></div>
+              <div class="prop-done-sub" id="prop-done-sub"></div>
+            </div>
+          </div>
+
+          <div class="feed-sep" id="feed-sep-timeline"><span>今天发生了什么 · 仅浏览</span></div>
+
+          <div class="now-block">
+            <div class="now-label"><div class="live-dot"></div>Just now</div>
+            <div class="fi">
+              <div class="fi-time"><div class="fi-time-val recent">16:10</div></div>
+              <div class="fi-track">
+                <div class="fi-dot" style="background:var(--brand);box-shadow:0 0 0 3px rgba(24,130,255,.18);">🏠</div>
+                <div class="fi-line"></div>
+              </div>
+              <div class="fi-card" style="border:.5px solid rgba(24,130,255,.2);">
+                <div class="fc-live">
+                  <div class="fc-live-row">
+                    <div class="fc-live-ico" style="background:var(--brand-soft);">🏠</div>
+                    <div class="fc-live-body">
+                      <div class="fc-live-title" id="feed-live-title">At home · resting</div>
+                      <div class="fc-live-sub" id="feed-live-sub">Heart rate 68 bpm · band 61%</div>
+                    </div>
+                    <div class="fc-live-badge" style="background:#E8FFE8;color:#1a7a30;"><div class="live-dot" style="background:var(--green);"></div>Live</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fi">
+              <div class="fi-time"><div class="fi-time-val" style="color:var(--brand);font-weight:600;font-size:9px;">PLAN</div></div>
+              <div class="fi-track">
+                <div class="fi-dot" style="background:var(--brand);" id="feed-plan-dot">💤</div>
+                <div class="fi-line" style="background:rgba(24,130,255,.15);"></div>
+              </div>
+              <div class="fi-card click" style="box-shadow:0 8px 28px rgba(24,130,255,.16);" onclick="swView('plan')">
+                <div class="fc-plan">
+                  <div class="fc-plan-row">
+                    <div class="fc-plan-ico" id="feed-plan-ico">💤</div>
+                    <div class="fc-plan-body">
+                      <div class="fc-plan-title" id="feed-plan-title">Sleep focus · Day 8 of 14</div>
+                      <div class="fc-plan-sub" id="feed-plan-sub">Deep sleep ↑28% · see insights →</div>
+                      <span class="feed-exp-pill" id="feed-exp-pill" style="display:none;"></span>
+                    </div>
+                    <div class="fc-plan-chev">›</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fi">
+            <div class="fi-time"><div class="fi-time-val recent">15:51</div></div>
+            <div class="fi-track"><div class="fi-dot" style="background:#E8FFE8;">🎯</div><div class="fi-line"></div></div>
+            <div class="fi-card">
+              <div class="fc-simple">
+                <div class="fc-simple-ico" style="background:#E8FFE8;">🎯</div>
+                <div class="fc-simple-body">
+                  <div class="fc-simple-title" id="feed-step-title">Step goal reached — 8,800 steps</div>
+                  <div class="fc-simple-sub" id="feed-step-sub">147% of daily goal · 🔥 7 days in a row</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fi">
+            <div class="fi-time"><div class="fi-time-val">15:34</div></div>
+            <div class="fi-track"><div class="fi-dot" style="background:#E8F2FF;">🏠</div><div class="fi-line"></div></div>
+            <div class="fi-card">
+              <div class="fc-simple">
+                <div class="fc-simple-ico" style="background:#E8F2FF;">🏠</div>
+                <div class="fc-simple-body">
+                  <div class="fc-simple-title">Arrived home safely</div>
+                  <div class="fc-simple-sub">Home Zone · 15:34</div>
+                </div>
+                <div style="font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;background:#E8FFE8;color:#1a7a30;white-space:nowrap;flex-shrink:0;">At home ✓</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fi" id="feed-nana-row">
+            <div class="fi-time"><div class="fi-time-val">12:31</div></div>
+            <div class="fi-track">
+              <div class="fi-dot nana-insight">
+                <svg width="10" height="10" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+              <div class="fi-line"></div>
+            </div>
+            <div class="fi-card">
+              <div class="fc-ai">
+                <div class="fc-ai-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                <div class="fc-ai-body">
+                  <div class="fc-ai-lbl">知会 · 无需决定</div>
+                  <div class="fc-ai-text" id="feed-nana-msg">Deep sleep is trending up (+28%). Recess outdoor time helped today — see plan insights for the full picture.</div>
+                  <div class="fc-ai-foot">Nana 的解读，不是要您点「同意」</div>
+                  <div class="fc-ai-chips">
+                    <div class="fc-ai-chip" onclick="openNanaAskFromChild('feed')">让 Nana 细说</div>
+                    <div class="fc-ai-chip pu" onclick="dismissNana()">知道了</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="older-sep" onclick="toggleOlder(this)">
+            <div class="older-line"></div>
+            <div class="older-lbl" id="older-lbl">Earlier today · 3 events
+              <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="older-line"></div>
+          </div>
+          <div class="older-content" id="older-content">
+            <div class="fi">
+              <div class="fi-time"><div class="fi-time-val">08:04</div></div>
+              <div class="fi-track">
+                <div class="fi-dot nana-insight">
+                  <svg width="10" height="10" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                </div>
+              </div>
+              <div class="fi-card">
+                <div class="fc-morning">
+                  <div class="fc-m-header">
+                    <div class="fc-m-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+                    <div class="fc-m-lbl">晨间摘要 · 只读</div>
+                  </div>
+                  <div class="fc-m-title" id="feed-morning-title">Sarah woke up in great shape 🌟</div>
+                  <div class="fc-m-body" id="feed-morning-body">4 deep-sleep cycles. HRV is her best this week — body is well recovered and ready.</div>
+                  <div class="fc-m-grid" id="feed-morning-grid"></div>
+                  <div class="fc-m-chips">
+                    <div class="fc-m-chip" onclick="openNanaAskFromChild('morning')">让 Nana 解读晨间数据</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ PLAN ══════════ -->
+    <div class="view" id="view-plan">
+      <div class="scroll">
+        <div class="top-row">
+          <div class="ctabs">
+            <div class="ctab" onclick="swChild('s')">
+              <div class="cav on" id="pcav-s">🐣</div>
+              <span class="ctab-badge" id="pcbadge-s">1</span>
+              <span class="cnm on" id="pcnm-s">Sarah</span>
+            </div>
+            <div class="ctab" onclick="swChild('t')">
+              <div class="cav" id="pcav-t">🦁</div>
+              <span class="ctab-badge" id="pcbadge-t">1</span>
+              <span class="cnm" id="pcnm-t">Tommy</span>
+            </div>
+          </div>
+          <div class="me-av">👤</div>
+        </div>
+
+        <div class="plan-hero" id="plan-hero">
+          <div class="ph-focus" id="ph-focus">睡眠节奏</div>
+          <div class="ph-title" id="ph-title">Better sleep rhythm</div>
+          <div class="ph-summary" id="ph-summary">近两周深睡在变好，但入睡时间还不稳，先稳住节奏。</div>
+        </div>
+
+        <div class="plan-proposals" id="plan-proposals-section" style="display:none;">
+          <div class="plan-prop-hd">
+            <span class="plan-prop-lbl">3 天小实验</span>
+            <span class="plan-prop-pos" id="plan-prop-pos">1 / 3</span>
+          </div>
+          <div class="plan-carousel" id="plan-carousel">
+            <div class="plan-carousel-nav">
+              <button type="button" class="plan-nav-btn" id="plan-nav-prev" onclick="planCarouselPrev()">‹</button>
+              <div class="plan-nav-center">
+                <div class="plan-nav-title" id="plan-nav-title">傍晚户外散步</div>
+                <div class="plan-nav-state" id="plan-nav-state">进行中 · Day 1</div>
+              </div>
+              <button type="button" class="plan-nav-btn" id="plan-nav-next" onclick="planCarouselNext()">›</button>
+            </div>
+            <div class="plan-dots" id="plan-dots"></div>
+          </div>
+        </div>
+
+        <div id="plan-focus-anchor"></div>
+
+        <div id="experiment-wrap" class="experiment-wrap" style="display:none;">
+          <div class="experiment-card" id="experiment-card">
+            <div id="exp-active">
+              <div class="exp-top">
+                <div class="exp-badge-row">
+                  <span class="exp-badge">Experiment · 试试 3 天</span>
+                  <span class="exp-remain" id="exp-remain">还剩 3 天</span>
+                </div>
+                <div class="exp-title" id="exp-title">放学后多待外面一会儿</div>
+                <div class="exp-sub" id="exp-sub">自然光暴露 · 不打卡 · 手环自动观察</div>
+              </div>
+              <div class="exp-body">
+                <div class="exp-watch-lbl" id="exp-watch-lbl">我们在看 · 入睡时间 & 深睡</div>
+                <div class="exp-days" id="exp-days"></div>
+                <div class="exp-signal" id="exp-signal">
+                  <div class="exp-signal-text" id="exp-signal-text">等待今天的数据…</div>
+                </div>
+              </div>
+            </div>
+            <div id="exp-concluded" style="display:none;">
+              <div class="exp-concluded">
+                <div class="exp-conc-hd">
+                  <div class="exp-conc-title" id="exp-conc-title"></div>
+                  <span class="exp-conc-tag" id="exp-conc-tag"></span>
+                </div>
+                <div class="exp-conc-text" id="exp-conc-text"></div>
+                <div class="exp-conc-nums" id="exp-conc-nums"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="focus-placeholder" id="focus-placeholder">
+          <div class="fp-text">在 <strong>Today</strong> 确认尝试后，3 天 Experiment 会出现在这里——有时限、无打卡，结论写入 Insights。</div>
+        </div>
+
+        <div class="plan-section-lbl">Insights</div>
+
+        <div id="panel-insights">
+          <div id="ins-from-exp"></div>
+          <div class="slbl" id="ins-lbl-working" style="padding-top:0;">做得好的</div>
+          <div id="ins-working-list"></div>
+          <div class="slbl" id="ins-lbl-needs" style="margin-top:2px;">还要补的</div>
+          <div id="ins-needs-list"></div>
+          <div class="day-note" style="margin-top:4px;">
+            <div class="dn-lbl">Nana's read · Day <span id="ins-day">8</span></div>
+            <div class="dn-text" id="ins-dn-text">The plan is working. Fix the weekend gap and hit outdoor play 6 of the next 6 days.</div>
+            <div class="dn-nana" onclick="openNanaAskFromChild('read')">让 Nana 解读 →</div>
+          </div>
+
+          <div class="continuity" style="margin-top:10px;">
+            <div class="ct-lbl" id="ct-lbl">Sarah's journey</div>
+            <div class="ct-text" id="ct-text">This is her <strong>2nd plan</strong>. Plan 1 (Activity Boost, March) raised step completion 58% → 87%.</div>
+          </div>
+
+          <div class="slbl" style="margin-top:6px;">Up next</div>
+          <div class="next-plan">
+            <div class="np-row">
+              <div class="np-ico" id="np-ico">⚡</div>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:500;color:var(--ink);" id="np-title">Activity Balance</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:1px;" id="np-sub">Outdoor time · post-school routine</div>
+                <div class="np-lock">
+                  <span style="flex-shrink:0;" id="np-lock-lbl">Unlocks in 6 days</span>
+                  <div class="lock-bar"><div class="lock-fill" id="np-fill" style="width:57%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="height:8px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- bottom nav -->
+    <div class="nav">
+      <div class="nav-pill">
+        <div class="nb on" id="nav-feed" onclick="swView('feed')" title="Today">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="nb" id="nav-plan" onclick="swView('plan')" title="Plan">
+          <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="nana-sheet" class="nana-sheet">
+    <div class="nana-sheet-backdrop" onclick="closeNanaAsk()"></div>
+    <div class="nana-sheet-panel">
+      <div class="nana-sheet-hd">
+        <div class="nana-sheet-av"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div class="nana-sheet-title">Nana 解读</div>
+      </div>
+      <div class="nana-sheet-note">根据您选中的这条数据自动分析，无需输入问题。</div>
+      <div class="nana-sheet-ctx" id="nana-sheet-ctx"></div>
+      <div class="nana-sheet-reply" id="nana-sheet-reply" style="transition:opacity .2s;"></div>
+      <div id="nana-followups" style="display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 12px;"></div>
+      <button type="button" class="nana-sheet-done" onclick="closeNanaAsk()">知道了</button>
+    </div>
+  </div>
+      <div class="home-indicator" aria-hidden="true"></div>
+    </div>
+  </div>
+  <aside class="proto-panel" aria-label="原型调试">
+    <div class="proto-lbl">原型调试 · 不进入 App</div>
+    <button type="button" class="proto-btn" id="proto-advance-exp" onclick="advanceExperimentDay()">模拟实验下一天</button>
+    <div class="proto-state" id="proto-exp-state">当前无进行中实验</div>
+    <p class="proto-hint">仅在浏览器预览用。上线版移除此面板。</p>
+  </aside>
+</div>
+
+<script>
+var curChild = 's';
+var curView = 'feed';
+var experiments = { s: null, t: null };
+/** 实验结论写入后持久保留，开新实验不覆盖 */
+var insightRecords = { s: [], t: [] };
+var propFocusId = { s: 's_outdoor', t: 't_breath' };
+var propQueueOpen = { s: false, t: false };
+var _nanaAskSeq = 0;
+var _nanaAskStore = {};
+
+var NANA_CTX_LABEL = { morning: '晨间摘要', feed: '今日知会', read: 'Plan 综合读数' };
+
+var PROPOSAL_LIST = {
+  s: [
+    {
+      id: 's_outdoor',
+      planName: '睡眠计划',
+      ico: '🌅',
+      title: '傍晚户外散步 20 分钟',
+      expTitle: '放学后多待外面一会儿',
+      sub: '放学回家后 · 自然光暴露 · 帮助今晚入睡',
+      expSub: '自然光暴露 · 不打卡 · 手环自动观察',
+      watch: '入睡时间 & 深睡',
+      research: '过去 8 天里，<strong>Sarah 有户外活动的日期</strong>平均入睡仅需 <strong>11 分钟</strong>；无户外日则为 <strong>19 分钟</strong>。今天课间已完成 22 分钟户外活动，但<strong>傍晚时段光照不足</strong>——这是褪黑素节律的关键窗口。',
+      nums: [
+        { val: '11 min', lbl: '有户外·入睡', color: 'var(--green)' },
+        { val: '19 min', lbl: '无户外·入睡', color: 'var(--red)' },
+        { val: '4/8', lbl: '户外达标天' }
+      ],
+      src: '数据来源：手环睡眠潜伏期 + GPS 户外光照标签 · 计划第 1–8 天',
+      daySignals: [
+        { text: '检测到 1 次户外光照 · 今晚 19 min 入睡', muted: false },
+        { text: '检测到 1 次户外 · 今晚 15 min 入睡', muted: false },
+        { text: '阴雨天 · 无明显户外信号 · 17 min 入睡', muted: true }
+      ],
+      conclusion: {
+        status: 'helping', ico: '✨', title: '傍晚户外对入睡有帮助',
+        text: '3 天观察结束。2 次检测到户外活动，平均入睡 <strong>15 min</strong>，尝试前为 <strong>17 min</strong>。已写入 Insights。',
+        textShort: '2 次户外信号 · 入睡 15 min（前 17 min）· 已写入 Insights',
+        tag: 'Helping · 来自 Experiment',
+        nums: [{ val: '17 min', lbl: '尝试前', help: false }, { val: '15 min', lbl: '尝试期', help: true }, { val: '2/3', lbl: '有信号天', help: false }],
+        insightTitle: 'Evening outdoor light may shorten sleep onset',
+        insightSub: 'From 3-day experiment · 2 passive outdoor signals · avg latency −2 min',
+        insightEv: 'Experiment window: sleep latency averaged <strong>15 min</strong> vs <strong>17 min</strong> baseline.',
+        nanaReply: '这 3 天里，有户外信号的晚上入睡更快。建议优先保证放学后的户外窗口——不必额外加任务，手环会继续被动观察。'
+      }
+    },
+    {
+      id: 's_screen',
+      planName: '睡眠计划',
+      ico: '📵',
+      title: '睡前 30 分钟少看屏',
+      expTitle: '睡前减少屏幕刺激',
+      sub: '21:00 前 · 降低蓝光 · 帮助入睡',
+      expSub: '被动观察屏幕时段 · 不打卡',
+      watch: '入睡潜伏期 & 夜间醒来',
+      research: '近 7 天有 <strong>3 个晚上</strong>在睡前 30 分钟内仍有明显屏幕使用，对应入睡潜伏期平均 <strong>21 min</strong>；无屏日约 <strong>14 min</strong>。与当前睡眠计划方向一致，可作为下一项小实验。',
+      nums: [{ val: '21 min', lbl: '有屏·入睡', color: 'var(--red)' }, { val: '14 min', lbl: '无屏·入睡', color: 'var(--green)' }, { val: '3/7', lbl: '有屏夜' }],
+      src: '数据来源：设备屏幕时段标签 + 睡眠潜伏期 · 近 7 天',
+      daySignals: [
+        { text: '睡前检测到屏幕 · 入睡 22 min', muted: false },
+        { text: '无屏信号 · 入睡 13 min', muted: false },
+        { text: '轻微屏幕 · 入睡 16 min', muted: true }
+      ],
+      conclusion: {
+        status: 'helping', ico: '📵', title: '少屏对入睡有帮助',
+        text: '3 天观察结束。有屏日入睡更慢，无屏日明显缩短。已写入 Insights。',
+        textShort: '无屏夜入睡更快 · 已写入 Insights',
+        tag: 'Helping · 来自 Experiment',
+        nums: [{ val: '19 min', lbl: '尝试前', help: false }, { val: '15 min', lbl: '尝试期', help: true }, { val: '2/3', lbl: '有信号天', help: false }],
+        insightTitle: 'Less pre-bed screen may shorten sleep onset',
+        insightSub: 'From 3-day experiment · passive screen-time tags',
+        insightEv: 'Nights without pre-bed screen averaged <strong>14 min</strong> sleep onset vs <strong>21 min</strong> on screen nights.'
+      }
+    },
+    {
+      id: 's_weekend',
+      planName: '睡眠计划',
+      ico: '⏰',
+      title: '周末固定起床时间',
+      expTitle: '周末与平日起床差 ≤30 分钟',
+      sub: '社会时差 · 稳定节律 · 周一更好起',
+      expSub: '手环观察起床时间 · 不打卡',
+      watch: '周末入睡 & 周一晨间 HRV',
+      research: '过去两个周末 Sarah 起床比平日晚 <strong>75–90 分钟</strong>，周一 HRV 平均低 <strong>4 ms</strong>。缩小周末起床差可能改善周一状态——优先级低于户外光，但值得排队尝试。',
+      nums: [{ val: '+82 min', lbl: '周末起床差', color: 'var(--amber)' }, { val: '−4 ms', lbl: '周一 HRV', color: 'var(--red)' }, { val: '2', lbl: '周末样本' }],
+      src: '数据来源：起床时间 + 晨间 HRV · 近 4 周',
+      daySignals: [
+        { text: '周六起床晚 78 min · 周六入睡偏晚', muted: false },
+        { text: '周日起床差缩小 · 周日入睡提前', muted: false },
+        { text: '雨天居家 · 起床差仍大', muted: true }
+      ],
+      conclusion: {
+        status: 'mixed', ico: '⏰', title: '周末起床差缩小有微弱信号',
+        text: '3 天样本不足以定论，但周一晨间状态略有改善。已写入 Insights 供参考。',
+        textShort: '信号有限 · 供参考 · 已写入 Insights',
+        tag: 'Mixed · 来自 Experiment',
+        nums: [{ val: '82 min', lbl: '尝试前差', help: false }, { val: '48 min', lbl: '尝试期差', help: true }, { val: '2/3', lbl: '有信号天', help: false }],
+        insightTitle: 'Smaller weekend wake gap may help Monday HRV',
+        insightSub: 'From 3-day experiment · passive wake-time tracking',
+        insightEv: 'Weekend wake gap averaged <strong>48 min</strong> vs <strong>82 min</strong> baseline over the experiment window.'
+      }
+    }
+  ],
+  t: [
+    {
+      id: 't_breath',
+      planName: '恢复计划',
+      ico: '🧘',
+      title: '睡前放松呼吸 5 分钟',
+      expTitle: '睡前 5 分钟放松呼吸',
+      sub: '固定晚间流程 · 降低心率 · 稳定 HRV',
+      expSub: '引导式呼吸 · 不打卡 · 观察 HRV 恢复',
+      watch: '夜间 HRV & 心率恢复',
+      research: 'Tommy 过去 3 天 HRV 持续走低（<strong>29 → 26 ms</strong>），但<strong>有完成放松呼吸的 2 个晚上</strong>心率恢复更快，次日 HRV 回升 <strong>+4 ms</strong>。',
+      nums: [{ val: '26 ms', lbl: '今日 HRV', color: 'var(--red)' }, { val: '+4 ms', lbl: '呼吸后回升', color: 'var(--green)' }, { val: '2/3', lbl: '有效夜晚' }],
+      src: '数据来源：夜间 HRV + 心率变异性恢复曲线 · 计划第 1–3 天',
+      daySignals: [
+        { text: '晚间 HR 恢复较快 · 次日 HRV +3 ms', muted: false },
+        { text: '跳过 · 次日 HRV 持平 26 ms', muted: true },
+        { text: '完成呼吸 · 次日 HRV +4 ms', muted: false }
+      ],
+      conclusion: {
+        status: 'helping', ico: '🌿', title: '呼吸放松对 HRV 恢复有正向信号',
+        text: '3 天观察结束。2 个有呼吸信号的早晨 HRV 平均回升 <strong>+3.5 ms</strong>。已写入 Insights。',
+        textShort: '2 晚有效信号 · HRV +3.5 ms · 已写入 Insights',
+        tag: 'Helping · 来自 Experiment',
+        nums: [{ val: '26 ms', lbl: '基线', help: false }, { val: '+3.5 ms', lbl: '有效夜', help: true }, { val: '2/3', lbl: '有信号天', help: false }],
+        insightTitle: 'Breathing wind-down linked to HRV recovery',
+        insightSub: 'From 3-day experiment · passive HR/HRV tracking',
+        insightEv: 'On 2 evenings with guided breathing, next-morning HRV rose <strong>+3.5 ms</strong> on average.',
+        nanaReply: '呼吸放松与 HRV 回升在 2 个晚上同时出现，但还不能说「一定有效」。建议先把 5 分钟呼吸放进固定睡前流程，观察 1–2 周，不要叠加新的运动目标。'
+      }
+    }
+  ]
+};
+
+var proposalDecisions = {};
+['s', 't'].forEach(function(c) {
+  PROPOSAL_LIST[c].forEach(function(p) { proposalDecisions[p.id] = 'pending'; });
+});
+
+function getProposal(c, id) {
+  return PROPOSAL_LIST[c].filter(function(p) { return p.id === id; })[0];
+}
+
+function getPendingProposals(c) {
+  return PROPOSAL_LIST[c].filter(function(p) { return proposalDecisions[p.id] === 'pending'; });
+}
+
+function getActiveProposal(c) {
+  var exp = experiments[c];
+  if (!exp) return null;
+  return getProposal(c, exp.proposalId);
+}
+
+function hasActiveExperiment(c) {
+  return experiments[c] && experiments[c].status === 'active';
+}
+
+function canStartProposal(c, id) {
+  if (!hasActiveExperiment(c)) return true;
+  return experiments[c].proposalId === id;
+}
+
+function getSwitcherItems(c) {
+  var items = [];
+  var seen = {};
+  var exp = experiments[c];
+  if (exp) {
+    var ep = getProposal(c, exp.proposalId);
+    if (ep) {
+      items.push({ proposal: ep, state: exp.status });
+      seen[ep.id] = true;
+    }
+  }
+  getPendingProposals(c).forEach(function(p) {
+    if (!seen[p.id]) {
+      items.push({ proposal: p, state: 'pending' });
+      seen[p.id] = true;
+    }
+  });
+  return items;
+}
+
+/** Plan 只展示已在 Today 确认并开始观察的项 */
+function getPlanItems(c) {
+  var exp = experiments[c];
+  if (!exp) return [];
+  var p = getProposal(c, exp.proposalId);
+  if (!p) return [];
+  return [{ proposal: p, state: exp.status }];
+}
+
+function ensurePlanFocus(c) {
+  var items = getPlanItems(c);
+  if (!items.length) return null;
+  var fid = propFocusId[c];
+  if (!items.some(function(it) { return it.proposal.id === fid; })) {
+    propFocusId[c] = items[0].proposal.id;
+  }
+  return getProposal(c, propFocusId[c]);
+}
+
+function ensurePropFocus(c) {
+  var items = getSwitcherItems(c);
+  if (!items.length) return null;
+  var fid = propFocusId[c];
+  var ok = items.some(function(it) { return it.proposal.id === fid; });
+  if (!ok) propFocusId[c] = items[0].proposal.id;
+  return getProposal(c, propFocusId[c]);
+}
+
+function daysUntilQueueStarts(c) {
+  var exp = experiments[c];
+  if (!exp || exp.status !== 'active') return null;
+  return exp.total - exp.day + 1;
+}
+
+function queueEtaLabel(c) {
+  var d = daysUntilQueueStarts(c);
+  if (d === null) return null;
+  if (d <= 1) return '预计明天可试';
+  return '预计 ' + d + ' 天后';
+}
+
+function queueRowTag(c, item, focusId) {
+  if (item.proposal.id === focusId) return '当前';
+  if (item.state === 'active') return '进行中';
+  if (item.state === 'concluded') return '已结束';
+  if (hasActiveExperiment(c) && !canStartProposal(c, item.proposal.id)) {
+    var eta = queueEtaLabel(c);
+    return eta || '排队';
+  }
+  return '待决定';
+}
+
+function updateProtoPanel(c) {
+  var btn = document.getElementById('proto-advance-exp');
+  var state = document.getElementById('proto-exp-state');
+  if (!btn || !state) return;
+  var exp = experiments[c];
+  if (!exp) {
+    btn.disabled = true;
+    btn.textContent = '模拟实验下一天';
+    state.textContent = D[c].name + '：无进行中实验';
+    return;
+  }
+  btn.disabled = false;
+  if (exp.status === 'active') {
+    btn.textContent = exp.day >= exp.total ? '查看 3 天结论' : '模拟实验 · 下一天 (Day ' + exp.day + '/' + exp.total + ')';
+    state.textContent = D[c].name + ' · ' + getProposal(c, exp.proposalId).expTitle + ' · 进行中';
+  } else {
+    btn.disabled = true;
+    btn.textContent = '实验已结束';
+    state.textContent = D[c].name + ' · 结论在 Plan · Insights';
+  }
+}
+
+function buildQueueRowsHTML(c, focusId, items) {
+  return items.map(function(item) {
+    var p = item.proposal;
+    var on = p.id === focusId;
+    var tag = queueRowTag(c, item, focusId);
+    var wait = item.state === 'pending' && hasActiveExperiment(c) && !canStartProposal(c, p.id);
+    var tagCls = 'prop-qrow-tag' + (wait && !on ? ' wait-est' : '');
+    var sub = p.planName + (item.state === 'active' ? ' · Day ' + experiments[c].day : '');
+    if (wait && !on) {
+      var eta = queueEtaLabel(c);
+      if (eta) sub += ' · ' + eta;
+    }
+    var cls = 'prop-qrow' + (on ? ' on' : '') + (wait && !on ? ' wait' : '') +
+      (item.state === 'active' ? ' state-active' : '') + (item.state === 'concluded' ? ' state-done' : '');
+    return '<div class="' + cls + '" onclick="selectProposal(\'' + p.id + '\')">' +
+      '<span class="prop-qrow-ico">' + p.ico + '</span>' +
+      '<div class="prop-qrow-body"><div class="prop-qrow-title">' + p.title + '</div>' +
+      '<div class="prop-qrow-sub">' + sub + '</div></div>' +
+      '<span class="' + tagCls + '">' + tag + '</span></div>';
+  }).join('');
+}
+
+function countPendingAll() {
+  var n = { s: 0, t: 0 };
+  ['s', 't'].forEach(function(c) { n[c] = getPendingProposals(c).length; });
+  return n;
+}
+
+function updateChildBadges() {
+  var n = countPendingAll();
+  ['s', 't'].forEach(function(c) {
+    ['fcbadge', 'pcbadge'].forEach(function(prefix) {
+      var el = document.getElementById(prefix + '-' + c);
+      if (!el) return;
+      if (n[c] > 0) {
+        el.style.display = 'block';
+        el.textContent = n[c];
+      } else {
+        el.style.display = 'none';
+      }
+    });
+  });
+}
+
+var D = {
+  s: {
+    name: 'Sarah', dayNum: 8, dayTotal: 14, dayPct: 57,
+    feedMorningTitle: 'Sarah woke up in great shape 🌟',
+    feedMorningBody: '4 deep-sleep cycles. HRV is her best this week — body is well recovered and ready.',
+    morningGrid: [['Sleep','8h 15m','↑ +18 min'],['HRV','46 ms','↑ Best week'],['Deep sleep','2h 40m','↑ Target ✓'],['Resting HR','68 bpm','— Normal']],
+    feedLive: 'At home · resting', feedLiveSub: 'Heart rate 68 bpm · band 61%',
+    feedStep: 'Step goal reached — 8,800 steps', feedStepSub: '147% of daily goal · 🔥 7 days in a row',
+    feedNana: '深睡趋势向上（+28%）。今天课间户外有帮助——详情在 Plan Insights，不必在此确认。',
+    feedPlanIco: '💤', feedPlanTitle: 'Sleep focus · Day 8 of 14', feedPlanSub: 'Deep sleep ↑28% · see insights →',
+    phFocus:'睡眠节奏', phTitle:'Better sleep rhythm', phRhythm:'Bedtime 21:00 · reduce screens · track deep sleep',
+    phSummary:'近两周深睡在变好，但入睡时间还不稳，先稳住节奏。',
+    insLblWorking:'做得好的', insLblNeeds:'还要补的',
+    insWorking:[{
+      ico:'💤', icoBg:'#E8FFE8',
+      title:'Deep sleep up +28% since Day 1',
+      sub:'Consistent bedtime is the main driver. Target already exceeded.',
+      tag:'达标 ✓', tagBg:'#E8FFE8', tagColor:'#1a7a30',
+      evLbl:'证据',
+      evText:'Deep sleep went from <strong>2h 05m on Day 1 → 2h 40m today</strong> — a 35-minute gain.',
+      nums:[
+        { val:'2h 05m', lbl:'第 1 天' },
+        { val:'2h 40m', lbl:'今天', color:'var(--green)' },
+        { val:'+28%', lbl:'变化' }
+      ],
+      nanaReply:'深睡改善主要来自近两周入睡更规律，不是偶然一天睡得好。周末若再晚 1 小时睡，深睡可能回落——当前最值得守的是固定 bedtime，而不是再加任务。'
+    }],
+    insNeeds:[{
+      ico:'⚡', icoBg:'#FFF0F0',
+      title:'Outdoor play only 4 of 8 days',
+      sub:'Limiting sleep onset — afternoon light is key.',
+      tag:'需关注', tagBg:'#FFF0F0', tagColor:'var(--red)',
+      evLbl:'证据',
+      evText:'On outdoor days: sleep latency averaged <strong>11 min</strong>. Non-outdoor days: <strong>19 min</strong>.',
+      nums:[
+        { val:'11 min', lbl:'有户外', color:'var(--green)' },
+        { val:'19 min', lbl:'无户外', color:'var(--red)' },
+        { val:'4 / 8', lbl:'达标天' }
+      ],
+      nanaReply:'户外和入睡速度有明显关联，但不必为此焦虑。优先把「放学后待外面」放进现有流程——今天课间已有 22 分钟户外，缺的是傍晚光照窗口。'
+    }],
+    insDn:'The plan is working. Deep sleep has clearly improved. Weekend bedtime is the main gap — closing it could push deep sleep even higher.',
+    nanaMorning:'昨晚 4 个深睡周期完整，HRV 是本周最佳——身体恢复不错。今天可以正常安排活动；若下午仍缺户外，傍晚补一点自然光对今晚入睡更有帮助。',
+    nanaFeed:'深睡趋势在变好，今天课间户外也有贡献。这里只是同步信号，不需要您做任何决定；若想细看数据，Insights 里有证据。',
+    nanaRead:'本轮睡眠 Plan 整体有效，深睡已达标。最大缺口在周末 bedtime——若能把周末与平日起床差缩到 30 分钟内，深睡还有上行空间。户外目前 4/8 天，是下一个可试方向。',
+    ctLbl:"Sarah's journey", ctText:'This is her <strong>2nd plan</strong>. Plan 1 (Activity Boost, March) raised step completion 58% → 87%.',
+    npIco:'⚡', npTitle:'Activity Balance', npSub:'Outdoor time · post-school routine', npLockLbl:'Unlocks in 6 days', npFill:'57%'
+  },
+  t: {
+    name: 'Tommy', dayNum: 3, dayTotal: 14, dayPct: 21,
+    feedMorningTitle: 'Tommy had a lighter sleep night',
+    feedMorningBody: 'HRV still recovering. Keep activity light — focus on calm routine today.',
+    morningGrid: [['Sleep','7h 45m','↓ -22 min'],['HRV','26 ms','↓ Below avg'],['Resting HR','72 bpm','↑ Slightly high'],['Steps yday','4,200','— Low']],
+    feedLive: 'At home · calm', feedLiveSub: 'Heart rate 72 bpm · band 58%',
+    feedStep: 'Light activity day — 4,200 steps', feedStepSub: 'Recovery mode · below usual goal',
+    feedNana: 'HRV 今天停止下跌，出现企稳信号。详见 Plan Insights——这里只是告诉您。',
+    feedPlanIco: '🧘', feedPlanTitle: 'Recovery focus · Day 3 of 14', feedPlanSub: 'HRV stabilising · see insights →',
+    phFocus:'压力恢复', phTitle:'Stress & recovery', phRhythm:'Consistent routine · lighter activity · track HRV',
+    phSummary:'HRV 曾连续走低，最近出现企稳，先减轻负荷、稳住恢复。',
+    insLblWorking:'做得好的', insLblNeeds:'还要补的',
+    insWorking:[{
+      ico:'🧘', icoBg:'#E8FFE8',
+      title:'HRV 已停止继续下跌',
+      sub:'近 3 天未再创新低；完成放松呼吸的晚上，次日 HRV 有回升。',
+      tag:'企稳', tagBg:'#E8FFE8', tagColor:'#1a7a30',
+      evLbl:'证据',
+      evText:'HRV 从 <strong>29 → 26 ms</strong> 后持平；有呼吸的 2 个早晨平均 <strong>+4 ms</strong>。',
+      nums:[
+        { val:'26 ms', lbl:'今日' },
+        { val:'+4 ms', lbl:'呼吸后', color:'var(--green)' },
+        { val:'2/3', lbl:'有效夜' }
+      ],
+      nanaReply:'HRV 止跌比「立刻拉高」更重要。放松呼吸在 2 个晚上与次日回升有关，但样本还少——建议先稳住晚间流程，不要同时加运动负荷。'
+    }],
+    insNeeds:[{
+      ico:'🏃', icoBg:'#FFF0F0',
+      title:'下午活动量仍偏高',
+      sub:'恢复阶段不宜大运动量；晚间静息比加练更重要。',
+      tag:'需关注', tagBg:'#FFF0F0', tagColor:'var(--red)',
+      evLbl:'证据',
+      evText:'昨日仅 <strong>4,200 步</strong>，但 13:00–16:00 仍有较长静坐以外的活动峰值，心率偏高。',
+      nums:[
+        { val:'4,200', lbl:'昨日步数' },
+        { val:'72 bpm', lbl:'静息', color:'var(--amber)' },
+        { val:'3 天', lbl:'HRV 走低' }
+      ],
+      nanaReply:'步数不高，但下午仍有活动峰值，说明不是「动得少」而是「动得太集中」。恢复阶段建议把活动拆到上午，下午以静为主，晚间再做呼吸放松。'
+    }],
+    insDn:'First stabilisation signal. Evening calm routine matters more than activity volume right now.',
+    nanaMorning:'昨晚睡眠偏浅，HRV 仍在恢复区。今天宜轻活动、重静息——不必逼步数，先把下午和晚间的节奏稳住更重要。',
+    nanaFeed:'HRV 今天没有继续跌，这是企稳信号，不是已经恢复完成。请把关注放在晚间放松流程，而不是白天加练。',
+    nanaRead:'这是 Tommy 第一个恢复 Plan，目前重点是「别再恶化」。晚间静息比活动量更关键；若 HRV 连续 3 天回升，再考虑逐步加一点户外。',
+    ctLbl:"Tommy's journey", ctText:'This is his <strong>1st plan</strong>. Started after 3 consecutive days of HRV decline.',
+    npIco:'💤', npTitle:'Sleep Reset', npSub:'Bedtime routine · reduce load', npLockLbl:'Unlocks in 11 days', npFill:'21%'
+  }
+};
+
+function swView(v) {
+  curView = v;
+  document.getElementById('view-feed').className = 'view' + (v === 'feed' ? ' on' : '');
+  document.getElementById('view-plan').className = 'view' + (v === 'plan' ? ' on' : '');
+  document.getElementById('nav-feed').className = 'nb' + (v === 'feed' ? ' on' : '');
+  document.getElementById('nav-plan').className = 'nb' + (v === 'plan' ? ' on' : '');
+  if (v === 'plan') {
+    ensurePlanFocus(curChild);
+    renderPlanFocusArea(curChild);
+  }
+}
+
+function swChild(c) {
+  curChild = c;
+  ['s','t'].forEach(function(k) {
+    var on = k === c;
+    ['f','p'].forEach(function(prefix) {
+      var cav = document.getElementById(prefix + 'cav-' + k);
+      var cnm = document.getElementById(prefix + 'cnm-' + k);
+      if (cav) cav.className = 'cav' + (on ? ' on' : '');
+      if (cnm) cnm.className = 'cnm' + (on ? ' on' : '');
+    });
+  });
+  applyChildData(c);
+  renderProposal(c);
+}
+
+function applyChildData(c) {
+  var d = D[c];
+  document.getElementById('feed-morning-title').textContent = d.feedMorningTitle;
+  document.getElementById('feed-morning-body').textContent = d.feedMorningBody;
+  document.getElementById('feed-live-title').textContent = d.feedLive;
+  document.getElementById('feed-live-sub').textContent = d.feedLiveSub;
+  document.getElementById('feed-step-title').textContent = d.feedStep;
+  document.getElementById('feed-step-sub').textContent = d.feedStepSub;
+  document.getElementById('feed-nana-msg').textContent = d.feedNana;
+  document.getElementById('feed-plan-ico').textContent = d.feedPlanIco;
+  document.getElementById('feed-plan-dot').textContent = d.feedPlanIco;
+  document.getElementById('feed-plan-title').textContent = d.feedPlanTitle;
+  updateFeedPlanEntry(c);
+
+  document.getElementById('feed-morning-grid').innerHTML = d.morningGrid.map(function(row) {
+    var chgCls = row[2].indexOf('↑') >= 0 ? 'up' : '';
+    var chgStyle = row[2].indexOf('—') >= 0 ? ' style="color:var(--muted);"' : (chgCls ? '' : ' style="color:var(--amber);"');
+    return '<div class="fc-m-cell"><div class="fc-m-cell-lbl">' + row[0] + '</div><div class="fc-m-cell-val">' + row[1] + '</div><div class="fc-m-cell-chg' + (chgCls ? ' ' + chgCls : '') + '"' + chgStyle + '>' + row[2] + '</div></div>';
+  }).join('');
+
+  renderPlanHero(c);
+  document.getElementById('ins-day').textContent = d.dayNum;
+  document.getElementById('ins-dn-text').textContent = d.insDn;
+  document.getElementById('ct-lbl').textContent = d.ctLbl;
+  document.getElementById('ct-text').innerHTML = d.ctText;
+  document.getElementById('np-ico').textContent = d.npIco;
+  document.getElementById('np-title').textContent = d.npTitle;
+  document.getElementById('np-sub').textContent = d.npSub;
+  document.getElementById('np-lock-lbl').textContent = d.npLockLbl;
+  document.getElementById('np-fill').style.width = d.npFill;
+
+  document.querySelectorAll('.ic-evidence').forEach(function(e) { e.classList.remove('open'); });
+  document.querySelectorAll('.ev-arrow').forEach(function(a) { a.textContent = '▾'; });
+
+  renderInsights(c);
+  updateProtoPanel(c);
+  renderPlanFocusArea(c);
+  updateFeedExperimentPill(c);
+  updateChildBadges();
+}
+
+function buildInsightCardHTML(item, opts) {
+  opts = opts || {};
+  var newCls = opts.newIns ? ' new-ins' : '';
+  var noIco = item.noIco;
+  var icoHtml = noIco ? '' : '<div class="ic-ico" style="background:' + (item.icoBg || 'var(--bg2)') + ';">' + (item.ico || '•') + '</div>';
+  var bodyPad = noIco ? ' style="padding-left:0;"' : '';
+  var numsHtml = '';
+  if (item.nums && item.nums.length) {
+    numsHtml = '<div class="ev-nums">' + item.nums.map(function(n) {
+      var style = n.color ? ' style="color:' + n.color + ';"' : '';
+      return '<div class="ev-num"><div class="ev-num-val"' + style + '>' + n.val + '</div><div class="ev-num-lbl">' + n.lbl + '</div></div>';
+    }).join('') + '</div>';
+  }
+  var nanaBtn = '';
+  if (item.nanaReply) {
+    var nid = registerNanaAsk(item.title, item.nanaReply);
+    nanaBtn = '<div class="ic-nana-btn" onclick="fireNanaAsk(\'' + nid + '\', event)">让 Nana 解读</div>';
+  }
+  return '<div class="ins-card' + newCls + '">' +
+    '<div class="ic-main" onclick="toggleEv(this)">' +
+      '<div class="ic-row">' + icoHtml +
+        '<div class="ic-body"' + bodyPad + '>' +
+          '<div class="ic-title">' + item.title + '</div>' +
+          '<div class="ic-sub">' + item.sub + '</div>' +
+          '<div class="ic-footer">' +
+            '<span class="ic-tag" style="background:' + item.tagBg + ';color:' + item.tagColor + ';">' + item.tag + '</span>' +
+            '<div class="ic-actions">' +
+              '<div class="ic-ev-btn"><span class="ev-arrow">▾</span> Why</div>' +
+              nanaBtn +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="ic-evidence">' +
+      '<div class="ev-lbl">' + (item.evLbl || '证据') + '</div>' +
+      '<div class="ev-text">' + item.evText + '</div>' +
+      numsHtml +
+    '</div>' +
+  '</div>';
+}
+
+function recordExperimentInsight(c, proposalId) {
+  var records = insightRecords[c];
+  if (records.some(function(r) { return r.type === 'experiment' && r.proposalId === proposalId; })) return;
+  var p = getProposal(c, proposalId);
+  if (!p || !p.conclusion) return;
+  var conc = p.conclusion;
+  records.unshift({
+    type: 'experiment',
+    proposalId: proposalId,
+    title: conc.insightTitle,
+    sub: conc.insightSub,
+    evText: conc.insightEv,
+    nanaReply: conc.nanaReply || '',
+    isNew: true
+  });
+}
+
+function renderInsights(c) {
+  _nanaAskSeq = 0;
+  _nanaAskStore = {};
+  var d = D[c];
+  document.getElementById('ins-lbl-working').textContent = d.insLblWorking;
+  document.getElementById('ins-lbl-needs').textContent = d.insLblNeeds;
+
+  var expRecords = insightRecords[c].filter(function(r) { return r.type === 'experiment'; });
+  document.getElementById('ins-from-exp').innerHTML = expRecords.map(function(r, i) {
+    return buildInsightCardHTML({
+      noIco: true,
+      title: r.title,
+      sub: r.sub,
+      tag: '小实验 ✓',
+      tagBg: '#E8FFE8',
+      tagColor: '#1a7a30',
+      evLbl: '来自小实验',
+      evText: r.evText,
+      nanaReply: r.nanaReply
+    }, { newIns: r.isNew && i === 0 });
+  }).join('');
+  expRecords.forEach(function(r) { r.isNew = false; });
+
+  document.getElementById('ins-working-list').innerHTML = (d.insWorking || []).map(function(item) {
+    return buildInsightCardHTML(item);
+  }).join('');
+
+  document.getElementById('ins-needs-list').innerHTML = (d.insNeeds || []).map(function(item) {
+    return buildInsightCardHTML(item);
+  }).join('');
+}
+
+function renderPlanHero(c) {
+  var d = D[c];
+  document.getElementById('ph-focus').textContent = d.phFocus;
+  document.getElementById('ph-title').textContent = d.phTitle;
+  document.getElementById('ph-summary').textContent = d.phSummary;
+}
+
+function startExperiment(c, proposalId) {
+  experiments[c] = { proposalId: proposalId, status: 'active', day: 1, total: 3 };
+  renderPlanHero(c);
+  updateProtoPanel(c);
+}
+
+function planNavStateLabel(c, item) {
+  if (item.state === 'active') {
+    var exp = experiments[c];
+    return '进行中 · Day ' + (exp ? exp.day : 1) + '/' + (exp ? exp.total : 3);
+  }
+  return '已结束 · 结论在 Insights';
+}
+
+function renderPlanCarousel(c, items, focusId) {
+  var idx = items.findIndex(function(it) { return it.proposal.id === focusId; });
+  if (idx < 0) idx = 0;
+  var item = items[idx];
+  var p = item.proposal;
+
+  document.getElementById('plan-prop-pos').textContent = (idx + 1) + ' / ' + items.length;
+  document.getElementById('plan-nav-title').textContent = p.title;
+  document.getElementById('plan-nav-state').textContent = planNavStateLabel(c, item);
+
+  var multi = items.length > 1;
+  document.getElementById('plan-carousel').style.display = multi ? 'block' : 'none';
+  document.getElementById('plan-nav-prev').disabled = !multi;
+  document.getElementById('plan-nav-next').disabled = !multi;
+
+  document.getElementById('plan-dots').innerHTML = items.map(function(it, i) {
+    return '<div class="plan-dot' + (i === idx ? ' on' : '') + '" onclick="selectPlanItem(\'' + it.proposal.id + '\')"></div>';
+  }).join('');
+}
+
+function planCarouselStep(dir) {
+  var c = curChild;
+  var items = getPlanItems(c);
+  if (items.length <= 1) return;
+  var idx = items.findIndex(function(it) { return it.proposal.id === propFocusId[c]; });
+  if (idx < 0) idx = 0;
+  idx = (idx + dir + items.length) % items.length;
+  selectPlanItem(items[idx].proposal.id);
+}
+
+function planCarouselPrev() { planCarouselStep(-1); }
+function planCarouselNext() { planCarouselStep(1); }
+
+function selectPlanItem(id) {
+  var c = curChild;
+  if (!getPlanItems(c).some(function(it) { return it.proposal.id === id; })) return;
+  propFocusId[c] = id;
+  renderPlanFocusArea(c);
+}
+
+function renderPlanFocusArea(c) {
+  var section = document.getElementById('plan-proposals-section');
+  var wrap = document.getElementById('experiment-wrap');
+  var placeholder = document.getElementById('focus-placeholder');
+  var items = getPlanItems(c);
+  var exp = experiments[c];
+
+  if (!items.length || !exp) {
+    section.style.display = 'none';
+    wrap.style.display = 'none';
+    placeholder.style.display = 'block';
+    renderPlanHero(c);
+    return;
+  }
+
+  ensurePlanFocus(c);
+  var focusId = propFocusId[c];
+  var p = getProposal(c, focusId);
+  if (!p || exp.proposalId !== focusId) {
+    section.style.display = 'none';
+    wrap.style.display = 'none';
+    placeholder.style.display = 'block';
+    renderPlanHero(c);
+    return;
+  }
+
+  section.style.display = 'none';
+  renderPlanCarousel(c, items, focusId);
+  placeholder.style.display = 'none';
+  renderExperimentCard(c, exp, p);
+  renderPlanHero(c);
+}
+
+function renderExperimentCard(c, exp, p) {
+  var wrap = document.getElementById('experiment-wrap');
+  wrap.style.display = 'block';
+
+  document.getElementById('exp-title').textContent = p.expTitle;
+  document.getElementById('exp-sub').textContent = p.expSub;
+  document.getElementById('exp-watch-lbl').textContent = '我们在看 · ' + p.watch;
+
+  var card = document.getElementById('experiment-card');
+  var activeEl = document.getElementById('exp-active');
+  var concludedEl = document.getElementById('exp-concluded');
+
+  if (exp.status === 'active') {
+    card.classList.remove('concluded');
+    activeEl.style.display = 'block';
+    concludedEl.style.display = 'none';
+
+    var remain = exp.total - exp.day + 1;
+    document.getElementById('exp-remain').textContent = remain === 1 ? '最后一天' : '还剩 ' + remain + ' 天';
+
+    document.getElementById('exp-days').innerHTML = [1, 2, 3].map(function(d) {
+      var cls = 'exp-day';
+      if (d < exp.day) cls += ' done';
+      else if (d === exp.day) cls += ' cur';
+      var lbl = d < exp.day ? '已观察' : (d === exp.day ? '今天' : '待观察');
+      return '<div class="' + cls + '"><div class="exp-day-num">Day ' + d + '</div><div class="exp-day-lbl">' + lbl + '</div></div>';
+    }).join('');
+
+    var sig = p.daySignals[exp.day - 1];
+    var sigEl = document.getElementById('exp-signal');
+    sigEl.className = 'exp-signal' + (sig.muted ? ' muted' : '');
+    document.getElementById('exp-signal-text').textContent = sig.text;
+
+    renderPlanHero(c);
+    updateProtoPanel(c);
+  } else {
+    card.classList.add('concluded');
+    activeEl.style.display = 'none';
+    concludedEl.style.display = 'block';
+
+    var conc = p.conclusion;
+    document.getElementById('exp-conc-title').textContent = conc.title;
+    document.getElementById('exp-conc-text').textContent = conc.textShort || conc.text.replace(/<[^>]+>/g, '');
+    var tagLbl = { helping: '有帮助', mixed: '信号有限', unclear: '待观察' };
+    document.getElementById('exp-conc-tag').textContent = tagLbl[conc.status] || '已结束';
+    document.getElementById('exp-conc-tag').className = 'exp-conc-tag ' + conc.status;
+    document.getElementById('exp-conc-nums').innerHTML = conc.nums.map(function(n) {
+      return '<div class="exp-conc-num' + (n.help ? ' help' : '') + '"><div class="exp-conc-num-val">' + n.val + '</div><div class="exp-conc-num-lbl">' + n.lbl + '</div></div>';
+    }).join('');
+
+    renderPlanHero(c);
+    updateProtoPanel(c);
+  }
+}
+
+function renderExperiment(c) {
+  renderPlanFocusArea(c);
+}
+
+function updateFeedPlanEntry(c) {
+  var d = D[c];
+  var exp = experiments[c];
+  var subEl = document.getElementById('feed-plan-sub');
+  if (exp && exp.status === 'active') {
+    subEl.textContent = '小实验 Day ' + exp.day + '/' + exp.total + ' · 点进 Plan 看进度';
+  } else {
+    subEl.textContent = d.feedPlanSub;
+  }
+}
+
+function updateFeedExperimentPill(c) {
+  var pill = document.getElementById('feed-exp-pill');
+  pill.style.display = 'none';
+  updateFeedPlanEntry(c);
+}
+
+function advanceExperimentDay() {
+  var c = curChild;
+  var exp = experiments[c];
+  if (!exp || exp.status !== 'active') {
+    if (exp && exp.status === 'concluded') showToast('实验已结束 · 结论见 Plan');
+    return;
+  }
+
+  if (exp.day >= exp.total) {
+    concludeExperiment(c);
+    return;
+  }
+
+  exp.day++;
+  renderExperiment(c);
+  renderProposal(c);
+  updateFeedExperimentPill(c);
+  renderPlanHero(c);
+  updateProtoPanel(c);
+
+  if (exp.day >= exp.total) {
+    showToast('Day ' + exp.day + ' · 使用右侧调试按钮查看结论');
+  } else {
+    showToast('Day ' + exp.day + ' · 继续观察中');
+  }
+}
+
+function concludeExperiment(c) {
+  var pid = experiments[c].proposalId;
+  experiments[c].status = 'concluded';
+  propFocusId[c] = pid;
+  recordExperimentInsight(c, pid);
+  renderExperiment(c);
+  renderProposal(c);
+  renderInsights(c);
+  updateFeedExperimentPill(c);
+  renderPlanHero(c);
+  updateProtoPanel(c);
+  showToast('✨ 3 天观察完成 · 结论已写入 Plan Insights');
+}
+
+function openPropDecide() {
+  var decide = document.getElementById('prop-decide');
+  var wrap = document.getElementById('prop-research-wrap');
+  var open = !decide.classList.contains('open');
+  decide.classList.toggle('open', open);
+  wrap.classList.toggle('open', open);
+  var link = document.getElementById('prop-learn-link');
+  if (link) link.textContent = open ? '收起依据 ↑' : '了解为什么建议 →';
+}
+
+function closePropDecide() {
+  document.getElementById('prop-decide').classList.remove('open');
+  document.getElementById('prop-research-wrap').classList.remove('open');
+  var link = document.getElementById('prop-learn-link');
+  if (link) link.textContent = '了解为什么建议 →';
+}
+
+function togglePropResearch() {
+  openPropDecide();
+}
+
+function renderProposal(c) {
+  var card = document.getElementById('proposal-card');
+  var pendingEl = document.getElementById('proposal-pending');
+  var done = document.getElementById('proposal-done');
+  var inviteBlock = document.getElementById('prop-invite-block');
+  var activeStrip = document.getElementById('prop-active-strip');
+  var pending = getPendingProposals(c);
+  var exp = experiments[c];
+
+  closePropDecide();
+  updateChildBadges();
+
+  var hasActive = exp && exp.status === 'active';
+  if (!pending.length && !hasActive) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = 'block';
+  pendingEl.style.display = 'block';
+  done.style.display = 'none';
+
+  if (hasActive) {
+    var ap = getActiveProposal(c);
+    activeStrip.style.display = 'flex';
+    document.getElementById('prop-active-title').textContent = ap ? ap.expTitle : '';
+    document.getElementById('prop-active-day').textContent = 'Day ' + exp.day + '/' + exp.total;
+  } else {
+    activeStrip.style.display = 'none';
+  }
+
+  if (!pending.length) {
+    inviteBlock.style.display = 'none';
+    return;
+  }
+
+  inviteBlock.style.display = 'block';
+
+  var p = ensurePropFocus(c);
+  if (!p) {
+    inviteBlock.style.display = 'none';
+    return;
+  }
+
+  var idx = pending.findIndex(function(x) { return x.id === p.id; });
+  document.getElementById('prop-queue-pos').textContent = (idx + 1) + ' / ' + pending.length;
+  document.getElementById('prop-title').textContent = p.title;
+  document.getElementById('prop-invite-hook').textContent = '试 3 天 · 无打卡 · 手环自动观察';
+  document.getElementById('prop-research').innerHTML = p.research;
+  document.getElementById('prop-src').textContent = p.src;
+  document.getElementById('prop-nums').innerHTML = p.nums.map(function(n) {
+    return '<div class="prop-res-num"><div class="prop-res-num-val" style="color:' + (n.color || 'var(--brand)') + ';">' + n.val + '</div><div class="prop-res-num-lbl">' + n.lbl + '</div></div>';
+  }).join('');
+
+  var blocked = hasActiveExperiment(c) && !canStartProposal(c, p.id);
+  var waitEl = document.getElementById('prop-wait-note');
+  var approveBtn = document.getElementById('prop-approve-btn');
+  var quickActions = document.querySelector('.prop-quick-actions');
+  if (blocked) {
+    var activeP = getActiveProposal(c);
+    var eta = queueEtaLabel(c);
+    waitEl.style.display = 'block';
+    waitEl.innerHTML = '当前在观察 <b>' + (activeP ? activeP.expTitle : '') + '</b>' +
+      (eta ? '，此项' + eta + '。' : '，请等结束后再试。');
+    approveBtn.disabled = true;
+    approveBtn.textContent = '需先完成当前实验';
+    if (quickActions) quickActions.style.opacity = '0.55';
+  } else {
+    waitEl.style.display = 'none';
+    approveBtn.disabled = false;
+    approveBtn.textContent = '开始 3 天';
+    if (quickActions) quickActions.style.opacity = '1';
+  }
+
+  var qWrap = document.getElementById('prop-queue-wrap');
+  var others = pending.length - 1;
+  if (others > 0) {
+    qWrap.style.display = 'block';
+    document.getElementById('prop-queue-toggle-lbl').textContent = '还有 ' + others + ' 项待决定 · ' + (propQueueOpen[c] ? '收起' : '展开');
+    qWrap.className = 'prop-queue-wrap' + (propQueueOpen[c] ? ' open' : '');
+    var pendingItems = pending.map(function(pr) { return { proposal: pr, state: 'pending' }; });
+    document.getElementById('prop-queue-list').innerHTML = buildQueueRowsHTML(c, p.id, pendingItems);
+  } else {
+    qWrap.style.display = 'none';
+    propQueueOpen[c] = false;
+  }
+}
+
+function togglePropQueue() {
+  propQueueOpen[curChild] = !propQueueOpen[curChild];
+  renderProposal(curChild);
+}
+
+function selectProposal(id) {
+  var c = curChild;
+  if (!getProposal(c, id)) return;
+  propFocusId[c] = id;
+  closePropDecide();
+  renderProposal(c);
+  renderPlanFocusArea(c);
+}
+
+function snoozeProposal() {
+  var c = curChild;
+  var p = ensurePropFocus(c);
+  if (!p) return;
+  proposalDecisions[p.id] = 'snoozed';
+  propQueueOpen[c] = false;
+  var left = getPendingProposals(c).length;
+  ensurePropFocus(c);
+  renderProposal(c);
+  renderPlanFocusArea(c);
+  showToast(left ? '已稍后 · 还有 ' + left + ' 项待决定' : '已稍后 · 本周不再提醒');
+}
+
+function approveProposal() {
+  var c = curChild;
+  var p = ensurePropFocus(c);
+  if (!p) return;
+  if (!canStartProposal(c, p.id)) {
+    showToast('请先完成当前 3 天观察');
+    return;
+  }
+  proposalDecisions[p.id] = 'approved';
+  startExperiment(c, p.id);
+  propQueueOpen[c] = false;
+  var left = getPendingProposals(c).length;
+  propFocusId[c] = p.id;
+  renderProposal(c);
+  renderPlanFocusArea(c);
+  updateFeedExperimentPill(c);
+  showToast(left ? '🧪 已开始观察 · 还有 ' + left + ' 项待 Today 决定' : '🧪 已开始 3 天观察 · 无打卡');
+  setTimeout(function() { swView('plan'); }, 600);
+}
+
+function declineProposal() {
+  var c = curChild;
+  var p = ensurePropFocus(c);
+  if (!p) return;
+  proposalDecisions[p.id] = 'declined';
+  propQueueOpen[c] = false;
+  var left = getPendingProposals(c).length;
+  ensurePropFocus(c);
+  renderProposal(c);
+  renderPlanFocusArea(c);
+  showToast(left ? '已记录 · 还有 ' + left + ' 项待决定' : '已记录 · 暂不尝试');
+}
+
+function toggleEv(mainEl) {
+  var ev = mainEl.nextElementSibling;
+  if (!ev || !ev.classList.contains('ic-evidence')) return;
+  var open = ev.classList.toggle('open');
+  var arr = mainEl.querySelector('.ev-arrow');
+  if (arr) arr.textContent = open ? '▴' : '▾';
+}
+
+function toggleOlder(sep) {
+  var lbl = document.getElementById('older-lbl');
+  var content = document.getElementById('older-content');
+  var open = content.classList.contains('open');
+  content.classList.toggle('open');
+  lbl.classList.toggle('open');
+  lbl.firstChild.textContent = open ? 'Earlier today · 3 events' : 'Earlier today · hide';
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._tm);
+  showToast._tm = setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+function dismissNana() {
+  var row = document.getElementById('feed-nana-row');
+  if (row) row.style.display = 'none';
+  showToast('👍 知道了 · 无需回复');
+}
+
+/* ── CONFIG: 复用已有的 Vercel 代理（持有 DeepSeek key，无需在前端暴露） ── */
+var PROXY_URL = 'https://nana-proxy-ruddy.vercel.app/api/chat';
+
+/* ── 当前对话历史，支持追问 ── */
+var _nanaConvHistory = [];
+var _nanaCurrentCtx = '';
+
+function registerNanaAsk(ctx, reply) {
+  var id = 'n' + (++_nanaAskSeq);
+  _nanaAskStore[id] = { ctx: ctx, fallback: reply };
+  return id;
+}
+
+function fireNanaAsk(id, e) {
+  if (e) { e.stopPropagation(); }
+  var p = _nanaAskStore[id];
+  if (!p) return;
+  openNanaSheet(p.ctx);
+  callNana(buildInsightPrompt(p.ctx), p.fallback);
+}
+
+function openNanaAskFromChild(kind) {
+  var d = D[curChild];
+  var fallback = d['nana' + kind.charAt(0).toUpperCase() + kind.slice(1)] || '';
+  var ctxLabel = NANA_CTX_LABEL[kind] || kind;
+  openNanaSheet(ctxLabel);
+  callNana(buildContextPrompt(kind, ctxLabel), fallback);
+}
+
+function openNanaSheet(ctxLabel) {
+  _nanaConvHistory = [];
+  _nanaCurrentCtx = ctxLabel;
+  document.getElementById('nana-sheet-ctx').textContent = '基于：' + ctxLabel;
+  setNanaReply('Nana 正在思考…', true);
+  clearFollowups();
+  document.getElementById('nana-sheet').classList.add('open');
+}
+
+function closeNanaAsk() {
+  document.getElementById('nana-sheet').classList.remove('open');
+  _nanaConvHistory = [];
+}
+
+/* ── 构建 prompt ── */
+function buildInsightPrompt(ctx) {
+  var d = D[curChild];
+  return '你是 Nana，一个儿童健康手环 app 的 AI 助手，语气温暖、简洁、不焦虑。' +
+    '家长正在看「' + ctx + '」这条健康 insight。孩子是 ' + d.name + '，' +
+    '计划第 ' + d.dayNum + ' 天（共 ' + d.dayTotal + ' 天），聚焦：' + d.phFocus + '。' +
+    '用 2-3 句中文给出解读，最后给一个具体可行的小建议。不要用列表，不要太技术化。';
+}
+
+function buildContextPrompt(kind, ctxLabel) {
+  var d = D[curChild];
+  var dataStr = JSON.stringify(d.morningGrid || []);
+  return '你是 Nana，儿童健康手环 app 的 AI 助手，语气温暖简洁。' +
+    '场景：' + ctxLabel + '。孩子：' + d.name + '，计划第 ' + d.dayNum + ' 天，聚焦：' + d.phFocus + '。' +
+    '今日数据：' + dataStr + '。' +
+    '用 2-3 句中文给出解读，最后一句给家长一个今天可以留意的具体事情。';
+}
+
+/* ── 调用 Vercel 代理 → DeepSeek ── */
+function callNana(prompt, fallback) {
+  /* 构造对话历史：第一条是 system 级别的 prompt */
+  _nanaConvHistory = [{ role: 'user', content: prompt }];
+  callProxy(fallback, function() {
+    renderFollowups(['这意味着什么？', '我该怎么帮 ' + D[curChild].name + '？', '好的，谢谢']);
+  });
+}
+
+/* ── 追问 ── */
+function sendFollowup(question) {
+  setNanaReply('Nana 正在思考…', true);
+  clearFollowups();
+  _nanaConvHistory.push({ role: 'user', content: question });
+  callProxy('暂时无法回答', function() {
+    if (_nanaConvHistory.length < 8) {
+      renderFollowups(['还有别的建议吗？', '好的，谢谢']);
+    }
+  });
+}
+
+/* ── 核心 fetch，复用 nana-proxy 的格式 ── */
+function callProxy(fallback, onSuccess) {
+  var d = D[curChild];
+  var systemPrompt = '你是 Nana，儿童健康手环 app 的温暖 AI 助手。' +
+    '孩子：' + d.name + '，计划聚焦：' + d.phFocus + '。' +
+    '用简洁的中文回答，2-4 句，不用列表，语气温暖不焦虑。';
+
+  fetch(PROXY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      system: systemPrompt,
+      messages: _nanaConvHistory
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  })
+  .then(function(data) {
+    /* 兼容 nana-proxy 返回格式：{ reply: "..." } 或标准 choices */
+    var reply = data.reply ||
+      (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
+      (data.content && data.content[0] && data.content[0].text) ||
+      fallback || '暂时无法获取解读';
+    _nanaConvHistory.push({ role: 'assistant', content: reply });
+    setNanaReply(reply, false);
+    if (onSuccess) onSuccess();
+  })
+  .catch(function(err) {
+    console.error('Nana proxy error:', err);
+    setNanaReply(fallback || '网络问题，稍后再试', false);
+  });
+}
+
+/* ── UI helpers ── */
+function setNanaReply(text, loading) {
+  var el = document.getElementById('nana-sheet-reply');
+  el.style.opacity = loading ? '0.45' : '1';
+  el.textContent = text;
+}
+
+function renderFollowups(chips) {
+  var wrap = document.getElementById('nana-followups');
+  if (!wrap) return;
+  wrap.innerHTML = chips.map(function(q) {
+    return '<button class="nana-followup-chip" onclick="sendFollowup(\'' + q.replace(/'/g, "\\'") + '\')">' + q + '</button>';
+  }).join('');
+}
+
+function clearFollowups() {
+  var wrap = document.getElementById('nana-followups');
+  if (wrap) wrap.innerHTML = '';
+}
+
+swChild('s');
+updateChildBadges();
+</script>
+</body>
+</html>
