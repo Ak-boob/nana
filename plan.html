@@ -23,13 +23,40 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;background:radial-gradient(ellipse 120% 80% at 50% 0%,#c7d9f5 0%,#dbeafe 35%,#dde7ff 70%,#cfd8ef 100%);min-height:100vh;margin:0;}
 .device-stage{display:flex;justify-content:center;align-items:center;min-height:100vh;padding:28px 16px;gap:20px;flex-wrap:wrap;}
-.proto-panel{align-self:center;display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.65);box-shadow:var(--glass-shadow);min-width:148px;}
+.proto-panel{align-self:center;display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.65);box-shadow:var(--glass-shadow);min-width:168px;}
 .proto-lbl{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
 .proto-btn{padding:10px 12px;border-radius:11px;border:none;background:var(--brand);color:#fff;font-size:11px;font-weight:600;font-family:inherit;cursor:pointer;line-height:1.35;text-align:left;}
 .proto-btn:active{opacity:.85;}
 .proto-btn:disabled{opacity:.4;cursor:not-allowed;}
 .proto-hint{font-size:10px;color:var(--muted);line-height:1.45;}
 .proto-state{font-size:10px;color:var(--ink);line-height:1.45;padding:6px 8px;border-radius:8px;background:var(--glass-bg-soft);}
+.proto-role-row{display:flex;flex-direction:column;gap:5px;}
+.proto-role-btn{padding:8px 10px;border-radius:9px;border:.5px solid var(--glass-border-dim);background:var(--glass-bg-soft);color:var(--ink);font-size:10px;font-weight:600;font-family:inherit;cursor:pointer;text-align:left;line-height:1.35;}
+.proto-role-btn.on{background:var(--brand);color:#fff;border-color:var(--brand);}
+.proto-role-btn:active{opacity:.85;}
+
+/* role banner */
+.role-banner{margin:0 16px 8px;padding:8px 11px;border-radius:12px;font-size:11px;line-height:1.45;display:flex;align-items:flex-start;gap:8px;flex-shrink:0;}
+.role-banner-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.role-banner strong{display:block;font-size:11px;font-weight:600;margin-bottom:1px;}
+.role-banner span{font-size:10px;opacity:.85;}
+.role-banner.primary{background:rgba(24,130,255,.1);border:.5px solid rgba(24,130,255,.18);color:#0a5fcc;}
+.role-banner.primary .role-banner-dot{background:var(--brand);}
+.role-banner.co{background:rgba(175,82,222,.1);border:.5px solid rgba(175,82,222,.18);color:#7B3FA0;}
+.role-banner.co .role-banner-dot{background:var(--purple);}
+.role-banner.caregiver{background:rgba(142,142,147,.1);border:.5px solid rgba(142,142,147,.18);color:#48484a;}
+.role-banner.caregiver .role-banner-dot{background:var(--muted);}
+
+.proposal.caregiver-mode::before{background:var(--muted);}
+.proposal.caregiver-mode{border-color:rgba(142,142,147,.22);}
+.prop-caregiver-note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:8px;padding:9px 10px;border-radius:10px;background:var(--glass-bg-soft);border:.5px solid var(--glass-border-dim);}
+.prop-caregiver-note b{color:var(--ink);font-weight:600;}
+.prop-lbl.caregiver{color:var(--muted);}
+.pc-habit.readonly{opacity:.92;cursor:default;pointer-events:none;}
+.pc-habit-readonly-tag{font-size:9px;font-weight:600;color:var(--green);background:#E8FFE8;padding:2px 7px;border-radius:5px;flex-shrink:0;}
+.pc-caregiver-note{font-size:11px;color:var(--muted);line-height:1.45;margin-bottom:10px;padding:9px 11px;border-radius:10px;background:var(--glass-bg-soft);}
+.fc-monthly-perm-note{font-size:10px;color:var(--muted);line-height:1.45;margin-bottom:8px;padding:7px 9px;border-radius:8px;background:var(--glass-bg-soft);}
+.role-hidden{display:none!important;}
 .iphone-shell{position:relative;padding:13px;border-radius:54px;background:linear-gradient(165deg,#5a5a5c 0%,#3a3a3c 8%,#1d1d1f 35%,#2c2c2e 65%,#1a1a1c 100%);box-shadow:0 0 0 1px rgba(255,255,255,.1),0 0 0 2px #0d0d0f,0 2px 0 rgba(255,255,255,.06) inset,0 50px 100px rgba(0,0,0,.32),0 16px 40px rgba(0,0,0,.18);}
 .iphone-shell::before{content:'';position:absolute;inset:13px;border-radius:44px;box-shadow:0 0 0 1px rgba(0,0,0,.65);pointer-events:none;z-index:5;}
 .iphone-btn{position:absolute;background:linear-gradient(180deg,#4a4a4c,#2a2a2c);border-radius:2px;z-index:2;}
@@ -539,6 +566,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
         </div>
         <div class="me-av">👤</div>
       </div>
+      <div class="role-banner primary" id="role-banner-feed">
+        <div class="role-banner-dot"></div>
+        <div><strong id="role-banner-title-feed">第一监护人</strong><span id="role-banner-sub-feed">Alex Chen · 全权管理</span></div>
+      </div>
       <div class="date-strip">
         <div class="date-main" id="feed-date">Wednesday, May 27</div>
         <div class="live-badge"><div class="live-dot"></div><span id="feed-time">16:22</span></div>
@@ -551,11 +582,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
             <div id="proposal-pending">
               <div class="prop-active-strip" id="prop-active-strip" style="display:none;">
                 <div class="prop-active-text">
-                  <span class="prop-active-lbl">小实验进行中 · 详情在 Plan</span>
+                  <span class="prop-active-lbl" id="prop-active-lbl">小实验进行中 · 详情在 Plan</span>
                   <span class="prop-active-title" id="prop-active-title">放学后多待外面一会儿</span>
                   <span class="prop-active-day" id="prop-active-day">Day 1 / 3</span>
                 </div>
-                <button type="button" class="prop-active-go" onclick="swView('plan')">查看进度</button>
+                <button type="button" class="prop-active-go" id="prop-active-go" onclick="swView('plan')">查看进度</button>
+              </div>
+              <div id="prop-caregiver-view" style="display:none;">
+                <div class="prop-header">
+                  <div class="prop-hd-row">
+                    <span class="prop-lbl caregiver" id="prop-cg-lbl">待监护人决定</span>
+                  </div>
+                  <div class="prop-title" id="prop-cg-title">傍晚户外散步 20 分钟</div>
+                  <div class="prop-caregiver-note" id="prop-cg-note"><b>Alex</b> 还没确认是否尝试此项 · 你只能查看，无法操作</div>
+                </div>
               </div>
               <div id="prop-invite-block">
                 <div class="prop-header">
@@ -641,7 +681,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
                     <div class="fc-complete-metrics" id="feed-plan-metrics"></div>
                     <div class="fc-complete-actions">
                       <button type="button" class="fc-complete-btn primary" onclick="openPlanCompleteReport(event)">查看完整故事</button>
-                      <button type="button" class="fc-complete-btn ghost" onclick="sharePlanReport(event)">分享</button>
+                      <button type="button" class="fc-complete-btn ghost role-share-only" id="feed-plan-share-btn" onclick="sharePlanReport(event)">分享</button>
                     </div>
                   </div>
                 </div>
@@ -693,7 +733,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
                   <div class="fc-ai-lbl">知会 · 无需决定</div>
                   <div class="fc-ai-text" id="feed-nana-msg">Deep sleep is trending up (+28%). Recess outdoor time helped today — see plan insights for the full picture.</div>
                   <div class="fc-ai-foot">Nana 的解读，不是要您点「同意」</div>
-                  <div class="fc-ai-chips">
+                  <div class="fc-ai-chips role-nana-only">
                     <div class="fc-ai-chip" onclick="openNanaAskFromChild('feed')">让 Nana 细说</div>
                     <div class="fc-ai-chip pu" onclick="dismissNana()">知道了</div>
                   </div>
@@ -721,11 +761,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
                 </div>
                 <div class="fc-tl-body" id="feed-monthly-body">
                   <div class="fc-tl-body-inner">
+                    <div class="fc-monthly-perm-note role-caregiver-only" id="feed-monthly-perm-note" style="display:none;">未授权「完整健康报告」· 仅显示睡眠与活动相关项</div>
                     <ul class="fc-monthly-list" id="feed-monthly-improving"></ul>
                     <div class="fc-monthly-sep" id="feed-monthly-sep">1 件事还在观察中</div>
                     <ul class="fc-monthly-list" id="feed-monthly-watching"></ul>
                     <div class="fc-monthly-actions">
-                      <button type="button" class="fc-monthly-share-btn" onclick="shareMonthlySnapshot(event)">分享月度快照</button>
+                      <button type="button" class="fc-monthly-share-btn role-share-only" id="feed-monthly-share-btn" onclick="shareMonthlySnapshot(event)">分享月度快照</button>
                     </div>
                   </div>
                 </div>
@@ -757,7 +798,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
                   <div class="fc-m-title" id="feed-morning-title">Sarah woke up in great shape 🌟</div>
                   <div class="fc-m-body" id="feed-morning-body">4 deep-sleep cycles. HRV is her best this week — body is well recovered and ready.</div>
                   <div class="fc-m-grid" id="feed-morning-grid"></div>
-                  <div class="fc-m-chips">
+                  <div class="fc-m-chips role-nana-only">
                     <div class="fc-m-chip" onclick="openNanaAskFromChild('morning')">让 Nana 解读晨间数据</div>
                   </div>
                 </div>
@@ -786,6 +827,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
             </div>
           </div>
           <div class="me-av">👤</div>
+        </div>
+        <div class="role-banner primary" id="role-banner-plan">
+          <div class="role-banner-dot"></div>
+          <div><strong id="role-banner-title-plan">第一监护人</strong><span id="role-banner-sub-plan">Alex Chen · 全权管理</span></div>
         </div>
 
         <div class="plan-hero" id="plan-hero">
@@ -861,7 +906,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
           <div class="day-note" style="margin-top:4px;">
             <div class="dn-lbl">Nana's read · Day <span id="ins-day">8</span></div>
             <div class="dn-text" id="ins-dn-text">The plan is working. Fix the weekend gap and hit outdoor play 6 of the next 6 days.</div>
-            <div class="dn-nana" onclick="openNanaAskFromChild('read')">让 Nana 解读 →</div>
+            <div class="dn-nana role-nana-only" onclick="openNanaAskFromChild('read')">让 Nana 解读 →</div>
           </div>
 
           <div class="continuity" style="margin-top:10px;">
@@ -938,7 +983,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
           <div class="pc-story-note" id="pc-story-note">基于手环被动观察 · 关联不等于因果 · 供家庭参考</div>
         </div>
         <div class="pc-habits" id="pc-habits-wrap">
-          <div class="pc-habits-lbl">要把有效的习惯继续追踪吗？</div>
+          <div class="pc-habits-lbl" id="pc-habits-lbl">要把有效的习惯继续追踪吗？</div>
+          <div class="pc-caregiver-note role-caregiver-only" id="pc-caregiver-habit-note" style="display:none;">习惯保留由 <b>Alex</b> 决定 · 以下为当前追踪状态</div>
           <div id="pc-habits-list"></div>
         </div>
         <div class="pc-next" id="pc-next">
@@ -951,11 +997,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
         </div>
       </div>
       <div class="pc-foot">
-        <div class="pc-actions">
-          <button type="button" class="pc-btn share" onclick="sharePlanReport()">分享给家人</button>
-          <button type="button" class="pc-btn primary" onclick="confirmPlanComplete()">完成</button>
+        <div class="pc-actions" id="pc-foot-actions">
+          <button type="button" class="pc-btn share role-share-only" id="pc-share-btn" onclick="sharePlanReport()">分享给家人</button>
+          <button type="button" class="pc-btn primary" id="pc-done-btn" onclick="confirmPlanComplete()">完成</button>
         </div>
-        <div class="pc-foot-note">截图或分享这张卡片 · Nana 会继续追踪你保留的习惯</div>
+        <div class="pc-foot-note" id="pc-foot-note">截图或分享这张卡片 · Nana 会继续追踪你保留的习惯</div>
       </div>
     </div>
   </div>
@@ -963,7 +1009,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
     </div>
   </div>
   <aside class="proto-panel" aria-label="原型调试">
-    <div class="proto-lbl">原型调试 · 不进入 App</div>
+    <div class="proto-lbl">切换视角</div>
+    <div class="proto-role-row">
+      <button type="button" class="proto-role-btn on" id="proto-role-primary" onclick="swRole('primary')">第一监护人 · Alex</button>
+      <button type="button" class="proto-role-btn" id="proto-role-co" onclick="swRole('co')">第二监护人 · Mom</button>
+      <button type="button" class="proto-role-btn" id="proto-role-caregiver" onclick="swRole('caregiver')">看护人 · 奶奶</button>
+    </div>
+    <div class="proto-lbl" style="margin-top:6px;">原型调试</div>
     <button type="button" class="proto-btn" id="proto-advance-plan" onclick="advancePlanDay()">模拟计划下一天</button>
     <button type="button" class="proto-btn" id="proto-advance-exp" onclick="advanceExperimentDay()">模拟实验下一天</button>
     <button type="button" class="proto-btn" id="proto-show-complete" onclick="triggerPlanComplete()">查看计划完结报告</button>
@@ -989,6 +1041,142 @@ var planProgress = { s: { day: 8, status: 'active' }, t: { day: 3, status: 'acti
 var keptHabits = { s: {}, t: {} };
 var monthlyVisible = { s: true, t: true };
 var feedExpanded = { s: { plan: false, monthly: false }, t: { plan: false, monthly: false } };
+
+var feedExpanded = { s: { plan: false, monthly: false }, t: { plan: false, monthly: false } };
+
+/** 多监护人 / 看护人视角 */
+var curRole = 'primary';
+var PRIMARY_OWNER = 'Alex Chen';
+var ROLES = {
+  primary: {
+    label: '第一监护人',
+    sub: 'Alex Chen · 全权管理',
+    cls: 'primary',
+    canDecide: true,
+    canShare: true,
+    canNanaAsk: true,
+    canManageHabits: true,
+    fullMonthly: true,
+    showBadges: true
+  },
+  co: {
+    label: '第二监护人',
+    sub: '共同监护人 · 与 Alex 共同决策',
+    cls: 'co',
+    canDecide: true,
+    canShare: true,
+    canNanaAsk: true,
+    canManageHabits: true,
+    fullMonthly: true,
+    showBadges: true
+  },
+  caregiver: {
+    label: '看护人',
+    sub: '仅查看 · 决策由 Alex 负责',
+    cls: 'caregiver',
+    canDecide: false,
+    canShare: false,
+    canNanaAsk: false,
+    canManageHabits: false,
+    fullMonthly: false,
+    showBadges: false
+  }
+};
+
+function rolePerms() { return ROLES[curRole]; }
+function canDecide() { return rolePerms().canDecide; }
+function canShare() { return rolePerms().canShare; }
+function canNanaAsk() { return rolePerms().canNanaAsk; }
+
+function swRole(role) {
+  if (!ROLES[role]) return;
+  curRole = role;
+  ['primary', 'co', 'caregiver'].forEach(function(r) {
+    var btn = document.getElementById('proto-role-' + r);
+    if (btn) btn.classList.toggle('on', r === role);
+  });
+  applyRoleUI();
+  renderProposal(curChild);
+  renderInsights(curChild);
+  renderMonthlySnapshot(curChild);
+  updateFeedPlanCard(curChild);
+  if (document.getElementById('plan-complete-overlay').classList.contains('open')) {
+    renderPlanCompleteReport(curChild);
+  }
+  showToast(ROLES[role].label + ' 视角');
+}
+
+function applyRoleUI() {
+  var p = rolePerms();
+  ['feed', 'plan'].forEach(function(v) {
+    var banner = document.getElementById('role-banner-' + v);
+    var title = document.getElementById('role-banner-title-' + v);
+    var sub = document.getElementById('role-banner-sub-' + v);
+    if (!banner) return;
+    banner.className = 'role-banner ' + p.cls;
+    if (title) title.textContent = p.label;
+    if (sub) sub.textContent = p.sub;
+  });
+
+  document.querySelectorAll('.role-decide-only').forEach(function(el) {
+    el.classList.toggle('role-hidden', !p.canDecide);
+  });
+  document.querySelectorAll('.role-share-only').forEach(function(el) {
+    el.classList.toggle('role-hidden', !p.canShare);
+  });
+  document.querySelectorAll('.role-nana-only').forEach(function(el) {
+    el.classList.toggle('role-hidden', !p.canNanaAsk);
+  });
+  document.querySelectorAll('.role-caregiver-only').forEach(function(el) {
+    el.classList.toggle('role-hidden', p.cls !== 'caregiver');
+  });
+
+  var permNote = document.getElementById('feed-monthly-perm-note');
+  if (permNote) permNote.style.display = p.fullMonthly ? 'none' : 'block';
+
+  var activeGo = document.getElementById('prop-active-go');
+  if (activeGo) activeGo.textContent = p.canDecide ? '查看进度' : '查看详情';
+
+  var habitNote = document.getElementById('pc-caregiver-habit-note');
+  if (habitNote) habitNote.style.display = p.canManageHabits ? 'none' : 'block';
+
+  var habitsLbl = document.getElementById('pc-habits-lbl');
+  if (habitsLbl) {
+    habitsLbl.textContent = p.canManageHabits ? '要把有效的习惯继续追踪吗？' : '当前追踪中的习惯';
+  }
+
+  var footNote = document.getElementById('pc-foot-note');
+  if (footNote) {
+    footNote.textContent = p.canShare
+      ? '截图或分享这张卡片 · Nana 会继续追踪你保留的习惯'
+      : '仅供家庭内部查看 · 敏感操作由监护人负责';
+  }
+
+  var doneBtn = document.getElementById('pc-done-btn');
+  if (doneBtn && !p.canDecide) {
+    doneBtn.textContent = '关闭';
+    doneBtn.classList.remove('role-hidden');
+    doneBtn.onclick = closePlanCompleteReport;
+  } else if (doneBtn) {
+    doneBtn.textContent = '完成';
+    doneBtn.onclick = confirmPlanComplete;
+  }
+}
+
+function filterMonthlyForRole(items) {
+  if (rolePerms().fullMonthly) return items;
+  return items.filter(function(t) {
+    return !/HRV|完整|报告/i.test(t);
+  });
+}
+
+function guardDecideAction() {
+  if (!canDecide()) {
+    showToast('看护人视角 · 此项需 ' + PRIMARY_OWNER.split(' ')[0] + ' 决定');
+    return false;
+  }
+  return true;
+}
 
 var NANA_CTX_LABEL = { morning: '晨间摘要', feed: '今日知会', read: 'Plan 综合读数' };
 
@@ -1294,11 +1482,12 @@ function countPendingAll() {
 
 function updateChildBadges() {
   var n = countPendingAll();
+  var show = rolePerms().showBadges;
   ['s', 't'].forEach(function(c) {
     ['fcbadge', 'pcbadge'].forEach(function(prefix) {
       var el = document.getElementById(prefix + '-' + c);
       if (!el) return;
-      if (n[c] > 0) {
+      if (show && n[c] > 0) {
         el.style.display = 'block';
         el.textContent = n[c];
       } else {
@@ -1510,6 +1699,7 @@ function applyChildData(c) {
   renderMonthlySnapshot(c);
   updatePlanProgressUI(c);
   syncAllFeedExpandUI(c);
+  applyRoleUI();
 }
 
 function buildInsightCardHTML(item, opts) {
@@ -1526,7 +1716,7 @@ function buildInsightCardHTML(item, opts) {
     }).join('') + '</div>';
   }
   var nanaBtn = '';
-  if (item.nanaReply) {
+  if (item.nanaReply && canNanaAsk()) {
     var nid = registerNanaAsk(item.title, item.nanaReply);
     nanaBtn = '<div class="ic-nana-btn" onclick="fireNanaAsk(\'' + nid + '\', event)">让 Nana 解读</div>';
   }
@@ -1860,12 +2050,15 @@ function renderProposal(c) {
   var pendingEl = document.getElementById('proposal-pending');
   var done = document.getElementById('proposal-done');
   var inviteBlock = document.getElementById('prop-invite-block');
+  var caregiverView = document.getElementById('prop-caregiver-view');
   var activeStrip = document.getElementById('prop-active-strip');
   var pending = getPendingProposals(c);
   var exp = experiments[c];
+  var isCg = !canDecide();
 
   closePropDecide();
   updateChildBadges();
+  card.classList.toggle('caregiver-mode', isCg);
 
   var hasActive = exp && exp.status === 'active';
   if (!pending.length && !hasActive) {
@@ -1880,11 +2073,25 @@ function renderProposal(c) {
   if (hasActive) {
     var ap = getActiveProposal(c);
     activeStrip.style.display = 'flex';
+    document.getElementById('prop-active-lbl').textContent = isCg
+      ? '小实验进行中 · 由家长观察中'
+      : '小实验进行中 · 详情在 Plan';
     document.getElementById('prop-active-title').textContent = ap ? ap.expTitle : '';
     document.getElementById('prop-active-day').textContent = 'Day ' + exp.day + '/' + exp.total;
   } else {
     activeStrip.style.display = 'none';
   }
+
+  if (isCg && pending.length) {
+    var cp = ensurePropFocus(c) || pending[0];
+    caregiverView.style.display = 'block';
+    inviteBlock.style.display = 'none';
+    document.getElementById('prop-cg-title').textContent = cp ? cp.title : '';
+    document.getElementById('prop-cg-note').innerHTML = '<b>' + PRIMARY_OWNER.split(' ')[0] + '</b> 还没确认是否尝试此项 · 你只能查看，无法操作';
+    return;
+  }
+
+  caregiverView.style.display = 'none';
 
   if (!pending.length) {
     inviteBlock.style.display = 'none';
@@ -1958,6 +2165,7 @@ function selectProposal(id) {
 }
 
 function snoozeProposal() {
+  if (!guardDecideAction()) return;
   var c = curChild;
   var p = ensurePropFocus(c);
   if (!p) return;
@@ -1971,6 +2179,7 @@ function snoozeProposal() {
 }
 
 function approveProposal() {
+  if (!guardDecideAction()) return;
   var c = curChild;
   var p = ensurePropFocus(c);
   if (!p) return;
@@ -1991,6 +2200,7 @@ function approveProposal() {
 }
 
 function declineProposal() {
+  if (!guardDecideAction()) return;
   var c = curChild;
   var p = ensurePropFocus(c);
   if (!p) return;
@@ -2125,12 +2335,21 @@ function renderPlanCompleteReport(c) {
   document.getElementById('pc-habits-list').innerHTML = pc.habits.map(function(h) {
     var on = keptHabits[c][h.id] !== false;
     if (keptHabits[c][h.id] === undefined) keptHabits[c][h.id] = true;
+    if (!canManageHabits()) {
+      return '<div class="pc-habit readonly' + (on ? ' on' : '') + '">' +
+        '<span class="pc-habit-ico">' + h.ico + '</span>' +
+        '<div class="pc-habit-body"><div class="pc-habit-title">' + h.title + '</div><div class="pc-habit-sub">' + h.sub + '</div></div>' +
+        (on ? '<span class="pc-habit-readonly-tag">追踪中</span>' : '<span class="pc-habit-readonly-tag" style="background:var(--bg2);color:var(--muted);">未保留</span>') +
+      '</div>';
+    }
     return '<div class="pc-habit' + (on ? ' on' : '') + '" onclick="toggleKeepHabit(\'' + h.id + '\')">' +
       '<span class="pc-habit-ico">' + h.ico + '</span>' +
       '<div class="pc-habit-body"><div class="pc-habit-title">' + h.title + '</div><div class="pc-habit-sub">' + h.sub + '</div></div>' +
       '<div class="pc-habit-check"></div></div>';
   }).join('');
 }
+
+function canManageHabits() { return rolePerms().canManageHabits; }
 
 function toggleFeedExpand(which) {
   var c = curChild;
@@ -2156,16 +2375,18 @@ function renderMonthlySnapshot(c) {
   if (!ms) return;
   var row = document.getElementById('feed-monthly-row');
   row.style.display = monthlyVisible[c] ? 'flex' : 'none';
-  document.getElementById('feed-monthly-title').textContent = ms.month + '，' + d.name + ' 有 ' + ms.improving.length + ' 件事在变好';
-  document.getElementById('feed-monthly-sub').textContent = ms.improving.length + ' 件变好 · ' + ms.watching.length + ' 件观察中';
-  document.getElementById('feed-monthly-improving').innerHTML = ms.improving.map(function(t) {
+  var improving = filterMonthlyForRole(ms.improving);
+  var watching = filterMonthlyForRole(ms.watching);
+  document.getElementById('feed-monthly-title').textContent = ms.month + '，' + d.name + ' 有 ' + improving.length + ' 件事在变好';
+  document.getElementById('feed-monthly-sub').textContent = improving.length + ' 件变好 · ' + watching.length + ' 件观察中';
+  document.getElementById('feed-monthly-improving').innerHTML = improving.map(function(t) {
     return '<li class="fc-monthly-item">' + t + '</li>';
   }).join('');
-  document.getElementById('feed-monthly-watching').innerHTML = ms.watching.map(function(t) {
+  document.getElementById('feed-monthly-watching').innerHTML = watching.map(function(t) {
     return '<li class="fc-monthly-item watch">' + t + '</li>';
   }).join('');
   var sep = document.getElementById('feed-monthly-sep');
-  if (sep) sep.textContent = ms.watching.length + ' 件事还在观察中';
+  if (sep) sep.textContent = watching.length + ' 件事还在观察中';
   syncFeedExpandUI(c, 'monthly');
 }
 
@@ -2227,12 +2448,17 @@ function closePlanCompleteReport() {
 }
 
 function toggleKeepHabit(id) {
+  if (!canManageHabits()) return;
   var c = curChild;
   keptHabits[c][id] = !keptHabits[c][id];
   renderPlanCompleteReport(c);
 }
 
 function confirmPlanComplete() {
+  if (!canDecide()) {
+    closePlanCompleteReport();
+    return;
+  }
   var c = curChild;
   var kept = [];
   var dropped = [];
@@ -2247,11 +2473,19 @@ function confirmPlanComplete() {
 
 function sharePlanReport(e) {
   if (e) e.stopPropagation();
+  if (!canShare()) {
+    showToast('看护人视角 · 无法分享健康报告');
+    return;
+  }
   showToast('📤 分享卡片已生成（原型演示）· 可截图发给家人');
 }
 
 function shareMonthlySnapshot(e) {
   if (e) e.stopPropagation();
+  if (!canShare()) {
+    showToast('看护人视角 · 无法分享');
+    return;
+  }
   showToast('📤 ' + D[curChild].monthlySnapshot.month + '成长快照 · 可截图分享');
 }
 
@@ -2290,6 +2524,10 @@ function registerNanaAsk(ctx, reply) {
 
 function fireNanaAsk(id, e) {
   if (e) { e.stopPropagation(); }
+  if (!canNanaAsk()) {
+    showToast('看护人视角 · 仅可阅读摘要');
+    return;
+  }
   var p = _nanaAskStore[id];
   if (!p) return;
   openNanaSheet(p.ctx);
@@ -2297,6 +2535,10 @@ function fireNanaAsk(id, e) {
 }
 
 function openNanaAskFromChild(kind) {
+  if (!canNanaAsk()) {
+    showToast('看护人视角 · 仅可阅读摘要');
+    return;
+  }
   var d = D[curChild];
   var fallback = d['nana' + kind.charAt(0).toUpperCase() + kind.slice(1)] || '';
   var ctxLabel = NANA_CTX_LABEL[kind] || kind;
@@ -2416,6 +2658,7 @@ swChild('s');
 updateChildBadges();
 renderMonthlySnapshot('s');
 updatePlanProgressUI('s');
+applyRoleUI();
 </script>
 </body>
 </html>
