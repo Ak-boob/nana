@@ -125,7 +125,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
 .fc-plan-sub{font-size:10px;color:rgba(255,255,255,.7);margin-top:2px;}
 .fc-plan-prog{margin-top:7px;background:rgba(255,255,255,.2);border-radius:4px;height:3px;overflow:hidden;}
 .fc-plan-fill{height:100%;background:rgba(255,255,255,.9);border-radius:4px;transition:width .4s ease;}
-.fc-plan-chev{color:rgba(255,255,255,.5);font-size:16px;}
+.fc-plan-chev{color:rgba(255,255,255,.5);font-size:16px;transition:transform .22s ease;}
+.fc-plan.done{background:linear-gradient(135deg,rgba(52,199,89,.78),rgba(24,130,255,.72));}
+.fc-plan-expand{display:none;border-top:.5px solid rgba(255,255,255,.2);padding:0 13px 12px;}
+#feed-plan-row.fi-expandable.open .fc-plan-expand{display:block;}
+#feed-plan-row.fi-expandable.open .fc-plan-chev{transform:rotate(90deg);color:#fff;}
+#feed-plan-row.fi-expandable .fc-plan-row{cursor:pointer;}
+#feed-plan-row:not(.fi-expandable) .fc-plan-row{cursor:pointer;}
 .fc-ai{padding:11px 13px;background:rgba(255,255,255,.18);border-top:.5px solid var(--glass-border-dim);display:flex;gap:9px;align-items:flex-start;}
 .fc-ai-av{width:24px;height:24px;border-radius:8px;background:var(--glass-bg-soft);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
 .fc-ai-av svg{width:10px;height:10px;fill:var(--muted);}
@@ -401,6 +407,105 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
 /* toast */
 .toast{position:absolute;top:52px;left:50%;transform:translateX(-50%) translateY(-8px);background:rgba(28,28,30,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#fff;font-size:11px;padding:8px 14px;border-radius:10px;border:.5px solid rgba(255,255,255,.12);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:200;white-space:nowrap;max-width:300px;text-align:center;line-height:1.4;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* plan completion report */
+.pc-overlay{position:absolute;inset:0;z-index:400;pointer-events:none;opacity:0;transition:opacity .3s;}
+.pc-overlay.open{pointer-events:auto;opacity:1;}
+.pc-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.32);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.pc-sheet{position:absolute;left:0;right:0;bottom:0;top:0;display:flex;flex-direction:column;background:linear-gradient(180deg,#eef4ff 0%,#f5f9ff 40%,#fff 100%);transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);overflow:hidden;}
+.pc-overlay.open .pc-sheet{transform:translateY(0);}
+.pc-scroll{flex:1;overflow-y:auto;padding:52px 18px 20px;-webkit-overflow-scrolling:touch;}
+.pc-scroll::-webkit-scrollbar{display:none;}
+.pc-close{position:absolute;top:48px;right:16px;z-index:2;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font-size:16px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--glass-shadow);}
+.pc-hero{text-align:center;margin-bottom:18px;}
+.pc-emoji{font-size:36px;margin-bottom:8px;}
+.pc-title{font-size:20px;font-weight:700;color:var(--ink);line-height:1.3;letter-spacing:-.02em;}
+.pc-sub{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.45;}
+.pc-compare{margin-bottom:14px;border-radius:20px;background:var(--glass-bg-strong);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:.5px solid var(--glass-border);box-shadow:var(--glass-shadow);padding:14px;overflow:hidden;}
+.pc-compare-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+.pc-metric-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:.5px solid var(--line);}
+.pc-metric-row:last-child{border-bottom:none;padding-bottom:0;}
+.pc-metric-lbl{font-size:11px;color:var(--muted);width:52px;flex-shrink:0;}
+.pc-metric-before{font-size:12px;color:var(--muted);flex:1;text-decoration:line-through;opacity:.7;}
+.pc-metric-arrow{font-size:11px;color:var(--brand);flex-shrink:0;}
+.pc-metric-after{font-size:14px;font-weight:600;color:var(--ink);flex:1;text-align:right;}
+.pc-metric-after.up{color:var(--green);}
+.pc-story{margin-bottom:14px;border-radius:18px;padding:14px;background:linear-gradient(135deg,rgba(24,130,255,.12),rgba(175,82,222,.08));border:.5px solid rgba(24,130,255,.15);}
+.pc-story-lbl{font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--brand);margin-bottom:6px;}
+.pc-story-text{font-size:13px;color:var(--ink);line-height:1.65;}
+.pc-story-text strong{font-weight:600;}
+.pc-story-note{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.45;}
+.pc-habits{margin-bottom:14px;}
+.pc-habits-lbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin-bottom:8px;}
+.pc-habit{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:14px;background:var(--glass-bg);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px solid var(--glass-border);margin-bottom:7px;cursor:pointer;transition:border-color .2s,background .2s;}
+.pc-habit.on{border-color:rgba(52,199,89,.35);background:rgba(232,255,232,.55);}
+.pc-habit-ico{font-size:20px;flex-shrink:0;}
+.pc-habit-body{flex:1;min-width:0;}
+.pc-habit-title{font-size:12px;font-weight:600;color:var(--ink);}
+.pc-habit-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.pc-habit-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;transition:all .2s;}
+.pc-habit.on .pc-habit-check{background:var(--green);border-color:var(--green);}
+.pc-habit.on .pc-habit-check::after{content:'✓';font-weight:700;}
+.pc-next{margin-bottom:14px;border-radius:16px;padding:12px 13px;background:var(--glass-bg);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border:.5px dashed rgba(24,130,255,.2);display:flex;gap:10px;align-items:center;}
+.pc-next-ico{font-size:22px;flex-shrink:0;}
+.pc-next-lbl{font-size:9px;font-weight:700;color:var(--brand);letter-spacing:.04em;}
+.pc-next-title{font-size:13px;font-weight:600;color:var(--ink);margin-top:2px;}
+.pc-next-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.pc-foot{padding:12px 18px 28px;background:rgba(255,255,255,.72);backdrop-filter:var(--glass-blur-light);-webkit-backdrop-filter:var(--glass-blur-light);border-top:.5px solid var(--glass-border-dim);flex-shrink:0;}
+.pc-actions{display:flex;gap:8px;margin-bottom:8px;}
+.pc-btn{flex:1;padding:12px 0;border-radius:13px;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:inherit;text-align:center;}
+.pc-btn.primary{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(24,130,255,.28);}
+.pc-btn.ghost{background:var(--glass-bg-soft);color:var(--brand);border:.5px solid rgba(24,130,255,.18);}
+.pc-btn.share{background:linear-gradient(135deg,#AF52DE,#1882FF);color:#fff;}
+.pc-btn:active{opacity:.85;}
+.pc-foot-note{font-size:10px;color:var(--muted);text-align:center;line-height:1.45;}
+
+/* feed: expandable timeline cards */
+.fi-expandable .fi-card{cursor:pointer;}
+.fi-expandable .fi-card:active{opacity:.92;}
+.fc-tl-head{display:flex;align-items:flex-start;gap:10px;padding:12px 13px;}
+.fc-tl-head.compact-only{padding:11px 13px;align-items:center;}
+.fc-tl-ico{width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.fc-tl-main{flex:1;min-width:0;}
+.fc-tl-title{font-size:13px;font-weight:600;color:var(--ink);line-height:1.35;}
+.fc-tl-sub{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.fc-tl-chev{font-size:12px;color:var(--muted);flex-shrink:0;margin-top:2px;transition:transform .22s ease;}
+.fi-expandable.open .fc-tl-chev{transform:rotate(180deg);color:var(--brand);}
+.fc-tl-body{display:none;border-top:.5px solid var(--line);}
+.fi-expandable.open .fc-tl-body{display:block;}
+.fc-tl-body-inner{padding:0 13px 12px;}
+
+.fc-complete{padding:0;background:linear-gradient(135deg,rgba(24,130,255,.82),rgba(10,95,204,.88));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+.fc-complete .fc-tl-head{background:transparent;}
+.fc-complete .fc-tl-title{color:#fff;}
+.fc-complete .fc-tl-sub{color:rgba(255,255,255,.72);}
+.fc-complete .fc-tl-chev{color:rgba(255,255,255,.55);}
+.fi-expandable.open .fc-complete .fc-tl-chev{color:#fff;}
+.fc-complete .fc-tl-body{border-top-color:rgba(255,255,255,.18);}
+.fc-complete-badge{font-size:9px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.75);margin-bottom:4px;}
+.fc-complete-metrics{display:flex;gap:8px;margin-top:4px;}
+.fc-complete-m{flex:1;background:rgba(255,255,255,.18);border-radius:10px;padding:8px;text-align:center;}
+.fc-complete-m-val{font-size:13px;font-weight:700;color:#fff;}
+.fc-complete-m-lbl{font-size:8px;color:rgba(255,255,255,.7);margin-top:2px;}
+.fc-complete-actions{display:flex;gap:8px;margin-top:10px;}
+.fc-complete-btn{flex:1;padding:9px 0;border-radius:10px;font-size:11px;font-weight:600;border:none;cursor:pointer;font-family:inherit;text-align:center;}
+.fc-complete-btn.primary{background:rgba(255,255,255,.92);color:var(--brand);}
+.fc-complete-btn.ghost{background:rgba(255,255,255,.16);color:#fff;border:.5px solid rgba(255,255,255,.28);}
+.fc-complete-btn:active{opacity:.85;}
+
+.fc-monthly{padding:0;}
+.fc-monthly .fc-tl-ico{background:#f5f0ff;}
+.fc-monthly-list{margin:0;padding:0;list-style:none;}
+.fc-monthly-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--ink);line-height:1.45;margin-bottom:7px;}
+.fc-monthly-item::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);margin-top:5px;flex-shrink:0;}
+.fc-monthly-item.watch::before{background:var(--amber);}
+.fc-monthly-item.watch{color:var(--muted);}
+.fc-monthly-sep{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin:10px 0 7px;text-transform:uppercase;}
+.fc-monthly-actions{margin-top:10px;}
+.fc-monthly-share-btn{width:100%;padding:9px 0;border-radius:10px;font-size:11px;font-weight:600;border:none;background:var(--brand-soft);color:var(--brand);cursor:pointer;font-family:inherit;}
+.fc-monthly-share-btn:active{opacity:.85;}
+.plan-hero.completed{background:linear-gradient(135deg,rgba(52,199,89,.78),rgba(34,139,90,.85));border-color:rgba(255,255,255,.25);}
+.plan-hero.completed .ph-focus{color:rgba(255,255,255,.75);}
 </style>
 </head>
 <body>
@@ -515,22 +620,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
                 </div>
               </div>
             </div>
-            <div class="fi">
+            <div class="fi" id="feed-plan-row">
               <div class="fi-time"><div class="fi-time-val" style="color:var(--brand);font-weight:600;font-size:9px;">PLAN</div></div>
               <div class="fi-track">
                 <div class="fi-dot" style="background:var(--brand);" id="feed-plan-dot">💤</div>
                 <div class="fi-line" style="background:rgba(24,130,255,.15);"></div>
               </div>
-              <div class="fi-card click" style="box-shadow:0 8px 28px rgba(24,130,255,.16);" onclick="swView('plan')">
-                <div class="fc-plan">
-                  <div class="fc-plan-row">
+              <div class="fi-card" id="feed-plan-card" style="box-shadow:0 8px 28px rgba(24,130,255,.16);">
+                <div class="fc-plan" id="feed-plan-inner">
+                  <div class="fc-plan-row" onclick="handleFeedPlanClick(event)">
                     <div class="fc-plan-ico" id="feed-plan-ico">💤</div>
                     <div class="fc-plan-body">
                       <div class="fc-plan-title" id="feed-plan-title">Sleep focus · Day 8 of 14</div>
                       <div class="fc-plan-sub" id="feed-plan-sub">Deep sleep ↑28% · see insights →</div>
                       <span class="feed-exp-pill" id="feed-exp-pill" style="display:none;"></span>
                     </div>
-                    <div class="fc-plan-chev">›</div>
+                    <div class="fc-plan-chev" id="feed-plan-chev">›</div>
+                  </div>
+                  <div class="fc-plan-expand" id="feed-plan-expand">
+                    <div class="fc-complete-metrics" id="feed-plan-metrics"></div>
+                    <div class="fc-complete-actions">
+                      <button type="button" class="fc-complete-btn primary" onclick="openPlanCompleteReport(event)">查看完整故事</button>
+                      <button type="button" class="fc-complete-btn ghost" onclick="sharePlanReport(event)">分享</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -584,6 +696,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
                   <div class="fc-ai-chips">
                     <div class="fc-ai-chip" onclick="openNanaAskFromChild('feed')">让 Nana 细说</div>
                     <div class="fc-ai-chip pu" onclick="dismissNana()">知道了</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 月度成长快照 · 时间轴可展开 -->
+          <div class="fi fi-expandable" id="feed-monthly-row">
+            <div class="fi-time"><div class="fi-time-val">May</div></div>
+            <div class="fi-track">
+              <div class="fi-dot" style="background:#f5f0ff;border:.5px solid rgba(175,82,222,.2);">📊</div>
+              <div class="fi-line"></div>
+            </div>
+            <div class="fi-card">
+              <div class="fc-monthly">
+                <div class="fc-tl-head compact-only" onclick="toggleFeedExpand('monthly')">
+                  <div class="fc-tl-ico">📊</div>
+                  <div class="fc-tl-main">
+                    <div class="fc-tl-title" id="feed-monthly-title">5月，Sarah 有 3 件事在变好</div>
+                    <div class="fc-tl-sub" id="feed-monthly-sub">3 件变好 · 1 件观察中</div>
+                  </div>
+                  <div class="fc-tl-chev">▾</div>
+                </div>
+                <div class="fc-tl-body" id="feed-monthly-body">
+                  <div class="fc-tl-body-inner">
+                    <ul class="fc-monthly-list" id="feed-monthly-improving"></ul>
+                    <div class="fc-monthly-sep" id="feed-monthly-sep">1 件事还在观察中</div>
+                    <ul class="fc-monthly-list" id="feed-monthly-watching"></ul>
+                    <div class="fc-monthly-actions">
+                      <button type="button" class="fc-monthly-share-btn" onclick="shareMonthlySnapshot(event)">分享月度快照</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -773,12 +916,59 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-
       <button type="button" class="nana-sheet-done" onclick="closeNanaAsk()">知道了</button>
     </div>
   </div>
+
+  <!-- 计划完结报告全屏 -->
+  <div id="plan-complete-overlay" class="pc-overlay">
+    <div class="pc-backdrop" onclick="closePlanCompleteReport()"></div>
+    <div class="pc-sheet">
+      <button type="button" class="pc-close" onclick="closePlanCompleteReport()" aria-label="关闭">×</button>
+      <div class="pc-scroll">
+        <div class="pc-hero">
+          <div class="pc-emoji">🎉</div>
+          <div class="pc-title" id="pc-title">Sarah 的第 2 个健康计划完成了</div>
+          <div class="pc-sub" id="pc-sub">14 天睡眠节奏 · 5月13日 – 5月27日</div>
+        </div>
+        <div class="pc-compare">
+          <div class="pc-compare-lbl">14 天前 → 今天</div>
+          <div id="pc-metrics"></div>
+        </div>
+        <div class="pc-story" id="pc-story">
+          <div class="pc-story-lbl">这 14 天里值得关注的变化</div>
+          <div class="pc-story-text" id="pc-story-text"></div>
+          <div class="pc-story-note" id="pc-story-note">基于手环被动观察 · 关联不等于因果 · 供家庭参考</div>
+        </div>
+        <div class="pc-habits" id="pc-habits-wrap">
+          <div class="pc-habits-lbl">要把有效的习惯继续追踪吗？</div>
+          <div id="pc-habits-list"></div>
+        </div>
+        <div class="pc-next" id="pc-next">
+          <div class="pc-next-ico" id="pc-next-ico">⚡</div>
+          <div>
+            <div class="pc-next-lbl">下一章</div>
+            <div class="pc-next-title" id="pc-next-title">Activity Balance</div>
+            <div class="pc-next-sub" id="pc-next-sub">6 天后解锁 · Outdoor time · post-school routine</div>
+          </div>
+        </div>
+      </div>
+      <div class="pc-foot">
+        <div class="pc-actions">
+          <button type="button" class="pc-btn share" onclick="sharePlanReport()">分享给家人</button>
+          <button type="button" class="pc-btn primary" onclick="confirmPlanComplete()">完成</button>
+        </div>
+        <div class="pc-foot-note">截图或分享这张卡片 · Nana 会继续追踪你保留的习惯</div>
+      </div>
+    </div>
+  </div>
       <div class="home-indicator" aria-hidden="true"></div>
     </div>
   </div>
   <aside class="proto-panel" aria-label="原型调试">
     <div class="proto-lbl">原型调试 · 不进入 App</div>
+    <button type="button" class="proto-btn" id="proto-advance-plan" onclick="advancePlanDay()">模拟计划下一天</button>
     <button type="button" class="proto-btn" id="proto-advance-exp" onclick="advanceExperimentDay()">模拟实验下一天</button>
+    <button type="button" class="proto-btn" id="proto-show-complete" onclick="triggerPlanComplete()">查看计划完结报告</button>
+    <button type="button" class="proto-btn" id="proto-show-monthly" onclick="toggleMonthlySnapshot()">切换月度快照</button>
+    <div class="proto-state" id="proto-plan-state">Sarah · Day 8/14</div>
     <div class="proto-state" id="proto-exp-state">当前无进行中实验</div>
     <p class="proto-hint">仅在浏览器预览用。上线版移除此面板。</p>
   </aside>
@@ -794,6 +984,11 @@ var propFocusId = { s: 's_outdoor', t: 't_breath' };
 var propQueueOpen = { s: false, t: false };
 var _nanaAskSeq = 0;
 var _nanaAskStore = {};
+/** 计划进度与完结状态 */
+var planProgress = { s: { day: 8, status: 'active' }, t: { day: 3, status: 'active' } };
+var keptHabits = { s: {}, t: {} };
+var monthlyVisible = { s: true, t: true };
+var feedExpanded = { s: { plan: false, monthly: false }, t: { plan: false, monthly: false } };
 
 var NANA_CTX_LABEL = { morning: '晨间摘要', feed: '今日知会', read: 'Plan 综合读数' };
 
@@ -1025,22 +1220,47 @@ function queueRowTag(c, item, focusId) {
 function updateProtoPanel(c) {
   var btn = document.getElementById('proto-advance-exp');
   var state = document.getElementById('proto-exp-state');
+  var planState = document.getElementById('proto-plan-state');
+  var planBtn = document.getElementById('proto-advance-plan');
+  var d = D[c];
+  var pp = planProgress[c];
+
+  if (planState) {
+    if (pp.status === 'completed') {
+      planState.textContent = d.name + ' · 计划已完结 ✓';
+    } else {
+      planState.textContent = d.name + ' · Day ' + pp.day + '/' + d.dayTotal;
+    }
+  }
+  if (planBtn) {
+    if (pp.status === 'completed') {
+      planBtn.disabled = true;
+      planBtn.textContent = '计划已完结';
+    } else if (pp.day >= d.dayTotal) {
+      planBtn.disabled = false;
+      planBtn.textContent = '触发计划完结 (Day ' + d.dayTotal + ')';
+    } else {
+      planBtn.disabled = false;
+      planBtn.textContent = '模拟计划下一天 (Day ' + pp.day + '→' + (pp.day + 1) + ')';
+    }
+  }
+
   if (!btn || !state) return;
   var exp = experiments[c];
   if (!exp) {
     btn.disabled = true;
     btn.textContent = '模拟实验下一天';
-    state.textContent = D[c].name + '：无进行中实验';
+    state.textContent = d.name + '：无进行中实验';
     return;
   }
   btn.disabled = false;
   if (exp.status === 'active') {
     btn.textContent = exp.day >= exp.total ? '查看 3 天结论' : '模拟实验 · 下一天 (Day ' + exp.day + '/' + exp.total + ')';
-    state.textContent = D[c].name + ' · ' + getProposal(c, exp.proposalId).expTitle + ' · 进行中';
+    state.textContent = d.name + ' · ' + getProposal(c, exp.proposalId).expTitle + ' · 进行中';
   } else {
     btn.disabled = true;
     btn.textContent = '实验已结束';
-    state.textContent = D[c].name + ' · 结论在 Plan · Insights';
+    state.textContent = d.name + ' · 结论在 Plan · Insights';
   }
 }
 
@@ -1134,7 +1354,25 @@ var D = {
     nanaFeed:'深睡趋势在变好，今天课间户外也有贡献。这里只是同步信号，不需要您做任何决定；若想细看数据，Insights 里有证据。',
     nanaRead:'本轮睡眠 Plan 整体有效，深睡已达标。最大缺口在周末 bedtime——若能把周末与平日起床差缩到 30 分钟内，深睡还有上行空间。户外目前 4/8 天，是下一个可试方向。',
     ctLbl:"Sarah's journey", ctText:'This is her <strong>2nd plan</strong>. Plan 1 (Activity Boost, March) raised step completion 58% → 87%.',
-    npIco:'⚡', npTitle:'Activity Balance', npSub:'Outdoor time · post-school routine', npLockLbl:'Unlocks in 6 days', npFill:'57%'
+    npIco:'⚡', npTitle:'Activity Balance', npSub:'Outdoor time · post-school routine', npLockLbl:'Unlocks in 6 days', npFill:'57%',
+    planComplete: {
+      planNum: 2, planName: 'Better sleep rhythm', planFocus: '睡眠节奏',
+      dateRange: '5月13日 – 5月27日',
+      metrics: [
+        { lbl: '深睡', before: '1h 55m', after: '2h 40m', up: true },
+        { lbl: '入睡', before: '26 min', after: '11 min', up: true },
+        { lbl: 'HRV', before: '38 ms', after: '46 ms', up: true }
+      ],
+      habits: [
+        { id: 's_outdoor', ico: '🌅', title: '傍晚户外散步', sub: '3 天实验显示有帮助 · 继续被动追踪' }
+      ],
+      fallbackStory: '这 14 天里，<strong>深睡从 1h 55m 涨到 2h 40m</strong>，入睡从 26 分钟缩短到 11 分钟。规律 bedtime 是主要变化——周末作息仍是下一个观察方向。'
+    },
+    monthlySnapshot: {
+      month: '5月',
+      improving: ['深睡时长 ↑ 28%', '入睡速度 ↑ 明显改善', 'HRV 连续 3 周高于基线'],
+      watching: ['周末作息规律性']
+    }
   },
   t: {
     name: 'Tommy', dayNum: 3, dayTotal: 14, dayPct: 21,
@@ -1181,7 +1419,25 @@ var D = {
     nanaFeed:'HRV 今天没有继续跌，这是企稳信号，不是已经恢复完成。请把关注放在晚间放松流程，而不是白天加练。',
     nanaRead:'这是 Tommy 第一个恢复 Plan，目前重点是「别再恶化」。晚间静息比活动量更关键；若 HRV 连续 3 天回升，再考虑逐步加一点户外。',
     ctLbl:"Tommy's journey", ctText:'This is his <strong>1st plan</strong>. Started after 3 consecutive days of HRV decline.',
-    npIco:'💤', npTitle:'Sleep Reset', npSub:'Bedtime routine · reduce load', npLockLbl:'Unlocks in 11 days', npFill:'21%'
+    npIco:'💤', npTitle:'Sleep Reset', npSub:'Bedtime routine · reduce load', npLockLbl:'Unlocks in 11 days', npFill:'21%',
+    planComplete: {
+      planNum: 1, planName: 'Stress & recovery', planFocus: '压力恢复',
+      dateRange: '5月15日 – 5月29日',
+      metrics: [
+        { lbl: 'HRV', before: '26 ms', after: '32 ms', up: true },
+        { lbl: '静息 HR', before: '74 bpm', after: '68 bpm', up: true },
+        { lbl: '睡眠', before: '7h 20m', after: '7h 50m', up: true }
+      ],
+      habits: [
+        { id: 't_breath', ico: '🧘', title: '睡前放松呼吸', sub: '2 晚有效信号 · 继续观察 1–2 周' }
+      ],
+      fallbackStory: '这 14 天里，<strong>HRV 从持续下跌转为企稳回升</strong>。晚间静息比加练更重要——呼吸放松在 2 个晚上与次日 HRV 回升同时出现。'
+    },
+    monthlySnapshot: {
+      month: '5月',
+      improving: ['HRV 停止继续下跌', '静息心率 ↓ 6 bpm'],
+      watching: ['下午活动量是否仍偏高']
+    }
   }
 };
 
@@ -1251,6 +1507,9 @@ function applyChildData(c) {
   renderPlanFocusArea(c);
   updateFeedExperimentPill(c);
   updateChildBadges();
+  renderMonthlySnapshot(c);
+  updatePlanProgressUI(c);
+  syncAllFeedExpandUI(c);
 }
 
 function buildInsightCardHTML(item, opts) {
@@ -1346,9 +1605,21 @@ function renderInsights(c) {
 
 function renderPlanHero(c) {
   var d = D[c];
+  var hero = document.getElementById('plan-hero');
+  var pp = planProgress[c];
   document.getElementById('ph-focus').textContent = d.phFocus;
   document.getElementById('ph-title').textContent = d.phTitle;
-  document.getElementById('ph-summary').textContent = d.phSummary;
+  if (pp && pp.status === 'completed') {
+    hero.classList.add('completed');
+    document.getElementById('ph-summary').innerHTML = '<strong>14 天计划已完成</strong> · 深睡 ↑28% · 点击查看完结报告 →';
+    hero.style.cursor = 'pointer';
+    hero.onclick = openPlanCompleteReport;
+  } else {
+    hero.classList.remove('completed');
+    document.getElementById('ph-summary').textContent = d.phSummary;
+    hero.style.cursor = '';
+    hero.onclick = null;
+  }
 }
 
 function startExperiment(c, proposalId) {
@@ -1495,6 +1766,14 @@ function renderExperimentCard(c, exp, p) {
 
 function renderExperiment(c) {
   renderPlanFocusArea(c);
+}
+
+function handleFeedPlanClick(e) {
+  if (planProgress[curChild].status === 'completed') {
+    toggleFeedExpand('plan');
+  } else {
+    swView('plan');
+  }
 }
 
 function updateFeedPlanEntry(c) {
@@ -1741,6 +2020,247 @@ function toggleOlder(sep) {
   lbl.firstChild.textContent = open ? 'Earlier today · 3 events' : 'Earlier today · hide';
 }
 
+function updatePlanProgressUI(c) {
+  var d = D[c];
+  var pp = planProgress[c];
+  d.dayNum = pp.day;
+  d.dayPct = Math.round((pp.day / d.dayTotal) * 100);
+  d.npFill = d.dayPct + '%';
+  var remain = d.dayTotal - pp.day;
+  if (pp.status === 'completed') {
+    d.feedPlanTitle = d.phTitle + ' · 已完成 ✓';
+    d.feedPlanSub = '查看 14 天成长故事 →';
+    d.npLockLbl = '已解锁';
+  } else {
+    d.feedPlanTitle = (c === 's' ? 'Sleep focus' : 'Recovery focus') + ' · Day ' + pp.day + ' of ' + d.dayTotal;
+    if (pp.day >= 10) d.feedPlanSub = '计划即将完成 · see insights →';
+    d.npLockLbl = remain > 0 ? 'Unlocks in ' + remain + ' days' : '即将解锁';
+  }
+  document.getElementById('ins-day').textContent = pp.day;
+  document.getElementById('feed-plan-title').textContent = d.feedPlanTitle;
+  document.getElementById('np-lock-lbl').textContent = d.npLockLbl;
+  document.getElementById('np-fill').style.width = d.npFill;
+  updateFeedPlanEntry(c);
+  updateFeedPlanCard(c);
+}
+
+function updateFeedPlanCard(c) {
+  var pp = planProgress[c];
+  var row = document.getElementById('feed-plan-row');
+  var inner = document.getElementById('feed-plan-inner');
+  var card = document.getElementById('feed-plan-card');
+  if (!row || !inner) return;
+
+  if (pp.status === 'completed') {
+    row.classList.add('fi-expandable');
+    inner.classList.add('done');
+    card.classList.add('click');
+    var pc = D[c].planComplete;
+    document.getElementById('feed-plan-metrics').innerHTML = pc.metrics.slice(0, 2).map(function(m) {
+      return '<div class="fc-complete-m"><div class="fc-complete-m-val">' + m.after + '</div><div class="fc-complete-m-lbl">' + m.lbl + '</div></div>';
+    }).join('');
+    syncFeedExpandUI(c, 'plan');
+  } else {
+    row.classList.remove('fi-expandable', 'open');
+    inner.classList.remove('done');
+    card.classList.remove('click');
+    feedExpanded[c].plan = false;
+  }
+}
+
+function getBestAttribution(c) {
+  var best = null;
+  var bestScore = -1;
+  PROPOSAL_LIST[c].forEach(function(p) {
+    var approved = proposalDecisions[p.id] === 'approved' ||
+      (experiments[c] && experiments[c].proposalId === p.id);
+    if (!approved || !p.conclusion) return;
+    var score = p.conclusion.status === 'helping' ? 3 : (p.conclusion.status === 'mixed' ? 1 : 0);
+    if (score > bestScore) {
+      bestScore = score;
+      best = p;
+    }
+  });
+  return best;
+}
+
+function buildPlanCompleteStory(c) {
+  var d = D[c];
+  var pc = d.planComplete;
+  var attr = getBestAttribution(c);
+  var m0 = pc.metrics[0];
+  var m1 = pc.metrics[1];
+  if (attr && attr.conclusion.status === 'helping') {
+    var startDay = Math.max(1, planProgress[c].day - 6);
+    return '这 14 天里，有一个变化和 <strong>' + attr.title + '</strong> 同时出现——' +
+      '自从第 ' + startDay + ' 天开始 <strong>' + attr.expTitle + '</strong>，' +
+      m0.lbl + '从 <strong>' + m0.before + '</strong> 变为 <strong>' + m0.after + '</strong>，' +
+      m1.lbl + '从 <strong>' + m1.before + '</strong> 缩短到 <strong>' + m1.after + '</strong>。' +
+      'Nana 已记录这个习惯，会继续被动追踪。';
+  }
+  if (attr && attr.conclusion.status === 'mixed') {
+    return '这 14 天整体指标在变好，<strong>' + attr.expTitle + '</strong> 出现了有限信号——样本还少，供参考。' +
+      m0.lbl + '和' + m1.lbl + '的改善更多来自 <strong>规律作息</strong>，值得继续观察。';
+  }
+  return pc.fallbackStory;
+}
+
+function renderPlanCompleteReport(c) {
+  var d = D[c];
+  var pc = d.planComplete;
+  document.getElementById('pc-title').textContent = d.name + ' 的第 ' + pc.planNum + ' 个健康计划完成了';
+  document.getElementById('pc-sub').textContent = '14 天' + pc.planFocus + ' · ' + pc.dateRange;
+  document.getElementById('pc-metrics').innerHTML = pc.metrics.map(function(m) {
+    return '<div class="pc-metric-row">' +
+      '<div class="pc-metric-lbl">' + m.lbl + '</div>' +
+      '<div class="pc-metric-before">' + m.before + '</div>' +
+      '<div class="pc-metric-arrow">→</div>' +
+      '<div class="pc-metric-after' + (m.up ? ' up' : '') + '">' + m.after + '</div>' +
+    '</div>';
+  }).join('');
+  document.getElementById('pc-story-text').innerHTML = buildPlanCompleteStory(c);
+  document.getElementById('pc-next-ico').textContent = d.npIco;
+  document.getElementById('pc-next-title').textContent = d.npTitle;
+  document.getElementById('pc-next-sub').textContent = (planProgress[c].status === 'completed' ? '已解锁 · ' : d.npLockLbl + ' · ') + d.npSub;
+  document.getElementById('pc-habits-list').innerHTML = pc.habits.map(function(h) {
+    var on = keptHabits[c][h.id] !== false;
+    if (keptHabits[c][h.id] === undefined) keptHabits[c][h.id] = true;
+    return '<div class="pc-habit' + (on ? ' on' : '') + '" onclick="toggleKeepHabit(\'' + h.id + '\')">' +
+      '<span class="pc-habit-ico">' + h.ico + '</span>' +
+      '<div class="pc-habit-body"><div class="pc-habit-title">' + h.title + '</div><div class="pc-habit-sub">' + h.sub + '</div></div>' +
+      '<div class="pc-habit-check"></div></div>';
+  }).join('');
+}
+
+function toggleFeedExpand(which) {
+  var c = curChild;
+  feedExpanded[c][which] = !feedExpanded[c][which];
+  syncFeedExpandUI(c, which);
+}
+
+function syncFeedExpandUI(c, which) {
+  var rowId = which === 'plan' ? 'feed-plan-row' : 'feed-monthly-row';
+  var row = document.getElementById(rowId);
+  if (!row) return;
+  row.classList.toggle('open', !!feedExpanded[c][which]);
+}
+
+function syncAllFeedExpandUI(c) {
+  syncFeedExpandUI(c, 'plan');
+  syncFeedExpandUI(c, 'monthly');
+}
+
+function renderMonthlySnapshot(c) {
+  var d = D[c];
+  var ms = d.monthlySnapshot;
+  if (!ms) return;
+  var row = document.getElementById('feed-monthly-row');
+  row.style.display = monthlyVisible[c] ? 'flex' : 'none';
+  document.getElementById('feed-monthly-title').textContent = ms.month + '，' + d.name + ' 有 ' + ms.improving.length + ' 件事在变好';
+  document.getElementById('feed-monthly-sub').textContent = ms.improving.length + ' 件变好 · ' + ms.watching.length + ' 件观察中';
+  document.getElementById('feed-monthly-improving').innerHTML = ms.improving.map(function(t) {
+    return '<li class="fc-monthly-item">' + t + '</li>';
+  }).join('');
+  document.getElementById('feed-monthly-watching').innerHTML = ms.watching.map(function(t) {
+    return '<li class="fc-monthly-item watch">' + t + '</li>';
+  }).join('');
+  var sep = document.getElementById('feed-monthly-sep');
+  if (sep) sep.textContent = ms.watching.length + ' 件事还在观察中';
+  syncFeedExpandUI(c, 'monthly');
+}
+
+function advancePlanDay() {
+  var c = curChild;
+  var pp = planProgress[c];
+  var d = D[c];
+  if (pp.status === 'completed') {
+    showToast('计划已完结 · 可查看完结报告');
+    openPlanCompleteReport();
+    return;
+  }
+  if (pp.day >= d.dayTotal) {
+    completePlan(c, true);
+    return;
+  }
+  pp.day++;
+  updatePlanProgressUI(c);
+  renderPlanHero(c);
+  updateProtoPanel(c);
+  if (pp.day >= d.dayTotal) {
+    showToast('Day ' + d.dayTotal + ' · 计划完成！');
+    setTimeout(function() { completePlan(c, true); }, 800);
+  } else {
+    showToast('计划 Day ' + pp.day + '/' + d.dayTotal);
+  }
+}
+
+function triggerPlanComplete() {
+  var c = curChild;
+  planProgress[c].day = D[c].dayTotal;
+  completePlan(c, true);
+}
+
+function completePlan(c, showOverlay) {
+  var pp = planProgress[c];
+  pp.day = D[c].dayTotal;
+  pp.status = 'completed';
+  updatePlanProgressUI(c);
+  renderPlanHero(c);
+  updateFeedPlanCard(c);
+  updateProtoPanel(c);
+  renderPlanCompleteReport(c);
+  if (showOverlay) {
+    openPlanCompleteReport();
+    swView('feed');
+  }
+  showToast('🎉 ' + D[c].name + ' 的 14 天计划完成了');
+}
+
+function openPlanCompleteReport(e) {
+  if (e) e.stopPropagation();
+  renderPlanCompleteReport(curChild);
+  document.getElementById('plan-complete-overlay').classList.add('open');
+}
+
+function closePlanCompleteReport() {
+  document.getElementById('plan-complete-overlay').classList.remove('open');
+}
+
+function toggleKeepHabit(id) {
+  var c = curChild;
+  keptHabits[c][id] = !keptHabits[c][id];
+  renderPlanCompleteReport(c);
+}
+
+function confirmPlanComplete() {
+  var c = curChild;
+  var kept = [];
+  var dropped = [];
+  (D[c].planComplete.habits || []).forEach(function(h) {
+    if (keptHabits[c][h.id] !== false) kept.push(h.title);
+    else dropped.push(h.title);
+  });
+  closePlanCompleteReport();
+  if (kept.length) showToast('✓ 已保留追踪：' + kept.join('、'));
+  else showToast('好的 · 暂不保留额外追踪');
+}
+
+function sharePlanReport(e) {
+  if (e) e.stopPropagation();
+  showToast('📤 分享卡片已生成（原型演示）· 可截图发给家人');
+}
+
+function shareMonthlySnapshot(e) {
+  if (e) e.stopPropagation();
+  showToast('📤 ' + D[curChild].monthlySnapshot.month + '成长快照 · 可截图分享');
+}
+
+function toggleMonthlySnapshot() {
+  monthlyVisible[curChild] = !monthlyVisible[curChild];
+  renderMonthlySnapshot(curChild);
+  showToast(monthlyVisible[curChild] ? '已显示月度快照' : '已隐藏月度快照');
+}
+
 function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
@@ -1894,6 +2414,8 @@ function clearFollowups() {
 
 swChild('s');
 updateChildBadges();
+renderMonthlySnapshot('s');
+updatePlanProgressUI('s');
 </script>
 </body>
 </html>
