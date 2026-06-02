@@ -162,6 +162,7 @@ body{font-family:var(--font);background:#fff;color:var(--ink);display:flex;align
 .ibtn{border:none;border-radius:var(--r-pill);padding:10px 14px;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:transform .15s}.ibtn:active{transform:scale(.96)}
 .ibtn.pri{background:var(--ink);color:#fff;flex:1}.ibtn.teal{background:var(--brand);color:#fff;flex:1}
 .ibtn.gh{background:var(--bg2);color:var(--muted)}
+.ibtn.tint{background:var(--brand-soft);color:var(--brand)}
 . qa{display:flex;gap:8px;flex-wrap:wrap}
 .qachip{border:1px solid var(--teal-mid);background:#fff;color:var(--teal);border-radius:var(--r-pill);padding:10px 13px;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer}
 .prog{height:6px;border-radius:4px;background:var(--bg2);margin-top:11px;overflow:hidden}.prog i{display:block;height:100%;background:var(--teal-mid);border-radius:4px}
@@ -179,7 +180,7 @@ body{font-family:var(--font);background:#fff;color:var(--ink);display:flex;align
 .route{background:var(--rose-soft);border:1px solid var(--rose-mid);border-radius:var(--r-inner);padding:13px 14px;margin-bottom:10px}.route .b-lbl{color:var(--rose)}
 .rbtn{margin-top:10px;width:100%;border:1px solid var(--rose-mid);background:#fff;color:var(--rose);border-radius:var(--r-pill);padding:11px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}
 .disc{font-size:11px;color:var(--faint);line-height:1.5;text-align:center;margin:8px 0 10px;font-style:italic}
-.empty{text-align:center;padding:20px 16px;color:var(--faint);font-size:12px;line-height:1.6}.empty .ei{font-size:26px;opacity:.5;margin-bottom:7px}
+.empty{text-align:center;padding:20px 16px;color:var(--faint);font-size:12px;line-height:1.6;display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%}.empty .ei{font-size:26px;opacity:.5;margin-bottom:7px}
 .nav{position:absolute;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:flex-end;padding:10px 18px 28px;pointer-events:none;background:linear-gradient(to top,rgba(251,252,253,.95) 40%,rgba(251,252,253,0))}
 .nav-pill{display:flex;gap:4px;padding:5px;border-radius:var(--r-pill);pointer-events:auto;background:rgba(255,255,255,.62);backdrop-filter:blur(40px) saturate(180%);-webkit-backdrop-filter:blur(40px) saturate(180%);box-shadow:0 6px 20px rgba(0,0,0,.08),0 0 0 .5px rgba(0,0,0,.05)}
 .navi{display:flex;align-items:center;gap:7px;padding:10px;border-radius:var(--r-pill);cursor:pointer;color:var(--muted);position:relative;transition:.2s}
@@ -341,6 +342,68 @@ body{font-family:var(--font);background:#fff;color:var(--ink);display:flex;align
 .ib-sec{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:18px 2px 14px}
 .ib-sec:not(:first-child){margin-top:20px}
 .ib-sec-quiet{color:var(--faint);opacity:.8}
+.plan-auto-steps{margin-top:10px;padding:10px 12px;background:var(--bg2);border-radius:var(--r-inner)}
+.plan-step-mini{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);padding:3px 0}
+.plan-check{color:var(--brand);font-size:11px;font-weight:700;flex:0 0 14px;text-align:center}
+.plan-fork-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--faint);margin:14px 0 8px}
+.plan-ctx-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--faint);margin:14px 0 8px}
+.plan-fork{display:flex;gap:8px}
+.plan-opt{flex:1;border:1.5px solid var(--line);border-radius:var(--r-inner);padding:12px;cursor:pointer;transition:all .15s}
+.plan-opt:active{transform:scale(.97)}
+.plan-opt.on{border-color:var(--brand);background:var(--brand-soft)}
+.plan-opt-t{font-size:13px;font-weight:700;color:var(--ink)}
+.plan-opt.on .plan-opt-t{color:var(--brand)}
+.plan-opt-d{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.4}
+.plan-chips{display:flex;flex-wrap:wrap;gap:7px}
+.plan-chip{padding:7px 12px;border:1.5px solid var(--line);background:#fff;color:var(--muted);border-radius:999px;font-family:inherit;font-size:12px;cursor:pointer;transition:all .15s}
+.plan-chip.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:600}
+.plan-chip:active{transform:scale(.96)}
+.ward-notes{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+.ward-note{display:flex;gap:8px;padding:5px 0;font-size:12px;line-height:1.4}
+.wn-day{color:var(--faint);font-weight:600;flex:0 0 48px;font-size:11px;font-feature-settings:"tnum"}
+.wn-txt{color:var(--muted)}
+.ward-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.ward-add{border:1.5px solid var(--brand-mid);background:#fff;color:var(--brand);border-radius:999px;padding:6px 12px;font-size:11.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s}
+.ward-add:active{transform:scale(.95)}
+.note-input-wrap{margin-top:10px;display:flex;gap:8px;align-items:center}
+.note-x{border:none;background:none;color:var(--faint);font-size:18px;cursor:pointer;padding:0 2px;flex:0 0 auto;font-family:inherit}
+.note-input{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:12.5px;outline:none;min-width:0}
+.note-input:focus{border-color:var(--brand-mid)}
+.note-send{border:none;background:var(--brand);color:#fff;border-radius:10px;padding:9px 14px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer}
+.strat-preview{margin-top:14px;border:1px solid var(--brand-mid);border-radius:var(--r-inner);padding:14px;background:linear-gradient(168deg,#f4faf8,#fff)}
+.strat-head{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--brand);margin-bottom:10px}
+.strat-row{display:flex;gap:8px;padding:8px 0;border-top:1px solid var(--line);align-items:flex-start}
+.strat-row:first-of-type{border-top:none;padding-top:0}
+.strat-txt{flex:1;font-size:12.5px;color:var(--ink);line-height:1.5}
+.strat-row.vetoed .strat-txt{text-decoration:line-through;color:var(--faint)}
+.strat-veto{border:1px solid var(--line);background:#fff;color:var(--faint);width:24px;height:24px;border-radius:50%;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:0 0 24px;padding:0;font-family:inherit;transition:.15s}
+.strat-veto:active{transform:scale(.9)}
+.strat-row.vetoed .strat-veto{color:var(--brand);border-color:var(--brand-mid)}
+.strat-foot{font-size:10.5px;color:var(--faint);margin-top:10px;font-style:italic}
+.conv-card{border-radius:var(--r-card);padding:17px;background:linear-gradient(168deg,#f0f7ff,#fff);border:1px solid var(--g-blue);margin-bottom:14px}
+.conv-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.conv-ico{font-size:15px}
+.conv-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--g-blue)}
+.conv-title{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:12px}
+.conv-sec{font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--faint);margin:12px 0 6px}
+.conv-sec:first-of-type{margin-top:0}
+.conv-traits{font-size:12.5px;color:var(--muted);line-height:1.5}
+.conv-trait{padding:2px 0}
+.conv-opener{font-size:13px;color:var(--ink);padding:7px 12px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;line-height:1.4;font-style:italic}
+.conv-avoid{font-size:12px;color:var(--rose);background:var(--rose-soft);border-radius:10px;padding:10px 12px;margin-top:12px;line-height:1.45}
+.conv-point{font-size:13px;color:var(--ink);padding:9px 12px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:7px;line-height:1.5}
+.conv-source{font-size:10.5px;color:var(--faint);margin-top:10px;font-style:italic}
+.plan-list{margin-top:12px}
+.plan-step{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.plan-step:first-child{border-top:none}
+.plan-n{width:20px;height:20px;border-radius:50%;background:var(--bg2);color:var(--muted);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:0 0 20px;margin-top:1px}
+.plan-body{flex:1;min-width:0}
+.plan-label{font-size:12.5px;font-weight:600;color:var(--ink);display:flex;align-items:center;gap:6px}
+.plan-auto{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--teal);background:var(--teal-soft);padding:2px 6px;border-radius:5px}
+.plan-you{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--warm);background:var(--warm-soft);padding:2px 6px;border-radius:5px}
+.plan-desc{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.item.read-item{border-color:var(--line);box-shadow:none;opacity:.8}
+.it-read-when{font-size:11px;color:var(--faint);font-style:italic;margin-top:8px}
 .ib-note{text-transform:none;letter-spacing:0;font-weight:500;font-size:10.5px}
 
 .ward{display:flex;align-items:center;gap:10px;margin-top:11px;cursor:pointer}
@@ -488,9 +551,8 @@ var DATA={
       threshold:'If it <b>lasts beyond 2–3 weeks</b>, or comes with <b>clear daytime tiredness / fever / behavior change</b>, it’s worth seeing a professional.'},
     today:[
       {kind:'headsup',id:'s_signal',tag:'Heads-up',when:'14:42',t:'Sarah’s band lost signal between 14:30–14:42'},
-      {kind:'question',id:'s_sleep',tag:'Worth a look',when:'this week',t:'Sarah’s been waking a little more this week',s:'~1 → ~2 times a night, mostly early. Want me to keep an eye and put it in context?'},
-      {kind:'question',id:'s_sleep_2',tag:'Worth a look',when:'this week',t:'Sarah’s been waking a little more this week',s:'~1 → ~2 times a night, mostly early. Want me to keep an eye and put it in context?'},
-      {kind:'ready',id:'s_daylight',tag:'Result ready',when:'today',t:'How active time relates to Sarah’s sleep — ready',s:'Typical range vs Sarah’s own 14 days. Sourced.'}
+      {kind:'question',id:'s_sleep',tag:'Worth a look',when:'this week',t:'Sarah woke up twice on 2 nights this week',s:'Tuesday and Thursday, both around midnight. Her usual is once or none — want Nana to look into it?'},
+      {kind:'question',id:'s_sleep_2',tag:'Worth a look',when:'this week',t:'Sarah woke up twice on 2 nights this week',s:'Tuesday and Thursday, both around midnight. Her usual is once or none — want Nana to look into it?'},
     ]},
   tommy:{name:'Tommy',emoji:'🧒',
     reports:[
@@ -516,25 +578,16 @@ var DATA={
     today:[
       {kind:'headsup',id:'t_late',tag:'Heads-up',when:'now',t:'Tommy hasn’t arrived home yet'},
       {kind:'battery',id:'t_batt',tag:'Battery',when:'18:40',t:'Tommy’s band is running low — 18%'},
-      {kind:'needs',id:'t_info',tag:'Needs your input',when:'today',t:'Did Tommy’s after-school schedule change recently?',s:'Helps make sense of him taking longer to fall asleep.',answers:['Yes — later pickup','No change']},
-      {kind:'question',id:'t_sleep',tag:'Worth a look',when:'last 7 days',t:'Taking a bit longer to fall asleep this week',s:'~12 → ~25 min, mostly after high-activity afternoons. Want a sourced look?'},
-      {kind:'question',id:'t_sleep_2',tag:'Worth a look',when:'last 7 days',t:'Taking a bit longer to fall asleep this week',s:'~12 → ~25 min, mostly after high-activity afternoons. Want a sourced look?'}
-    ]}
+      {kind:'question',id:'t_explore',tag:'Worth a look',when:'this week',t:'Tommy’s exploring more after school',s:'3 new stops this week, averaging 14 min later than his usual route home. He seems to be stretching his range.'},
+      {kind:'question',id:'t_explore_2',tag:'Worth a look',when:'this week',t:'Tommy’s exploring more after school',s:'3 new stops this week, averaging 14 min later than his usual route home. He seems to be stretching his range.'}
+          ]}
 };
 var ORDER=['sarah','tommy'];
 var TRANSIT={tommy:{from:"Grandma's",to:'Home',since:'18:58',eta:'19:18',mins:12}};
 /* Inbox = a single status-sorted stream. status drives structure; kid=chip; type=tag. */
 /* Inbox = items the parent explicitly hooked. Everything else lives & dies on Today. */
 var INBOX=[
-  {id:'s_ready_inbox',kid:'sarah',type:'research',status:'active',substate:'ready',tag:'Result · ready to read',when:'today',
-   t:'Night waking: Sarah’s picture',
-   s:'A sourced look — the typical range next to Sarah’s own 14-day curve.',report:'sarah',open:false},
-  {id:'s_watch_evening',kid:'sarah',type:'research',status:'active',substate:'progress',tag:'In progress',nights:[true,true,true,true,false],
-   t:'Her evening rhythm',
-   s:'Gathering a few more nights before saying anything — nothing for you to do.',progress:.55},
-  {id:'t_watch_after',kid:'tommy',type:'research',status:'active',substate:'progress',tag:'In progress',nights:[true,true,false,false,false],
-   t:'His afternoon energy pattern',
-   s:'Comparing high-activity days vs others — Nana will surface it when ready.',progress:.7},
+  
   {id:'t_kept_park',kid:'tommy',type:'research',status:'archive',tag:'Archived',when:'2 days ago',
    t:'Playground duration: Tommy’s picture',
    s:'Sourced look — kept for reference.',report:'tommy',open:false}
@@ -616,7 +669,7 @@ function todayCard(d,it){
     return '<div class="tcard needs" data-tid="'+it.id+'"><div class="tc-t">'+it.t+'</div><div class="tc-actions qa">'+it.answers.map(function(a,i){return '<button class="qachip" onclick="answerToday(\''+it.id+'\','+i+')">'+a+'</button>'}).join('')+'</div></div>';
   }
   if(it.kind==='question'){
-    return '<div class="tcard question" data-tid="'+it.id+'"><div class="tc-t">'+it.t+'</div><div class="tc-s">'+it.s+'</div><div class="tc-actions"><button class="cb tint" onclick="keepAnEye(\''+it.id+'\')">Keep an eye on it →</button><button class="cb gh" onclick="dismissToday(\''+it.id+'\')">Not now</button></div></div>';
+    return '<div class="tcard question" data-tid="'+it.id+'"><div class="tc-t">'+it.t+'</div><div class="tc-s">'+it.s+'</div><div class="tc-actions"><button class="cb tint" onclick="careThis(\''+it.id+'\')">Care</button><button class="cb gh" onclick="dismissToday(\''+it.id+'\')">Pass</button></div></div>';
   }
   var h='<div class="tcard '+it.kind+'" data-tid="'+it.id+'"><div class="tc-top"><span class="tc-tag '+it.kind+'">'+it.tag+'</span><span class="tc-when">'+it.when+'</span></div>'+
     '<div class="tc-t">'+it.t+'</div><div class="tc-s">'+it.s+'</div>';
@@ -668,9 +721,9 @@ function renderToday(){
       h+='</div>';
     }
   }
-  if(S.tray[S.child].length){h+='<div class="sec-lbl">For later <span class="ct">· clears tonight</span></div>';
-    S.tray[S.child].forEach(function(t){h+='<div class="tray"><div class="t-top"><span class="t-ico">🌙</span><span class="t-lbl">For later</span><span class="t-when">'+t.when+'</span></div><div class="t-txt">'+t.txt+'</div><div class="t-foot">Clears at end of day · no “done” button · whether you do it isn’t tracked</div></div>';});}
-  h+='<div class="timeline">';
+  if(S.tray[S.child].length){
+    S.tray[S.child].forEach(function(t){h+='<div class="tray"><div class="t-top"><span class="t-ico">🌙</span><span class="t-lbl">For later</span><span class="t-when">'+t.when+'</span></div><div class="t-txt">'+t.txt+'</div></div>';});}
+  h+='<div style="height:24px"></div><div class="timeline">';
   var tr=TRANSIT[S.child];
   if(tr){
     h+='<div class="tl-row t-nn live-row" onclick="toggleTransit()">'+
@@ -761,23 +814,62 @@ function reportBlock(k){var w=DATA[k].report,mx=Math.max.apply(null,w.chart);var
     '<div class="disc">This is context, not advice. Whether to act, and how, is yours to decide.</div>';
 }
 function itemCard(it){
-  var cls=it.status==='archive'?'kept':(it.substate||'ready');
+  var cls=it.status==='archive'?'kept':it.status==='read'?'read-item':(it.substate||'ready');
   var h='<div class="item '+cls+' '+(it.open?'open':'')+'" id="it-'+it.id+'">'+
     '<div class="it-t">'+it.t+'</div><div class="it-s">'+it.s+'</div>';
   if(it.status==='active'&&it.substate==='ready'){
-    h+='<div class="it-actions"><button class="ibtn teal" onclick="toggleItem(\''+it.id+'\')">'+(it.open?'Hide':'Open the look')+' '+(it.open?'▲':'→')+'</button></div>'+
-       '<div class="rep-exp">'+reportBlock(it.report)+'<button class="ibtn teal" style="width:100%" onclick="keep(\''+it.id+'\')">Keep this →</button></div>';
+    h+='<div class="it-actions"><button class="ibtn tint" onclick="toggleItem(\''+it.id+'\')">'+(it.open?'Hide':'Open')+'</button></div>'+
+       '<div class="rep-exp">'+reportBlock(it.report)+'<button class="ibtn tint" style="width:100%" onclick="markRead(\''+it.id+'\')">Done reading</button></div>';
+  }else if(it.status==='active'&&it.substate==='plan'){
+    var picked=it.picked||null;
+    h+='<div class="plan-auto-steps"><div class="plan-step-mini"><span class="plan-check">✓</span>Compare with '+cur().name+'\u2019s own baseline</div><div class="plan-step-mini"><span class="plan-check">✓</span>Cross-check pediatric literature</div></div>';
+    h+='<div class="plan-fork-label">How should Nana look at this?</div>';
+    h+='<div class="plan-fork"><div class="plan-opt'+(picked==='quick'?' on':'')+'" onclick="pickPlan(\''+it.id+'\',\'quick\')"><div class="plan-opt-t">Quick look</div><div class="plan-opt-d">Baseline + literature now.<br>Report by tonight.</div></div>';
+    h+='<div class="plan-opt'+(picked==='watch'?' on':'')+'" onclick="pickPlan(\''+it.id+'\',\'watch\')"><div class="plan-opt-t">Watch first</div><div class="plan-opt-d">Also observe 5 more nights.<br>Report when the picture is clearer.</div></div></div>';
+    h+='<div class="plan-ctx-label">How\'s '+cur().name+' been lately?</div>';
+    h+='<div class="plan-chips">';
+    var moods=it.moods||['Chatty as usual','Quieter lately','Excited about something','A bit moody'];
+    moods.forEach(function(ch,i){h+='<button class="plan-chip'+(it.moodPick===i?' on':'')+'" onclick="pickMood(\''+it.id+'\','+i+')">'+ch+'</button>';});
+    h+='</div>';
+    h+='<div class="plan-ctx-label">When you check in, he usually…</div>';
+    h+='<div class="plan-chips">';
+    var reacts=it.reacts||['Loves sharing','Gets a bit defensive','Shrugs it off','Depends on the day'];
+    reacts.forEach(function(ch,i){h+='<button class="plan-chip'+(it.reactPick===i?' on':'')+'" onclick="pickReact(\''+it.id+'\','+i+')">'+ch+'</button>';});
+    h+='</div>';
+    /* Strategy preview — shows after mood+react are picked */
+    var hasCtx=it.moodPick!==null&&it.moodPick!==undefined&&it.reactPick!==null&&it.reactPick!==undefined;
+    if(hasCtx){
+      var strat=genStrategy(it.moodPick,it.reactPick,cur().name);
+      h+='<div class="strat-preview"><div class="strat-head">Nana\u2019s suggested approach</div>';
+      strat.forEach(function(s,i){
+        var vetoed=it._vetoed&&it._vetoed[i];
+        h+='<div class="strat-row'+(vetoed?' vetoed':'')+'"><div class="strat-txt">'+s+'</div><button class="strat-veto" onclick="event.stopPropagation();vetoPlan(\''+it.id+'\','+i+')">'+(vetoed?'\u21a9':'\u2715')+'</button></div>';
+      });
+      h+='<div class="strat-foot">Remove any point that doesn\u2019t feel right. Nana will adjust.</div></div>';
+    }
+    h+='<div class="it-actions" style="gap:8px;margin-top:14px"><button class="ibtn tint" style="flex:1" onclick="confirmPlan(\''+it.id+'\')"'+(picked&&hasCtx?'':' disabled')+'>Confirm &amp; start</button><button class="ibtn gh" style="flex:0 0 auto" onclick="dismissInbox(\''+it.id+'\')">Not now</button></div>';
   }else if(it.status==='active'&&it.substate==='waiting'){
     h+='<div class="it-actions qa">'+it.answers.map(function(a,i){return '<button class="qachip" onclick="answer(\''+it.id+'\','+i+')">'+a+'</button>'}).join('')+'</div>';
   }else if(it.status==='active'&&it.substate==='progress'){
     if(it.nights){var done=it.nights.filter(function(x){return x;}).length,tot=it.nights.length;
-      h+='<div class="ward" onclick="advanceWard(\''+it.id+'\')"><div class="ward-dots">'+it.nights.map(function(n){return '<span class="wd '+(n?'on':'')+'"></span>';}).join('')+'</div><span class="ward-n">'+done+' of '+tot+' nights</span></div><div class="prog-l">Watching the next few nights — pattern or just a blip? Nothing for you to do.<span class="demo-hint"> (demo: tap dots to advance)</span></div>';
+      h+='<div class="ward" onclick="advanceWard(\''+it.id+'\')"><div class="ward-dots">'+it.nights.map(function(n){return '<span class="wd '+(n?'on':'')+'"></span>';}).join('')+'</div><span class="ward-n">'+done+' of '+tot+' '+(it._dayMode?'days':'nights')+'</span></div>';
+      if(it.notes&&it.notes.length){h+='<div class="ward-notes">';it.notes.forEach(function(n){h+='<div class="ward-note"><span class="wn-day">'+n.day+'</span><span class="wn-txt">'+n.txt+'</span></div>';});h+='</div>';}
+      if(it._noteOpen){h+='<div class="note-input-wrap"><button class="note-x" onclick="event.stopPropagation();openNote(\''+it.id+'\')">×</button><input class="note-input" id="noteinput_'+it.id+'" placeholder="Anything to add about today?" /><button class="note-send" onclick="sendNote(\''+it.id+'\')">Send</button></div>';}
+      else{h+='<div style="margin-top:10px;text-align:right"><button class="ward-add" onclick="event.stopPropagation();openNote(\''+it.id+'\')">+ Note</button></div>';}
     }else if(it.trace){
       h+='<div class="trace"><div class="trace-h">🔍 Looking into this…</div>'+
         it.trace.map(function(tr){return '<div class="trace-row '+(tr[0]==='done'?'tdone':tr[0]==='now'?'tnow':'')+'"><span class="trace-mk">'+(tr[0]==='done'?'✓':tr[0]==='now'?'⟳':'○')+'</span>'+tr[1]+'</div>';}).join('')+
         '</div><div class="prog-l">No action needed — Nana will surface a sourced look when ready.</div>';
     }else{
       h+='<div class="prog"><i style="width:'+((it.progress||.3)*100)+'%"></i></div><div class="prog-l">No action needed — Nana will surface it when ready.</div>';
+    }
+  }else if(it.status==='read'){
+    if(it.report){
+      h+='<div class="it-read-when">Read · '+it.readWhen+'</div>'+
+         '<div class="it-actions" style="gap:8px"><button class="ibtn gh" style="flex:1" onclick="toggleItem(\''+it.id+'\')">'+(it.open?'Hide':'Open')+'</button><button class="ibtn tint" style="flex:1" onclick="discussFromRead(\''+it.id+'\')">Discuss</button></div>'+
+         '<div class="rep-exp">'+reportBlock(it.report)+'</div>';
+    } else {
+      h+='<div class="it-read-when">Read · '+it.readWhen+'</div>';
     }
   }else if(it.status==='archive'){
     if(it.report){
@@ -793,14 +885,19 @@ function itemCard(it){
 function renderInbox(){
   S.seen=true;var h='';
   if(S.view==='active'){
-    var act=INBOX.filter(function(x){return x.status==='active'});
-    var needs=act.filter(function(x){return x.substate!=='progress'});
+    var kid=S.child;
+    var act=INBOX.filter(function(x){return x.status==='active'&&x.kid===kid});
+    var ready=act.filter(function(x){return x.substate==='ready'});
+    var needs=act.filter(function(x){return x.substate==='plan'||x.substate==='waiting'});
     var prog=act.filter(function(x){return x.substate==='progress'});
+    var rd=INBOX.filter(function(x){return x.status==='read'&&x.kid===kid});
+    if(ready.length){h+='<div class="ib-sec">Ready</div>';ready.forEach(function(it){h+=itemCard(it);});}
     if(needs.length){h+='<div class="ib-sec">Needs you</div>';needs.forEach(function(it){h+=itemCard(it);});}
     if(prog.length){h+='<div class="ib-sec ib-sec-quiet">In progress <span class="ib-note">· Nana is watching, nothing for you to do</span></div>';prog.forEach(function(it){h+=itemCard(it);});}
-    if(!act.length) h='<div class="empty"><div class="ei">📥</div>Nothing here right now. Hook something from Today to start tracking it.</div>';
+    if(rd.length){h+='<div class="ib-sec ib-sec-quiet">Read <span class="ib-note">· auto-archives after 7 days</span></div>';rd.forEach(function(it){h+=itemCard(it);});}
+    if(!act.length&&!rd.length) h='<div class="empty"><div class="ei">🫶</div>All quiet on '+cur().name+'’s side.<br>When something’s worth looking into, it’ll show up here.</div>';
   } else {
-    var rows=INBOX.filter(function(x){return x.status==='archive'});
+    var rows=INBOX.filter(function(x){return x.status==='archive'&&x.kid===kid});
     if(rows.length){rows.forEach(function(it){h+=itemCard(it);});}
     else h='<div class="empty"><div class="ei">📥</div>Nothing kept yet. When you Keep an active item, it lands here.</div>';
   }
@@ -978,42 +1075,82 @@ function hookToInbox(id){
   INBOX.unshift({id:'hooked_'+id,kid:S.child,type:'research',status:'active',substate:'progress',tag:'In progress',when:'now',t:it.t,s:'Researching now.',trace:[['done','Pediatric norms for this'],['done','Clinical guidelines'],['now','Comparing with '+cur().name+'’s own pattern']]});
   animateOut(id,true,function(){S.todayDismissed[id]=true;toast('Added to Care');renderToday();});
 }
-function keepAnEye(id){
+function careThis(id){
   var d=cur(),it=d.today.filter(function(x){return x.id===id})[0];
-  /* trigger → Inbox closed loop: plant a multi-day observation ward */
-  INBOX.unshift({id:'ward_'+id,kid:S.child,type:'research',status:'active',substate:'progress',tag:'In progress',
-    t:'Keeping an eye on '+(it.t.toLowerCase().indexOf('wak')>=0?'her evening rhythm':'this'),
-    s:'Watching the next few nights.',nights:[true,false,false,false,false]});
-  animateOut(id,true,function(){S.todayDismissed[id]=true;toast('Now watching · added to Care');renderToday();});
+  INBOX.unshift({id:'care_'+id,kid:S.child,type:'research',status:'active',substate:'plan',tag:'Needs you',when:'now',
+    t:it.t,
+    s:'Here’s what Nana can do — review the plan and confirm.',
+    picked:null,chipPick:null,
+    chips:['Nothing unusual','New routine lately','More screen time','Travels or visitors'],
+    open:false});
+  animateOut(id,true,function(){
+    cur().today.forEach(function(x){if(x.kind==='question')S.todayDismissed[x.id]=true;});
+    S.tab='inbox';S.view='active';toast('Added to Care');render();
+  });
 }
 function openReady(id){
-  /* the ready-on-Today is a result of an earlier hooked item. Open the demo report block inline-light, or jump to Inbox. We add it as a ready item in Inbox and switch. */
-  var d=cur(),it=d.today.filter(function(x){return x.id===id})[0];
-  if(!INBOX.some(function(x){return x.id==='hooked_'+id})){
-    INBOX.unshift({id:'hooked_'+id,kid:S.child,type:'research',status:'active',substate:'ready',tag:'Result · ready to read',when:'today',t:it.t,s:'A sourced look — ready when you are.',report:S.child,open:false});
-  }
-  S.todayDismissed[id]=true;S.tab='inbox';S.view='active';toast('Opening in Care');render();
+  var match=INBOX.filter(function(x){return x.id==='hooked_'+id})[0];
+  if(match)match.open=true;
+  S.todayDismissed[id]=true;S.tab='inbox';S.view='active';render();
 }
 function advanceWard(id){
   var it=item(id); if(!it||!it.nights) return;
   var i=it.nights.indexOf(false);
-  if(i>=0){ it.nights[i]=true; renderInbox(); return; }
-  /* window complete → decide terminal. s_watch_evening = pattern held (→ ready); others = dissolved */
-  if(id==='s_watch_evening'||/wak|evening/.test(it.t.toLowerCase())){
-    it.substate='ready'; it.tag='Result · ready to read'; it.t='Night waking: Sarah’s picture';
-    it.s='The pattern held over the week — here’s a sourced look.'; it.report='sarah'; it.open=false; delete it.nights;
-    toast('Pattern held — a sourced look is ready');
-  }else{
-    it.status='archive'; it.tag='Settled on its own'; it.s='Back to usual after a few nights — nothing stood out. Kept for reference.';
-    it.open=false; delete it.nights; delete it.substate;
-    pushArchive(it.kid,it,'stable');
-    toast('Settled on its own — moved to Archive');
+  if(i>=0){ it.nights[i]=true; if(it._storedNotes&&it._storedNotes.length){if(!it.notes)it.notes=[];it.notes.push(it._storedNotes.shift());} renderInbox();
+    if(it.nights.indexOf(false)<0){
+      setTimeout(function(){
+        it.substate='ready'; it.tag='Result \u00b7 ready to read';
+        it.s='All nights observed \u2014 here\u2019s a sourced look with your notes included.';
+        it.report=it.kid||S.child; it.open=false; delete it.nights;
+        toast('Observation complete \u2014 report ready');
+        render();
+      },600);
+    }
+    return;
   }
-  render();
 }
+
+function pickPlan(id,opt){var it=item(id);it.picked=opt;renderInbox();}
+function pickChip(id,i){var it=item(id);it.chipPick=(it.chipPick===i?null:i);renderInbox();}
+function pickMood(id,i){var it=item(id);it.moodPick=(it.moodPick===i?null:i);renderInbox();}
+function pickReact(id,i){var it=item(id);it.reactPick=(it.reactPick===i?null:i);renderInbox();}
+function vetoPlan(id,i){var it=item(id);if(!it._vetoed)it._vetoed={};it._vetoed[i]=!it._vetoed[i];renderInbox();}
+function genStrategy(mood,react,name){
+  var s=[];
+  if(mood===0)s.push('He\u2019s been chatty \u2014 good window. Try an open question while he\u2019s already talking about his day.');
+  else if(mood===1)s.push('He\u2019s been quieter \u2014 don\u2019t push. Do something side-by-side (walk, build, cook) and let him bring it up.');
+  else if(mood===2)s.push('He\u2019s excited about something \u2014 ride that energy. Ask what\u2019s new, then connect it to his exploring.');
+  else if(mood===3)s.push('He\u2019s a bit moody \u2014 avoid direct questions. Share your own story first: \u201cI used to take the long way home too.\u201d');
+  if(react===0)s.push('He loves sharing \u2014 a simple \u201cwhat did you discover today?\u201d should open him up naturally.');
+  else if(react===1)s.push('He can get defensive \u2014 frame it as curiosity, not concern. \u201cThat sounds cool\u201d before \u201cwhere was it?\u201d');
+  else if(react===2)s.push('He tends to shrug things off \u2014 try a specific hook: \u201cDid you see anything weird on the way home?\u201d');
+  else if(react===3)s.push('It depends on his mood \u2014 read the room. If he clams up, pivot to something fun and try again tomorrow.');
+  s.push('Avoid leading with \u201cwhy are you late\u201d \u2014 it frames exploring as a problem. He\u2019s not late; he\u2019s discovering.');
+  s.push('If he shares a spot, ask to go together this weekend. It tells him you\u2019re interested, not monitoring.');
+  return s;
+}
+function confirmPlan(id){var it=item(id);if(!it.picked)return;it.substate='progress';it.tag='In progress';
+  /* If this is an explore-type care, also generate a conversation suggestion for Today */
+  if(id.indexOf('t_explore')>=0||/explor|range|later/.test(it.t.toLowerCase())){
+    S.tray[it.kid||S.child].push({when:'After school',txt:'Ask Tommy about his new spots — what’s he been discovering? Let him lead the story.',conv:true});
+    S.convCard=S.convCard||{};
+    S.convCard[it.kid||S.child]={
+      id:'conv_'+id,
+      title:'How to talk to Tommy about his exploring',
+      traits:['Tommy tends to share more when he’s moving — walk-and-talk works better than sit-down.','He’s been quieter this week, fewer spontaneous stories at dinner.','He lights up about “discoveries” — bugs, shortcuts, puddles.'],
+      openers:['\u201cI noticed you’ve been finding new ways home — what’s the coolest thing you’ve seen?\u201d','\u201cAny good shortcuts lately? I used to have a secret route when I was your age.\u201d','\u201cWhat’s the best part of walking by yourself?\u201d'],
+      avoid:'Don’t lead with \u201cwhy are you late\u201d — it frames exploring as a problem. He’s not late; he’s discovering.',
+      source:'Based on Tommy’s 60-day communication pattern + his recent location data.'
+    };
+  }if(it.picked==='watch'){it.s='Watching the next 5 nights + checking literature.';it.nights=[true,false,false,false,false];it._dayMode=true;it.notes=[];it._storedNotes=[{day:'Day 2',txt:'Stopped by the construction site near school again — ~8 min.'},{day:'Day 3',txt:'Walked home with two older kids, took a different route.'},{day:'Day 4',txt:'Detoured through the park, longest walk home this week.'}];}else{it.s='Comparing baseline + literature now \u2014 report coming soon.';it.trace=[['done','Scoping the question'],['now','Comparing with '+cur().name+'\u2019s baseline'],['todo','Cross-checking literature'],['todo','Generating report']];}delete it.picked;delete it.chipPick;delete it.chips;delete it.moodPick;delete it.reactPick;delete it.moods;delete it.reacts;toast('Started \u2014 Nana is on it');render();}
+function dismissInbox(id){INBOX=INBOX.filter(function(x){return x.id!==id});toast('Removed');render();}
+function openNote(id){var it=item(id);it._noteOpen=!it._noteOpen;renderInbox();if(it._noteOpen)setTimeout(function(){var el=document.getElementById('noteinput_'+id);if(el)el.focus();},100);}
+function sendNote(id){var it=item(id);var el=document.getElementById('noteinput_'+id);if(!el||!el.value.trim())return;if(!it.notes)it.notes=[];var d=it.nights?it.nights.filter(function(x){return x}).length:0;it.notes.push({day:'Night '+d,txt:el.value.trim()});it._noteOpen=false;toast('Note added');renderInbox();}
 function toggleItem(id){var it=item(id);it.open=!it.open;renderInbox();}
 function answer(id,i){var it=item(id);it.substate='progress';it.tag='In progress';it.when='now';it.t='Looking into it with your note';it.s='Researching with the context you gave — Nana will surface a result when ready.';it.progress=.2;delete it.answers;toast('Got it — researching now');renderInbox();}
-function keep(id){var it=item(id);it.status='archive';it.tag='Archived';it.substate=null;it.open=false;it.when='today';pushArchive(it.kid,it,'keep');toast('Kept · saved to your archive');renderInbox();}
+function markRead(id){var it=item(id);it.status='read';it.substate=null;it.tag='Read';it.open=false;it.readWhen='Today';toast('Done — moved to Read');render();}
+function discussFromRead(id){var it=item(id);S.askOpen=true;S.askStep=0;S.askText='Follow up on: '+it.t;render();setTimeout(function(){var t=document.getElementById('askinput');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);}},350);}
+function keepFromRead(id){var it=item(id);it.status='archive';it.tag='Archived';it.substate=null;it.open=false;it.when=it.readWhen||'today';pushArchive(it.kid,it,'keep');toast('Kept · saved to archive');render();}
 function routeDoc(){toast('Doctor summary prepared · kept with this report');}
 render();
 </script>
