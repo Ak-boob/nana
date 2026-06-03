@@ -602,7 +602,7 @@ var ARCHIVE={
   ],
   tommy:[]
 };
-var S={child:'sarah',tab:'today',screen:'main',arcChild:'sarah',arcFilter:'all',arcOpen:{},transitOpen:false,askOpen:false,askStep:0,askText:'',askAnswers:[null,null,null],view:'active',open:{},cue:{sarah:'surfaced',tommy:'surfaced'},tray:{sarah:[],tommy:[]},todayDismissed:{},seen:false};
+var S={child:'sarah',tab:'today',screen:'main',arcChild:'sarah',arcFilter:'all',arcOpen:{},transitOpen:false,askOpen:false,askStep:0,askText:'',askAnswers:[null,null],view:'active',open:{},cue:{sarah:'surfaced',tommy:'surfaced'},tray:{sarah:[],tommy:[]},todayDismissed:{},seen:false};
 function arcCount(k){return ARCHIVE[k].length}
 function pushArchive(kid,it,type){
   if(ARCHIVE[kid].some(function(x){return x.id===it.id}))return;
@@ -1149,7 +1149,7 @@ function sendNote(id){var it=item(id);var el=document.getElementById('noteinput_
 function toggleItem(id){var it=item(id);it.open=!it.open;renderInbox();}
 function answer(id,i){var it=item(id);it.substate='progress';it.tag='In progress';it.when='now';it.t='Looking into it with your note';it.s='Researching with the context you gave — Nana will surface a result when ready.';it.progress=.2;delete it.answers;toast('Got it — researching now');renderInbox();}
 function markRead(id){var it=item(id);it.status='read';it.substate=null;it.tag='Read';it.open=false;it.readWhen='Today';toast('Done — moved to Read');render();}
-function discussFromRead(id){var it=item(id);S.askOpen=true;S.askStep=0;S.askText='Follow up on: '+it.t;render();setTimeout(function(){var t=document.getElementById('askinput');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);}},350);}
+function discussFromRead(id){var it=item(id);S.askOpen=true;S.askStep=0;S.askAnswers=[null,null];S.askText='Follow up on: '+it.t;render();setTimeout(function(){var t=document.getElementById('askinput');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length);}},350);}
 function keepFromRead(id){var it=item(id);it.status='archive';it.tag='Archived';it.substate=null;it.open=false;it.when=it.readWhen||'today';pushArchive(it.kid,it,'keep');toast('Kept · saved to archive');render();}
 function routeDoc(){toast('Doctor summary prepared · kept with this report');}
 render();
