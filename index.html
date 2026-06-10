@@ -1321,7 +1321,7 @@ var AGENT_URL='https://nana-proxy-ruddy.vercel.app/api/agent';
 var USE_LIVE_AGENT=true;
 var cxMsgs=[];
 var cxIntent='';
-var CX_INTENT={sleep:'😴 睡眠',heart:'❤️ 心率',hrv:'💗 HRV',activity:'🏃 活动',stress:'🌀 压力',spo2:'🫁 血氧',illness:'🤒 身体状况',mood:'🙂 情绪行为',device:'⌚ 设备',account:'👤 账号',general:'💬 综合'};
+var CX_INTENT={sleep:'😴 睡眠',heart:'❤️ 心率',hrv:'💗 HRV',activity:'🏃 活动',stress:'🌀 压力',spo2:'🫁 血氧',illness:'🤒 身体状况',mood:'🙂 情绪行为',device:'⌚ 设备',account:'👤 账号',followup:'🔁 回顾',general:'💬 综合'};
 function cxIntentChip(intent){
   var lbl=CX_INTENT[intent]||('💬 '+intent);
   var t=document.createElement('div');t.className='nc-turn nc-intent';
