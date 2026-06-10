@@ -1295,18 +1295,22 @@ function renderChat(){
     +'<div class="nc-input"><input id="ncIn" placeholder="\u4e5f\u53ef\u4ee5\u76f4\u63a5\u95ee Nana\u2026" onkeydown="if(event.key===\'Enter\')cxSendFree()"><button onclick="cxSendFree()">\u2191</button></div>';
   sp.className='subpage on';
   cxStream=document.getElementById('chatstream');
+  if(S._chatRestore){ var sv=S._chatRestore; S._chatRestore=null; cxReplay(sv); return; }
   var e=S._chatEntry||{mode:'topic',topic:''};
   if(e.mode==='ask') cxStartAsk(e.q); else cxStartTopic(e.topic);
 }
 function cxAgent(text,then){
   var t=document.createElement('div');t.className='nc-turn';
   t.innerHTML='<div class="nc-arow"><div class="nc-aav">\u2726</div><div class="nc-abub">'+cxEsc(text)+'</div></div>';
-  cxStream.appendChild(t);cxScroll(); if(then)setTimeout(then,460);
+  cxStream.appendChild(t);cxScroll();
+  if(!cxReplaying){ cxLog.push({k:'agent',text:text}); cxPersist(); }
+  if(then)setTimeout(then,460);
 }
 function cxUser(text){
   var t=document.createElement('div');t.className='nc-turn';
   t.innerHTML='<div class="nc-urow"><div class="nc-ubub">'+cxEsc(text)+'</div></div>';
   cxStream.appendChild(t);cxScroll();
+  if(!cxReplaying){ cxLog.push({k:'user',text:text}); cxPersist(); }
 }
 function cxScroll(){ if(cxStream)cxStream.scrollTop=cxStream.scrollHeight; }
 function cxEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -1323,12 +1327,42 @@ function cxIntentChip(intent){
   var t=document.createElement('div');t.className='nc-turn nc-intent';
   t.innerHTML='<div class="nc-intentchip">识别意图 · '+cxEsc(lbl)+'</div>';
   cxStream.appendChild(t);cxScroll();
+  if(!cxReplaying){ cxLog.push({k:'intent',intent:intent}); cxPersist(); }
 }
 
+/* ---- 对话续存：进行中的对话临时存 localStorage，刷新/切走再回来能接上 ---- */
+var cxLog=[];          // serializable transcript of the in-progress chat
+var cxReplaying=false; // suppress logging while restoring
+var cxEnded=false;     // true once the conversation concluded (stop persisting)
+function cxPersist(){
+  if(!USE_LIVE_AGENT||cxReplaying||cxEnded) return;
+  try{ localStorage.setItem('nana_chat', JSON.stringify({entry:S._chatEntry,msgs:cxMsgs,intent:cxIntent,log:cxLog,kid:S.child,ts:Date.now()})); }catch(e){}
+}
+function cxClearSaved(){ cxLog=[]; cxEnded=true; try{localStorage.removeItem('nana_chat');}catch(e){} }
+function cxHasSaved(){ try{ var s=localStorage.getItem('nana_chat'); if(!s)return null; var o=JSON.parse(s); return (o&&o.log&&o.log.length)?o:null; }catch(e){ return null; } }
+function cxMarkAnswered(){ for(var i=cxLog.length-1;i>=0;i--){ if(cxLog[i].k==='widget'){ cxLog[i].answered=true; break; } } cxPersist(); }
+
+function cxStripHtml(s){ return String(s||'').replace(/<[^>]+>/g,'').replace(/&[a-z]+;/g,' ').replace(/\s+/g,' ').trim(); }
 function cxBootContext(){
-  var d=cur(),ctx='Child name: '+d.name+'.';
-  try{ if(d.report&&d.report.title) ctx+=' Recent report focus: '+d.report.title+'.'; }catch(e){}
-  return ctx;
+  var d=cur(), L=['Child: '+d.name+'.'];
+  try{
+    if(d.reports&&d.reports.length){
+      L.push('Recent device readings (the child\u2019s own data \u2014 base conclusions on these, do not invent numbers):');
+      d.reports.slice(0,4).forEach(function(r){ L.push('- '+r.title+': '+cxStripHtml(r.body)); });
+    }
+    if(d.report&&d.report.mine){ L.push('Trend vs baseline: '+cxStripHtml(d.report.mine)); }
+  }catch(e){}
+  try{
+    var care=INBOX.filter(function(x){return x.kid===S.child && (x.status==='read'||x.status==='archive'||x.substate==='progress');}).slice(0,5);
+    if(care.length){
+      L.push('Past Care items (your memory of earlier findings \u2014 reference relevant ones for continuity):');
+      care.forEach(function(it){
+        var tag = (it.status==='active') ? '(currently observing)' : '(saved report)';
+        L.push('- '+tag+' '+cxStripHtml(it.t)+(it.s?(' \u2014 '+cxStripHtml(it.s)):''));
+      });
+    }
+  }catch(e){}
+  return L.join('\n');
 }
 function cxThinking(){
   var t=document.createElement('div');t.className='nc-turn';
@@ -1361,14 +1395,17 @@ function cxHandleTurn(turn){
   if(turn.say) cxAgent(turn.say,null);
   cxMsgs.push({role:'assistant',content:JSON.stringify({say:turn.say,widget:turn.widget,done:turn.done,intent:turn.intent})});
   if(turn.widget) cxLiveWidget(turn.widget);
+  else if(turn.done) cxClearSaved();
 }
 function cxLiveWidget(spec){
+  if(!cxReplaying){ cxLog.push({k:'widget',spec:spec,answered:false}); cxPersist(); }
   cxWidget(spec,function(ev){
     var act=(spec.actions||[]).filter(function(a){return a.id===ev.id;})[0];
     var label=ev.label||(act&&act.label)||ev.id||'';
+    cxMarkAnswered();
     if((spec.component==='result'||spec.component==='buttonRow')){
       if(ev.id==='save'){ cxUser(label); cxSaveToCareLive(spec); return; }
-      if(ev.id==='dismiss'){ cxUser(label); cxAgent('\u597d\u7684\uff0c\u5148\u653e\u7740\u3002\u9700\u8981\u7684\u8bdd\u968f\u65f6\u56de\u6765\u3002',null); return; }
+      if(ev.id==='dismiss'){ cxUser(label); cxAgent('\u597d\u7684\uff0c\u5148\u653e\u7740\u3002\u9700\u8981\u7684\u8bdd\u968f\u65f6\u56de\u6765\u3002',null); cxClearSaved(); return; }
       if(ev.id==='startWatch'){ cxUser(label); cxSpawnWatchLive(spec); return; }
     }
     if(label) cxUser(label);
@@ -1376,6 +1413,24 @@ function cxLiveWidget(spec){
     cxTurn();
   });
 }
+function cxRenderSpentWidget(spec){ var w=cxWidget(spec,function(){}); if(w&&w.el) w.el.classList.add('spent'); }
+function cxReplay(saved){
+  cxReplaying=true;
+  cxMsgs=saved.msgs||[]; cxIntent=saved.intent||''; cxLog=saved.log||[]; cxEnded=false;
+  var lastW=-1,i; for(i=0;i<cxLog.length;i++){ if(cxLog[i].k==='widget') lastW=i; }
+  for(i=0;i<cxLog.length;i++){
+    var en=cxLog[i];
+    if(en.k==='intent') cxIntentChip(en.intent);
+    else if(en.k==='agent') cxAgent(en.text,null);
+    else if(en.k==='user') cxUser(en.text);
+    else if(en.k==='widget'){
+      if(en.answered===false && i===lastW) cxLiveWidget(en.spec); /* active widget, interactive (cxReplaying suppresses re-log) */
+      else cxRenderSpentWidget(en.spec);
+    }
+  }
+  cxReplaying=false; cxScroll();
+}
+function resumeChat(){ var saved=cxHasSaved(); if(!saved)return; S._chatEntry=saved.entry||{mode:'topic',topic:''}; S._chatRestore=saved; S._chatBuilt=false; S.screen='chat'; render(); }
 function cxTitleFrom(spec){
   var s=spec.save||spec.watch||{};
   return s.title||(S._chatEntry&&S._chatEntry.mode==='ask'&&S._chatEntry.q)||(cur().name+' report');
@@ -1400,14 +1455,14 @@ function cxSpawnWatchLive(spec){
 
 /* ---- conversation branches (mock; replace with DeepSeek round-trips) ---- */
 function cxStartTopic(topic){
-  if(USE_LIVE_AGENT){ cxIntent=''; cxMsgs=[{role:'user',content:'[Parent tapped Care on a Today prompt] Topic: '+(topic||'(general)')}]; cxTurn(); return; }
+  if(USE_LIVE_AGENT){ cxClearSaved(); cxEnded=false; cxLog=[]; cxIntent=''; cxMsgs=[{role:'user',content:'[Parent tapped Care on a Today prompt] Topic: '+(topic||'(general)')}]; cxTurn(); return; }
   cxScriptTopic(topic);
 }
 function cxScriptTopic(topic){
   cxAgent((topic?'\u5173\u4e8e\u300c'+topic+'\u300d\u2014\u2014':'')+'\u6211\u53ef\u4ee5\u5e2e\u4f60\u67e5\u67e5\u770b\u3002\u5148\u9009\u4e2a\u65b9\u5f0f\uff1f',function(){ cxApproach(); });
 }
 function cxStartAsk(q){
-  if(USE_LIVE_AGENT){ cxIntent=''; if(q) cxUser(q); cxMsgs=[{role:'user',content:q||'(parent opened Ask Nana)'}]; cxTurn(); return; }
+  if(USE_LIVE_AGENT){ cxClearSaved(); cxEnded=false; cxLog=[]; cxIntent=''; cxMsgs=[{role:'user',content:q||'(parent opened Ask Nana)'}]; if(q) cxUser(q); cxTurn(); return; }
   cxScriptAsk(q);
 }
 function cxScriptAsk(q){
@@ -1536,6 +1591,11 @@ function cxSendFree(){var i=document.getElementById('ncIn');var v=(i.value||'').
       S.auth.email = ch ? (JSON.parse(ch).name||'demo@nanaband.com') : 'demo@nanaband.com';
       if(localStorage.getItem('nana_device')) S.device={bound:true,name:'Nana Band',batt:82,kid:S.child};
     }catch(e){ S.auth.email='demo@nanaband.com'; }
+    /* seamless resume: if a chat was in progress, drop straight back into it */
+    try{
+      var saved = (typeof cxHasSaved==='function') ? cxHasSaved() : null;
+      if(saved){ S._chatEntry=saved.entry||{mode:'topic',topic:''}; S._chatRestore=saved; S._chatBuilt=false; S.screen='chat'; }
+    }catch(e){}
     render();
   }
   if(loggedIn){ proceed(); return; }
