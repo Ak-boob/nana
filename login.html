@@ -379,11 +379,13 @@ function showScreen(id) {
   if (id === 's-bluetooth') startScan();
 }
 
-setTimeout(function(){ showScreen('s-login'); }, 2000);
-// Fallback: force login if still on splash after 4s
-setTimeout(function(){
-  if(cur === 's-splash') showScreen('s-login');
-}, 4000);
+if (location.hash.indexOf('bind') !== -1) {
+  // 从 app 内"绑定/重新配对设备"跳进来，直达蓝牙绑定
+  setTimeout(function(){ showScreen('s-bind'); }, 200);
+} else {
+  setTimeout(function(){ showScreen('s-login'); }, 2000);
+  setTimeout(function(){ if(cur === 's-splash') showScreen('s-login'); }, 4000);
+}
 
 // ── Demo credentials ──────────────────────────────────
 var DEMO_EMAIL = 'demo@nanaband.com';
