@@ -556,6 +556,42 @@ body{font-family:var(--font);background:#fff;color:var(--ink);display:flex;align
 .nc-input{flex:0 0 auto;display:flex;gap:9px;align-items:center;padding:9px 14px 16px;border-top:1px solid var(--line);background:#fff}
 .nc-input input{flex:1;border:1px solid var(--line);border-radius:999px;padding:11px 15px;font-size:14px;outline:none;background:var(--bg2);font-family:inherit}
 .nc-input button{width:38px;height:38px;border-radius:50%;border:none;background:var(--brand);color:#fff;font-size:16px;cursor:pointer;flex:0 0 38px}
+/* login + pairing */
+.lg-hero{text-align:center;padding:14px 0 22px}
+.lg-logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#1fbf5a,#0f9b46);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+.lg-h2{font-size:20px;font-weight:800}
+.lg-sub{font-size:13px;color:var(--muted);line-height:1.5;margin:6px auto 0;max-width:280px}
+.lg-field{margin-bottom:14px}
+.lg-field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px 2px}
+.lg-in{width:100%;border:1.5px solid var(--line);border-radius:13px;padding:13px 14px;font-size:15px;font-family:inherit;outline:none;background:#fff;color:var(--ink)}
+.lg-in:focus{border-color:var(--brand)}
+.lg-btn{width:100%;border:none;background:var(--brand);color:#fff;font-size:16px;font-weight:800;border-radius:13px;padding:14px 0;cursor:pointer;font-family:inherit;margin-top:4px}
+.lg-btn:hover{background:#138a3e}
+.lg-btn.ghost{background:var(--bg2);color:var(--muted);margin-top:16px}
+.lg-note{text-align:center;font-size:11.5px;color:#b8b8be;margin-top:14px;line-height:1.5}
+.pp-hero{text-align:center;padding:10px 0 20px}
+.pp-scan{width:90px;height:90px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 16px;animation:ppulse 1.7s infinite}
+@keyframes ppulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,.25)}50%{box-shadow:0 0 0 16px rgba(22,163,74,0)}}
+.pp-kids{display:flex;gap:8px;flex-wrap:wrap}
+.pp-kid{border:1.5px solid var(--line);border-radius:999px;padding:9px 15px;font-size:14px;font-weight:600;cursor:pointer}
+.pp-kid.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.pp-card{text-align:center;border:1px solid var(--line);border-radius:18px;padding:22px 18px;margin-bottom:8px}
+.pp-band{font-size:46px;line-height:1}
+.pp-name{font-size:18px;font-weight:800;margin-top:10px}
+.pp-meta{font-size:13px;color:var(--muted);margin-top:5px}
+/* profile page */
+.pf-hero{text-align:center;padding:8px 0 18px}
+.pf-av{width:84px;height:84px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;margin:0 auto 12px}
+.pf-name{font-size:22px;font-weight:800}
+.pf-email{font-size:14px;color:var(--muted);margin-top:3px}
+.pf-field{padding:12px 16px}
+.sh-card .pf-field+.pf-field{border-top:1px solid var(--line)}
+.pf-fl{font-size:12px;color:var(--muted);margin-bottom:3px}
+.pf-fv{font-size:15px;font-weight:600}
+.pf-plan{border:1.5px solid var(--ink);border-radius:16px;padding:16px;margin-bottom:12px}
+.pf-pl{font-size:12px;color:var(--muted)}
+.pf-pn{font-size:26px;font-weight:800;margin:2px 0 4px;line-height:1}
+.pf-pm{font-size:13px;color:var(--muted)}
 </style>
 <div class="phone">
   <div class="island"></div>
@@ -648,7 +684,7 @@ var ARCHIVE={
   ],
   tommy:[]
 };
-var S={child:'sarah',tab:'today',screen:'main',arcChild:'sarah',arcFilter:'all',arcOpen:{},transitOpen:false,askOpen:false,askStep:0,askText:'',askAnswers:[null,null],view:'active',open:{},cue:{sarah:'surfaced',tommy:'surfaced'},tray:{sarah:[],tommy:[]},todayDismissed:{},seen:false};
+var S={child:'sarah',tab:'today',screen:'main',arcChild:'sarah',arcFilter:'all',arcOpen:{},transitOpen:false,askOpen:false,askStep:0,askText:'',askAnswers:[null,null],view:'active',open:{},cue:{sarah:'surfaced',tommy:'surfaced'},tray:{sarah:[],tommy:[]},todayDismissed:{},seen:false,auth:{in:false,email:''},device:{bound:false,name:'',batt:0,kid:''},_pairKid:'sarah'};
 function arcCount(k){return ARCHIVE[k].length}
 function pushArchive(kid,it,type){
   if(ARCHIVE[kid].some(function(x){return x.id===it.id}))return;
@@ -1022,7 +1058,7 @@ function renderSettings(){
   var n=ORDER.reduce(function(s,k){return s+arcCount(k)},0);
   var h='<div class="pg-hdr">'+pgBack('closeSettings()')+'<div class="pg-title">Settings</div></div>'+
     '<div class="body"><div class="pad fade">'+
-    '<div class="pg-prof" onclick="toast(\'Account profile\')"><div class="pg-av">J</div><div><div class="pg-name">Alex Chen</div><div class="pg-meta">alex@example.com · Pro member</div></div><span class="sh-chev">›</span></div>'+
+    '<div class="pg-prof" onclick="openProfile()"><div class="pg-av">A</div><div><div class="pg-name">Alex Chen</div><div class="pg-meta">alex@example.com · Pro member</div></div><span class="sh-chev">›</span></div>'+
     '<div class="pg-kids"><div class="pg-klbl">Children</div><div class="pg-krow">'+
     ORDER.map(function(k){var d=DATA[k];return '<div class="pg-kid" onclick="toast(\'Manage '+d.name+'\')"><div class="pg-kav">'+d.emoji+'</div><span class="pg-knm">'+d.name+'</span></div>';}).join('')+
     '<div class="pg-kadd" onclick="toast(\'Add a child\')">+</div></div></div>'+
@@ -1033,7 +1069,7 @@ function renderSettings(){
     '<div class="sh-row" onclick="toast(\'Language\')"><div class="sh-ico" style="color:var(--muted)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 4 20 15 15 0 0 1-8 0 15 15 0 0 1 4-20"/></svg></div><div class="sh-body"><div class="sh-rt">Language</div><div class="sh-rs">App display language</div></div><span class="sh-val">English</span><span class="sh-chev">›</span></div></div>'+
     '<div class="sh-sec">Family &amp; devices</div><div class="sh-card">'+
     '<div class="sh-row" onclick="toast(\'Manage Sarah &amp; Tommy\')"><div class="sh-ico k"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9" r="2.6"/><path d="M3 19c.6-3.4 3-5 6-5s5.4 1.6 6 5"/><path d="M14.5 18c.4-2 1.7-3.4 3.5-3.4 2 0 3.3 1.4 3.7 3.4"/></svg></div><div class="sh-body"><div class="sh-rt">Kids</div><div class="sh-rs">Sarah, Tommy · add or invite a guardian</div></div><span class="sh-chev">›</span></div>'+
-    '<div class="sh-row" onclick="toast(\'Manage bands &amp; pairing\')"><div class="sh-ico d"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="2.5"/><circle cx="12" cy="17" r="1"/></svg></div><div class="sh-body"><div class="sh-rt">Devices</div><div class="sh-rs">2 bands paired · battery, fit, firmware</div></div><span class="sh-chev">›</span></div></div>'+
+    (S.device.bound?'<div class="sh-row" onclick="openPair()"><div class="sh-ico d"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="2.5"/><circle cx="12" cy="17" r="1"/></svg></div><div class="sh-body"><div class="sh-rt">'+cxEsc(S.device.name)+'</div><div class="sh-rs">'+cxEsc(DATA[S.device.kid]?DATA[S.device.kid].name:'')+' · battery '+S.device.batt+'% · paired</div></div><span class="sh-chev">›</span></div>':'<div class="sh-row" onclick="location.href=\'login.html#bind\'"><div class="sh-ico d"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="2.5"/><circle cx="12" cy="17" r="1"/></svg></div><div class="sh-body"><div class="sh-rt">Bind a band</div><div class="sh-rs">连接 Nana Band 手环，开始同步健康数据</div></div><span class="sh-chev">›</span></div>')+'</div>'+
     '<div class="sh-sec">Privacy &amp; data</div><div class="sh-card">'+
     '<div class="sh-row" onclick="toast(\'Review consents &amp; data\')"><div class="sh-ico p"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6z"/></svg></div><div class="sh-body"><div class="sh-rt">Privacy &amp; Data</div><div class="sh-rs">Co-guardian, export, delete</div></div><span class="sh-chev">›</span></div>'+
     '<div class="sh-row" onclick="toast(\'Data region\')"><div class="sh-ico" style="color:var(--muted)"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/></svg></div><div class="sh-body"><div class="sh-rt">Data region</div><div class="sh-rs">Where your family data is stored</div></div><span class="sh-val">Singapore</span><span class="sh-chev">›</span></div></div>'+
@@ -1078,6 +1114,8 @@ function renderSub(){
   if(S.screen==='settings')renderSettings();
   else if(S.screen==='archive')renderArchive();
   else if(S.screen==='chat')renderChat();
+  else if(S.screen==='pair')renderPair();
+  else if(S.screen==='profile')renderProfile();
 }
 function render(){renderSub();if(S.screen!=='main')return;renderHdr();renderNav();if(S.tab==='today'){renderToday();setupHookCar();}else renderInbox();renderFab();renderAsk();}
 
@@ -1088,6 +1126,63 @@ function closeArchive(){S.screen='settings';render();}
 function setArcChild(k){S.arcChild=k;S.arcFilter='all';renderArchive();}
 function setArcFilter(f){S.arcFilter=f;renderArchive();}
 function toggleArc(id){S.arcOpen[id]=!S.arcOpen[id];renderArchive();}
+
+/* ---------- Login (独立登录模块 · app 入口) ---------- */
+function openLogin(){ render(); }
+function openProfile(){S.screen='profile';render();}
+function closeProfile(){S.screen='settings';render();}
+function renderProfile(){
+  var ic={chart:'<svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 7-7"/><path d="M14 9h5v5"/></svg>',
+          bill:'<svg viewBox="0 0 24 24"><path d="M6 2h9l3 3v17H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>',
+          gift:'<svg viewBox="0 0 24 24"><path d="M20 12v9H4v-9"/><path d="M2 7h20v5H2z"/><path d="M12 22V7M12 7S10.5 2 8 4s4 3 4 3M12 7s1.5-5 4-3-4 3-4 3"/></svg>',
+          lock:'<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+          out:'<svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
+          del:'<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>'};
+  var h='<div class="pg-hdr">'+pgBack('closeProfile()')+'<div class="pg-title">Profile</div></div>'+
+    '<div class="body"><div class="pad fade">'+
+    '<div class="pf-hero"><div class="pf-av">A</div><div class="pf-name">Alex Chen</div><div class="pf-email">alex@example.com</div></div>'+
+    '<div class="sh-sec">Profile</div><div class="sh-card">'+
+    '<div class="pf-field"><div class="pf-fl">Nickname</div><div class="pf-fv">Alex Chen</div></div>'+
+    '<div class="pf-field"><div class="pf-fl">Email</div><div class="pf-fv">alex@example.com</div></div></div>'+
+    '<div class="sh-sec">Membership</div>'+
+    '<div class="pf-plan"><div class="pf-pl">Current plan</div><div class="pf-pn">Pro</div><div class="pf-pm">Renews Jun 1, 2026 · $9.99/mo</div></div>'+
+    '<div class="sh-card">'+
+    '<div class="sh-row" onclick="toast(\'Change plan\')"><div class="sh-ico">'+ic.chart+'</div><div class="sh-body"><div class="sh-rt">Change plan</div></div><span class="sh-chev">›</span></div>'+
+    '<div class="sh-row" onclick="toast(\'Billing history\')"><div class="sh-ico">'+ic.bill+'</div><div class="sh-body"><div class="sh-rt">Billing history</div></div><span class="sh-chev">›</span></div>'+
+    '<div class="sh-row" onclick="toast(\'Redeem code\')"><div class="sh-ico">'+ic.gift+'</div><div class="sh-body"><div class="sh-rt">Redeem code</div></div><span class="sh-chev">›</span></div></div>'+
+    '<div class="sh-sec">Account security</div><div class="sh-card">'+
+    '<div class="sh-row" onclick="toast(\'Password, 2FA, linked sign-in\')"><div class="sh-ico">'+ic.lock+'</div><div class="sh-body"><div class="sh-rt">Password &amp; login</div><div class="sh-rs">Password, 2FA, linked sign-in</div></div><span class="sh-chev">›</span></div></div>'+
+    '<div class="sh-card" style="margin-top:16px">'+
+    '<div class="sh-row" onclick="confirmLogout()"><div class="sh-ico" style="color:#d6533f;background:#fff1ee;border-color:#ffd9d2">'+ic.out+'</div><div class="sh-body"><div class="sh-rt" style="color:#d6533f">Log out</div></div></div></div>'+
+    '<div class="sh-card">'+
+    '<div class="sh-row" onclick="toast(\'Delete account\')"><div class="sh-ico" style="color:#d6533f;background:#fff1ee;border-color:#ffd9d2">'+ic.del+'</div><div class="sh-body"><div class="sh-rt" style="color:#d6533f">Delete account</div><div class="sh-rs">This cannot be undone</div></div></div></div>'+
+    '</div></div>';
+  $('subpage').innerHTML=h;$('subpage').className='subpage on';
+}
+function confirmLogout(){ signOut(); }
+function doLogin(){
+  var e=(($('lgEmail')&&$('lgEmail').value)||'').trim()||'demo@nanaband.com';
+  S.auth.in=true; S.auth.email=e; S.screen='main'; S.tab='today'; render(); toast('已登录');
+}
+function signOut(){ try{localStorage.removeItem('nana_logged_in');}catch(e){} location.href='login.html'; }
+
+/* ---------- Bind device (绑定手环 · 联动登录) ---------- */
+function openPair(){ if(!S.device.bound){ location.href='login.html#bind'; return; } S.screen='pair'; render(); }
+function closePair(){S.screen='settings';render();}
+function unbind(){ S.device={bound:false,name:'',batt:0,kid:''}; try{localStorage.removeItem('nana_device');}catch(e){} S.screen='settings'; render(); toast('已解绑'); }
+function renderPair(){
+  var nm=DATA[S.device.kid]?DATA[S.device.kid].name:'—';
+  var h='<div class="pg-hdr">'+pgBack('closePair()')+'<div class="pg-title">Device</div></div>'+
+    '<div class="body"><div class="pad fade">'+
+    '<div class="pp-card"><div class="pp-band">\u231a</div><div class="pp-name">'+cxEsc(S.device.name)+'</div>'+
+    '<div class="pp-meta">Paired to '+cxEsc(nm)+' · battery '+S.device.batt+'%</div></div>'+
+    '<div class="sh-sec">Data source</div><div class="sh-card">'+
+    '<div class="sh-row"><div class="sh-ico d"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div class="sh-body"><div class="sh-rt">Garmin Connect</div><div class="sh-rs">手环数据经 Garmin 同步到 Nana</div></div><span class="sh-val">Connected</span></div></div>'+
+    '<button class="lg-btn" onclick="location.href=\'login.html#bind\'">重新配对设备</button>'+
+    '<button class="lg-btn ghost" onclick="unbind()">解绑设备</button>'+
+    '</div></div>';
+  $('subpage').innerHTML=h;$('subpage').className='subpage on';
+}
 function toggleTransit(){S.transitOpen=!S.transitOpen;renderToday();}
 function setChild(k){S.transitOpen=false;S.child=k;render();}
 function setTab(t){S.tab=t;render();}
@@ -1418,7 +1513,28 @@ function cxSendFree(){var i=document.getElementById('ncIn');var v=(i.value||'').
   if(USE_LIVE_AGENT){ cxMsgs.push({role:'user',content:v}); cxTurn(); return; }
   cxAgent('\u6536\u5230\u3002\u771f\u5b9e\u73af\u5883\u91cc\u8fd9\u6761\u4f1a\u53d1\u7ed9 DeepSeek\uff0c\u5b83\u53ef\u80fd\u56de\u4e00\u6bb5\u6587\u5b57\u3001\u4e5f\u53ef\u80fd\u518d\u5410\u4e00\u4e2a a2ui \u63a7\u4ef6\u63a5\u7740\u6536\u96c6\u4fe1\u606f\u3002',null);}
 
-render();
+/* ---- Login handled by separate login.html. Gate via localStorage. ---- */
+(function boot(){
+  var loggedIn=false;
+  try{ loggedIn = localStorage.getItem('nana_logged_in')==='1'; }catch(e){ loggedIn=true; }
+  function proceed(){
+    S.auth.in=true;
+    try{
+      var ch=localStorage.getItem('nana_child');
+      S.auth.email = ch ? (JSON.parse(ch).name||'demo@nanaband.com') : 'demo@nanaband.com';
+      if(localStorage.getItem('nana_device')) S.device={bound:true,name:'Nana Band',batt:82,kid:S.child};
+    }catch(e){ S.auth.email='demo@nanaband.com'; }
+    render();
+  }
+  if(loggedIn){ proceed(); return; }
+  /* not logged in: gate to login.html ONLY if it actually exists
+     (so a standalone single-file preview still renders instead of 404) */
+  try{
+    fetch('login.html',{method:'HEAD'}).then(function(r){
+      if(r && r.ok){ location.replace('login.html'); } else { proceed(); }
+    }).catch(function(){ proceed(); });
+  }catch(e){ proceed(); }
+})();
 </script>
 </body>
 </html>
