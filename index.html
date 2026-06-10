@@ -556,6 +556,8 @@ body{font-family:var(--font);background:#fff;color:var(--ink);display:flex;align
 .nc-input{flex:0 0 auto;display:flex;gap:9px;align-items:center;padding:9px 14px 16px;border-top:1px solid var(--line);background:#fff}
 .nc-input input{flex:1;border:1px solid var(--line);border-radius:999px;padding:11px 15px;font-size:14px;outline:none;background:var(--bg2);font-family:inherit}
 .nc-input button{width:38px;height:38px;border-radius:50%;border:none;background:var(--brand);color:#fff;font-size:16px;cursor:pointer;flex:0 0 38px}
+.nc-intent{text-align:center}
+.nc-intentchip{display:inline-block;font-size:11px;font-weight:700;color:var(--violet);background:var(--violet-soft);border:1px solid #e6def8;border-radius:999px;padding:4px 12px}
 /* login + pairing */
 .lg-hero{text-align:center;padding:14px 0 22px}
 .lg-logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#1fbf5a,#0f9b46);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
@@ -1314,6 +1316,14 @@ function cxEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').re
 var AGENT_URL='https://nana-proxy-ruddy.vercel.app/api/agent';
 var USE_LIVE_AGENT=true;
 var cxMsgs=[];
+var cxIntent='';
+var CX_INTENT={sleep:'😴 睡眠',heart:'❤️ 心率',hrv:'💗 HRV',activity:'🏃 活动',stress:'🌀 压力',spo2:'🫁 血氧',illness:'🤒 身体状况',mood:'🙂 情绪行为',device:'⌚ 设备',account:'👤 账号',general:'💬 综合'};
+function cxIntentChip(intent){
+  var lbl=CX_INTENT[intent]||('💬 '+intent);
+  var t=document.createElement('div');t.className='nc-turn nc-intent';
+  t.innerHTML='<div class="nc-intentchip">识别意图 · '+cxEsc(lbl)+'</div>';
+  cxStream.appendChild(t);cxScroll();
+}
 
 function cxBootContext(){
   var d=cur(),ctx='Child name: '+d.name+'.';
@@ -1335,29 +1345,31 @@ function cxTurn(){
 }
 function cxNormalize(data){
   if(typeof data==='string') return cxParseTurn(data);
-  if(data&&data.say!==undefined) return {say:data.say||'',widget:data.widget||null,done:!!data.done};
+  if(data&&data.say!==undefined) return {say:data.say||'',widget:data.widget||null,done:!!data.done,intent:data.intent||''};
   if(data&&data.choices&&data.choices[0]) return cxParseTurn(data.choices[0].message?data.choices[0].message.content:data.choices[0].text);
   if(data&&data.content) return cxParseTurn(data.content);
   if(data&&data.reply) return cxParseTurn(data.reply);
   return cxParseTurn(JSON.stringify(data));
 }
 function cxParseTurn(t){
-  if(t&&typeof t==='object') return {say:t.say||'',widget:t.widget||null,done:!!t.done};
-  try{ var s=String(t).replace(/```json/gi,'').replace(/```/g,'').trim(); var o=JSON.parse(s); return {say:o.say||'',widget:o.widget||null,done:!!o.done}; }
-  catch(e){ return {say:String(t||''),widget:null,done:false}; }
+  if(t&&typeof t==='object') return {say:t.say||'',widget:t.widget||null,done:!!t.done,intent:t.intent||''};
+  try{ var s=String(t).replace(/```json/gi,'').replace(/```/g,'').trim(); var o=JSON.parse(s); return {say:o.say||'',widget:o.widget||null,done:!!o.done,intent:o.intent||''}; }
+  catch(e){ return {say:String(t||''),widget:null,done:false,intent:''}; }
 }
 function cxHandleTurn(turn){
+  if(turn.intent && turn.intent!==cxIntent){ cxIntent=turn.intent; cxIntentChip(turn.intent); }
   if(turn.say) cxAgent(turn.say,null);
-  cxMsgs.push({role:'assistant',content:JSON.stringify({say:turn.say,widget:turn.widget,done:turn.done})});
+  cxMsgs.push({role:'assistant',content:JSON.stringify({say:turn.say,widget:turn.widget,done:turn.done,intent:turn.intent})});
   if(turn.widget) cxLiveWidget(turn.widget);
 }
 function cxLiveWidget(spec){
   cxWidget(spec,function(ev){
-    var label=ev.label||ev.id||'';
+    var act=(spec.actions||[]).filter(function(a){return a.id===ev.id;})[0];
+    var label=ev.label||(act&&act.label)||ev.id||'';
     if((spec.component==='result'||spec.component==='buttonRow')){
-      if(ev.id==='save'){ cxUser('\u5b58\u5230 Care'); cxSaveToCareLive(spec); return; }
-      if(ev.id==='dismiss'){ cxUser('\u6682\u65f6\u4e0d\u7528'); cxAgent('\u597d\u7684\uff0c\u5148\u653e\u7740\u3002\u9700\u8981\u7684\u8bdd\u968f\u65f6\u56de\u6765\u3002',null); return; }
-      if(ev.id==='startWatch'){ cxUser('\u5f00\u59cb\u89c2\u5bdf'); cxSpawnWatchLive(spec); return; }
+      if(ev.id==='save'){ cxUser(label); cxSaveToCareLive(spec); return; }
+      if(ev.id==='dismiss'){ cxUser(label); cxAgent('\u597d\u7684\uff0c\u5148\u653e\u7740\u3002\u9700\u8981\u7684\u8bdd\u968f\u65f6\u56de\u6765\u3002',null); return; }
+      if(ev.id==='startWatch'){ cxUser(label); cxSpawnWatchLive(spec); return; }
     }
     if(label) cxUser(label);
     cxMsgs.push({role:'user',content:'[Parent selected: '+(label||ev.id)+']'});
@@ -1388,14 +1400,14 @@ function cxSpawnWatchLive(spec){
 
 /* ---- conversation branches (mock; replace with DeepSeek round-trips) ---- */
 function cxStartTopic(topic){
-  if(USE_LIVE_AGENT){ cxMsgs=[{role:'user',content:'[Parent tapped Care on a Today prompt] Topic: '+(topic||'(general)')}]; cxTurn(); return; }
+  if(USE_LIVE_AGENT){ cxIntent=''; cxMsgs=[{role:'user',content:'[Parent tapped Care on a Today prompt] Topic: '+(topic||'(general)')}]; cxTurn(); return; }
   cxScriptTopic(topic);
 }
 function cxScriptTopic(topic){
   cxAgent((topic?'\u5173\u4e8e\u300c'+topic+'\u300d\u2014\u2014':'')+'\u6211\u53ef\u4ee5\u5e2e\u4f60\u67e5\u67e5\u770b\u3002\u5148\u9009\u4e2a\u65b9\u5f0f\uff1f',function(){ cxApproach(); });
 }
 function cxStartAsk(q){
-  if(USE_LIVE_AGENT){ if(q) cxUser(q); cxMsgs=[{role:'user',content:q||'(parent opened Ask Nana)'}]; cxTurn(); return; }
+  if(USE_LIVE_AGENT){ cxIntent=''; if(q) cxUser(q); cxMsgs=[{role:'user',content:q||'(parent opened Ask Nana)'}]; cxTurn(); return; }
   cxScriptAsk(q);
 }
 function cxScriptAsk(q){
